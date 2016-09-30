@@ -55,7 +55,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Crawler.cs" />
+    <Compile Include="Sites\Host.cs" />
     <Compile Include="Sites\HostInterface.cs" />
+    <Compile Include="Sites\Sub\SiteGuru3d.cs" />
+    <Compile Include="Sites\Sub\SitePcAdvisor.cs" />
+    <Compile Include="Sites\Sub\SitePcWorld.cs" />
+    <Compile Include="Sites\Sub\SiteTechPowerUp.cs" />
+    <Compile Include="Sites\Sub\SiteTechRadar.cs" />
+    <Compile Include="Sites\Sub\SiteTrustedReviews.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
