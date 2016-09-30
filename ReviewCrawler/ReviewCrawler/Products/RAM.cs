@@ -8,5 +8,13 @@ namespace ReviewCrawler.Products
 {
     class RAM
     {
+        //
+        string type;
+        string capacity;
+        string speed;
+        string technology;
+        string formFactor;
+        string casLatens;
+
     }
 }
