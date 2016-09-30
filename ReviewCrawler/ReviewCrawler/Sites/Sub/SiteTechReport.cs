@@ -4,13 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ReviewCrawler.Sites
+namespace ReviewCrawler.Sites.Sub
 {
-    interface HostInterface
+    class SiteTechReport : Host
     {
-        void Crawl();
-        void Parse();
-        
-
     }
 }
