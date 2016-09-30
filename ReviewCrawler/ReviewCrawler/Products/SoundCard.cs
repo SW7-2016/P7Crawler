@@ -8,6 +8,8 @@ namespace ReviewCrawler.Products
 {
     class SoundCard
     {
+        //
+
         string type;
         string speakerSupport;
         string Socket;

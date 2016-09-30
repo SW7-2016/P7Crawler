@@ -14,5 +14,6 @@ namespace ReviewCrawler.Products
         string airflow;
         string noise;
         string connector;
+
     }
 }

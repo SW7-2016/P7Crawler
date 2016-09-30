@@ -8,6 +8,7 @@ namespace ReviewCrawler.Products
 {
     class RAM
     {
+        //
         string type;
         string capacity;
         string speed;

@@ -8,6 +8,7 @@ namespace ReviewCrawler.Products
 {
     class Chassis
     {
+        //
         string type;
         bool atx;
         bool miniAtx;

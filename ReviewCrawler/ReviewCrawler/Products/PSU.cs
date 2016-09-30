@@ -8,6 +8,7 @@ namespace ReviewCrawler.Products
 {
     class PSU
     {
+        //
         string power;
         string format;
         bool modular;

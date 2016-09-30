@@ -8,6 +8,7 @@ namespace ReviewCrawler.Products
 {
     class HardDrive
     {
+        //
         bool isInternal;
         string type;
         string formFactor;

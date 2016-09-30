@@ -20,3 +20,4 @@ namespace ReviewCrawler.Products
         string manufacturer;
     }
 }
+

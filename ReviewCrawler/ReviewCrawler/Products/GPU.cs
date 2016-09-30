@@ -8,6 +8,7 @@ namespace ReviewCrawler.Products
 {
     class GPU
     {
+        //
         string processorManufacturer;
         string chipset;
         string model;

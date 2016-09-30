@@ -8,6 +8,7 @@ namespace ReviewCrawler.Products
 {
     class Motherboard
     {
+        //
         string formFactor;
         string chipset;
         bool netCard;
