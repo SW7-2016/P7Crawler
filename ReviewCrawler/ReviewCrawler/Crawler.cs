@@ -25,11 +25,5 @@ namespace ReviewCrawler
 
             });
         }
-
-        public void AddHosts()
-        {
-
-        }
-
     }
 }
