@@ -8,5 +8,13 @@ namespace ReviewCrawler.Products
 {
     class PSU
     {
+        string power;
+        string format;
+        bool modular;
+        string brand;
+        string height;
+        string depth;
+        string width;
+        string weight;
     }
 }

@@ -8,5 +8,15 @@ namespace ReviewCrawler.Products
 {
     class Chassis
     {
+        string type;
+        bool atx;
+        bool miniAtx;
+        bool miniItx;
+        string fans;
+        string brand;
+        string weight;
+        string height;
+        string depth;
+        string width;
     }
 }
