@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace ReviewCrawler.Sites
 {
-    class Host
+    abstract class Host : HostInterface
     {
+        public Queue<string> reviewQueue = new Queue<string>();
+        public Queue<string> searchQueue = new Queue<string>();
+
     }
 }

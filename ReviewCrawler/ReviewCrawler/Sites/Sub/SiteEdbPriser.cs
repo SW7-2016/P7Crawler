@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ReviewCrawler.Sites.Sub
 {
-    class SiteEdbPriser
+    class SiteEdbPriser : Host
     {
     }
 }

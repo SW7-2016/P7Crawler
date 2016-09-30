@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ReviewCrawler.Sites.Sub
 {
-    class SiteGuru3d
+    class SiteGuru3d : Host
     {
     }
 }

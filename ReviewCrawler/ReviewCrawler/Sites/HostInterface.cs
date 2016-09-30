@@ -8,5 +8,9 @@ namespace ReviewCrawler.Sites
 {
     interface HostInterface
     {
+        void Crawl();
+        void Parse();
+        
+
     }
 }
