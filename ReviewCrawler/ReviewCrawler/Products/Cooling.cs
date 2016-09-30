@@ -8,12 +8,5 @@ namespace ReviewCrawler.Products
 {
     class Cooling
     {
-        string type;
-        string speed;
-        string size;
-        string airflow;
-        string noise;
-        string connector;
-
     }
 }
