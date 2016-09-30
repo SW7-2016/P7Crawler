@@ -8,19 +8,5 @@ namespace ReviewCrawler.Products
 {
     class Motherboard
     {
-        string formFactor;
-        string chipset;
-        bool netCard;
-        bool soundCard;
-        bool graphicsCard;
-        bool multiGpu;
-        bool crossfire;
-        string cpuType;
-        int cpuCount;
-        string socket;
-        string sli;
-        string maxMem;
-        string memSlots;
-        string memType;
     }
 }
