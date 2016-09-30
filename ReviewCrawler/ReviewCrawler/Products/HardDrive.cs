@@ -8,5 +8,18 @@ namespace ReviewCrawler.Products
 {
     class HardDrive
     {
+        //
+        bool isInternal;
+        string type;
+        string formFactor;
+        string capacity;
+        string cacheSize;
+        string transferRate;
+        string brand;
+        string sata;
+        string height;
+        string depth;
+        string width;
+
     }
 }
