@@ -25,7 +25,7 @@ namespace WI
     {
         //Settings
             //No. of sites the crawler max crawls
-        const int MAX_VISITS = 1000;
+        const int MAX_VISITS = 100;
             //Save folders for files
         public static string PATH_TOKENIZED = (Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\WI\Tokenized\");
         public static string PATH_RAW = (Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\WI\Raw\");
@@ -36,32 +36,29 @@ namespace WI
 
         //Variables for GUI communication
         public static string CurUrl = "";
+        public static int TokenizedPages = 0;
+        public static int IndexedTokens = 0;
 
         //Shared for crawler (NEED REMOVAL?)
+        public static Indexer indexer = new Indexer();
         public static List<Host> hosts = new List<Host>();
         public static Queue<Site> urls = new Queue<Site>();
         public static List<Site> allUrls = new List<Site>();
 
+        //Threads 
+        Thread Crawler = new Thread(WI.MainWindow.crawling);
+        Thread Tokenizer = new Thread(WI.MainWindow.tokenizer);
+        Thread Indexing = new Thread(WI.MainWindow.indexing);
+        Thread Ranker = new Thread(WI.MainWindow.indexing);
+
         public MainWindow()
         {
             InitializeComponent();
-
-            //Creating threads for each activity
-            Thread Crawler = new Thread(WI.MainWindow.crawling);
-            Thread Tokenizer = new Thread(WI.MainWindow.tokenizer);
-            Thread Indexing = new Thread(WI.MainWindow.indexing);
-            Thread Ranker = new Thread(WI.MainWindow.indexing);
-
-            //Starting threads by default
-            Crawler.Start(1);
-            Tokenizer.Start(2);
-            Indexing.Start(3);
         }
 
         //Creating the index from all the files from the tokenizer.
         public static void indexing(object data)
         {
-            Indexer index = new Indexer();
             for (int i = 0; MAX_VISITS > i;)
             {
                 if (tokenizerProgress >= i)
@@ -70,7 +67,7 @@ namespace WI
                     {
                         StreamReader sr = new StreamReader(PATH_TOKENIZED + i + ".txt");
                         string[] tokens = sr.ReadToEnd().Split('\n');
-                        index.CreateIndex(i, tokens.ToList());
+                        indexer.CreateIndex(i, tokens.ToList());
                     }
                     i++;
                 }
@@ -89,14 +86,18 @@ namespace WI
                     if (File.Exists(PATH_RAW + i + ".txt"))
                     {
                         StreamReader sr = new StreamReader(PATH_RAW + i + ".txt");
+                        string url = sr.ReadLine();
                         string rawToTokens = sr.ReadToEnd();
-
+                        
                         rawToTokens = Tools.RemoveHtmlTags(rawToTokens);
-
                         string[] tokenStream = Tools.RemoveStopwords(rawToTokens).Split('\n');
+
                         Porter stem = new Porter();
+
                         using (StreamWriter outputFile = new StreamWriter(PATH_TOKENIZED + i + ".txt"))
                         {
+                            outputFile.WriteLine(url);
+
                             foreach (string fakeToken in tokenStream)
                             {
                                 foreach (string token in fakeToken.Trim().Split(' '))
@@ -108,6 +109,7 @@ namespace WI
                         }
                         sr.Close();
                     }
+                    TokenizedPages++;
                     tokenizerProgress = i;
                     i++;
                 }
@@ -170,6 +172,9 @@ namespace WI
                     //Write the site to a file. This file is then used for tokenizing.
                     using (StreamWriter outputFile = new StreamWriter(PATH_RAW + i + ".txt"))
                     {
+                        //Save the URL, in top of document.
+                        outputFile.WriteLine(CurUrl);
+
                         foreach (string line in toOutput)
                             outputFile.WriteLine(line);
                     }
@@ -239,11 +244,59 @@ namespace WI
             lHosts.Content = hosts.Count();
             lCompleted.Content = (allUrls.Count() - urls.Count());
             lCurSite.Content = CurUrl;
+            lTokenCount.Content = TokenizedPages;
+            lIndexedCount.Content = IndexedTokens;
         }
 
-        private void button_Click(object sender, RoutedEventArgs e)
+        private void LookUpToken_Click(object sender, RoutedEventArgs e)
         {
-            
+            string token = InputIndexer.Text.ToLower();
+            Porter stem = new Porter();
+            Dictionary<int, int> results = indexer.FindToken(stem.stem(token));
+
+            if (results != null)
+            {
+                string textResult = "";
+
+                foreach (KeyValuePair<int, int> result in results)
+                {
+                    textResult += "occurrences: " + result.Value + "  Site number: " + result.Key + "\n";
+                }
+
+                OutputIndexer.Text = textResult;
+            }
+        }
+
+        //Start Tokenizer button
+        private void BTokenizer_Click(object sender, RoutedEventArgs e)
+        {
+            Tokenizer.Start(2);
+            BTokenizer.IsEnabled = false;
+        }
+        
+        private void BRanker_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        //Start Crawler button
+        private void BCrawler_Click(object sender, RoutedEventArgs e)
+        {
+            Crawler.Start(1);
+            BCrawler.IsEnabled = false;
+        }
+
+        //Start Indexing button
+        private void BIndexer_Click(object sender, RoutedEventArgs e)
+        {
+            Indexing.Start(3);
+            BIndexer.IsEnabled = false;
+        }
+
+        //Search and rank button
+        private void BSearch_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
