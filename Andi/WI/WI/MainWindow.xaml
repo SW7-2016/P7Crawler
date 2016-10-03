@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WI"
         mc:Ignorable="d"
         Title="MainWindow" Height="605.401" Width="1125.98">
-    <Grid LayoutUpdated="Grid_LayoutUpdated" Margin="0,0,2.333,-268">
+    <Grid LayoutUpdated="Grid_LayoutUpdated" Margin="0,0,2,7">
         <Label x:Name="lQueue" Content="Label" HorizontalAlignment="Left" Margin="235,54,0,0" VerticalAlignment="Top" Width="285"/>
         <Label x:Name="lCompleted" Content="Label" HorizontalAlignment="Left" Margin="235,85,0,0" VerticalAlignment="Top" Width="285"/>
         <Label x:Name="lCurSite" Content="Label" HorizontalAlignment="Left" Margin="235,147,0,0" VerticalAlignment="Top" Width="592"/>
@@ -22,7 +22,7 @@
         <Label x:Name="label" Content="Look up token:" HorizontalAlignment="Left" Height="26" Margin="35,228,0,0" VerticalAlignment="Top" Width="89"/>
         <Button x:Name="LookUpToken" Content="Search" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="289,231,0,0" Click="LookUpToken_Click"/>
         <TextBlock x:Name="OutputIndexer" HorizontalAlignment="Left" Height="296" Margin="35,259,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="329"/>
-        <TextBox x:Name="textBox_Copy" HorizontalAlignment="Left" Height="26" Margin="524,228,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="160"/>
+        <TextBox x:Name="InputSearch" HorizontalAlignment="Left" Height="26" Margin="524,228,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="160"/>
         <Label x:Name="label_Copy1" Content="Gaagle search:" HorizontalAlignment="Left" Height="26" Margin="430,228,0,0" VerticalAlignment="Top" Width="89"/>
         <Button x:Name="Search" Content="Search" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="689,231,0,0" Click="BSearch_Click"/>
         <TextBlock x:Name="SearchOutput" HorizontalAlignment="Left" Height="296" Margin="435,259,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="656"/>

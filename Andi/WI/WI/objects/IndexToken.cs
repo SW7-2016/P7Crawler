@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WI.objects
 {
-    class IndexToken
+    public class IndexToken
     {
         public string token;
         public Dictionary<int, int> pages = new Dictionary<int, int>();

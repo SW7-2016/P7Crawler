@@ -8,9 +8,8 @@ namespace WI.objects
 {
     public class Indexer
     {
-        private Dictionary<string, IndexToken> index = new Dictionary<string, IndexToken>();
-
-
+        public Dictionary<string, IndexToken> index = new Dictionary<string, IndexToken>();
+        
         public void CreateIndex(int siteId, List<string> tokens)
         {
 

@@ -73,6 +73,8 @@
     <Compile Include="objects\Indexer.cs" />
     <Compile Include="objects\IndexToken.cs" />
     <Compile Include="objects\Porter.cs" />
+    <Compile Include="objects\RankedToken.cs" />
+    <Compile Include="objects\Ranker.cs" />
     <Compile Include="objects\Site.cs" />
     <Compile Include="objects\Tools.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

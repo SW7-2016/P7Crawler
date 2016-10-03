@@ -38,6 +38,7 @@ namespace WI
         public static string CurUrl = "";
         public static int TokenizedPages = 0;
         public static int IndexedTokens = 0;
+        Ranker rankedIndex = new objects.Ranker(new Dictionary<string, IndexToken>());
 
         //Shared for crawler (NEED REMOVAL?)
         public static Indexer indexer = new Indexer();
@@ -240,16 +241,17 @@ namespace WI
         private void Grid_LayoutUpdated(object sender, EventArgs e)
         {
             //Updates crawler info.
-            lQueue.Content = urls.Count();
-            lHosts.Content = hosts.Count();
-            lCompleted.Content = (allUrls.Count() - urls.Count());
-            lCurSite.Content = CurUrl;
-            lTokenCount.Content = TokenizedPages;
-            lIndexedCount.Content = IndexedTokens;
+           // lQueue.Content = urls.Count();
+           // lHosts.Content = hosts.Count();
+           // lCompleted.Content = (allUrls.Count() - urls.Count());
+            //lCurSite.Content = CurUrl;
+            //lTokenCount.Content = TokenizedPages;
+            //lIndexedCount.Content = IndexedTokens;
         }
 
         private void LookUpToken_Click(object sender, RoutedEventArgs e)
         {
+            OutputIndexer.Text = "";
             string token = InputIndexer.Text.ToLower();
             Porter stem = new Porter();
             Dictionary<int, int> results = indexer.FindToken(stem.stem(token));
@@ -276,7 +278,7 @@ namespace WI
         
         private void BRanker_Click(object sender, RoutedEventArgs e)
         {
-
+            rankedIndex = new Ranker(indexer.index);
         }
 
         //Start Crawler button
@@ -296,7 +298,96 @@ namespace WI
         //Search and rank button
         private void BSearch_Click(object sender, RoutedEventArgs e)
         {
+            SearchOutput.Text = "";
+            Porter stem = new Porter();
+            string[] query = Tools.RemoveStopwords(InputSearch.Text).Trim().Split(' ');
+            List<KeyValuePair<int, double>> result = new List<KeyValuePair<int, double>>();
+            double tempDotProduct = 0;
+            double[] tempLenght = {1, 1};
+            Dictionary<int, double[]> sites = new Dictionary<int, double[]>();
 
+            List<RankedToken> tokens = new List<RankedToken>();
+
+            foreach (string word in query)
+            {
+                if (rankedIndex.index.ContainsKey(stem.stem(word.ToLower()) + '\r'))
+                    tokens.Add(rankedIndex.index[stem.stem(word.ToLower()) + '\r']);
+            }
+
+            for (int i = 0; i < tokens.Count(); i++)
+            {
+                foreach (KeyValuePair<int, double> site in tokens[i].TfIdf)
+                {
+                    if (sites.ContainsKey(site.Key))
+                    {
+                        sites[site.Key][i] = site.Value;
+                    }
+                    else
+                    {
+                        sites.Add(site.Key, new double[query.Count()]);
+                        sites[site.Key][i] = site.Value;
+                    }
+                }
+            }
+
+            int tempInt;
+            List<int> removeId = new List<int>();
+
+            foreach (KeyValuePair<int, double[]> site in sites)
+            {
+                tempInt = 0;
+                for (int i = 0; i < site.Value.Length; i++)
+                {
+                    if (site.Value[i] != 0)
+                    {
+                        tempInt++;
+                    }
+                }
+                if (site.Value.Length / tempInt > 3/2)
+                {
+                    removeId.Add(site.Key);
+                }
+            }
+
+            foreach (int remove in removeId)
+            {
+                sites.Remove(remove);
+            }
+
+            foreach (KeyValuePair<int, double[]> site in sites)
+            {
+                tempDotProduct = 0;
+                tempLenght[0] = 1;
+                tempLenght[1] = 1;
+
+                for (int i = 0; i < query.Count(); i++)
+                {
+                    tempDotProduct = tempDotProduct + (site.Value[i] * 1);
+                    tempLenght[0] = tempLenght[0] + 1;
+                    tempLenght[1] = tempLenght[1] + Math.Pow(site.Value[i], 2);
+
+                }
+
+                result.Add(new KeyValuePair<int, double>(site.Key, (Math.PI / 180) * (
+                    Math.Acos((tempDotProduct) / (Math.Sqrt(tempLenght[0]) * Math.Sqrt(tempLenght[1]))))));
+            }
+
+            result = result.OrderBy(x => x.Value).ToList();
+
+            if (result.Count() > 0)
+            {
+                string tempResult = "";
+                for (int i = 0; i < (result.Count() > 10 ? 10 : result.Count()); i++)
+                {
+                    tempResult += "   site: " + result.ElementAt(i).Key + " vinkel: " + Math.Round((result.ElementAt(i).Value) * 10000) / 100 + "     ";
+
+                    using (StreamReader FileReader = new StreamReader(PATH_TOKENIZED + result.ElementAt(i).Key + ".txt"))
+                    {
+                        tempResult += FileReader.ReadLine() + '\n';
+                    }
+                }
+                SearchOutput.Text = tempResult;
+            }
         }
     }
 }
