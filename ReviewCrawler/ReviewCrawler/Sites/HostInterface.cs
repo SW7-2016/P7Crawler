@@ -8,7 +8,7 @@ namespace ReviewCrawler.Sites
 {
     interface HostInterface
     {
-        void Crawl();
+        bool Crawl();
         void Parse();
         DateTime GetLastAccessTime();
 

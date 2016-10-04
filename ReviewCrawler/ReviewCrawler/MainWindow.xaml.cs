@@ -20,6 +20,9 @@ namespace ReviewCrawler
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        Crawler crawl = new Crawler();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -27,10 +30,9 @@ namespace ReviewCrawler
 
         private void crawl_bt_Click(object sender, RoutedEventArgs e)
         {
-            Crawler currentCrawler = new Crawler();
 
-            currentCrawler.AddHosts();
-            currentCrawler.StartCrawl();
+            crawl.AddHosts();
+            crawl.StartCrawl();
         }
     }
 }

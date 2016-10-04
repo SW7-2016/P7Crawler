@@ -16,35 +16,43 @@ namespace ReviewCrawler
         public void StartCrawl()
         {
             bool running = true;
+            bool isHostDone = false;
             HostInterface currentHost;
 
             while (running)
             {
+                isHostDone = false;
                 currentHost = hostQueue.Dequeue();
 
                 if (PolitenessTimeCheck(currentHost.GetLastAccessTime()))
                 {
-                    currentHost.Crawl();
+                     //Starts crawling the host and returns a bool determining if the host has any more content to crawl
+                     isHostDone = currentHost.Crawl();
                 }
                 else
                 {
                     hostQueue.Enqueue(currentHost);
                 }
+
+                //Requeues the host if it has more pages to be crawled
+                if (!isHostDone)
+                {
+                    hostQueue.Enqueue(currentHost);
+                }
+
+                //Stops if the hostQueue is empty
+                if (hostQueue.Count < 1)
+                {
+                    running = false;
+                }
             }
             
         }
 
-        
-
-        public void StartCrawlThread()
-        {
-            
-        }
-
+        //Adds all the hosts to be crawled - do this at startup
         public void AddHosts()
         {
             hostQueue.Enqueue(new SiteGuru3d());
-
         }
 
         //Checks if more than two seconds have passed since 'lastAccessTime' and returns a bool
