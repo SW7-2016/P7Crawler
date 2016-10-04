@@ -10,7 +10,7 @@ namespace ReviewCrawler.Sites
     {
         void Crawl();
         void Parse();
-        
+        DateTime GetLastAccessTime();
 
     }
 }

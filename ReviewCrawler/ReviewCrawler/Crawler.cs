@@ -14,21 +14,25 @@ namespace ReviewCrawler
 
         public void StartCrawl()
         {
+            bool running = true;
+            HostInterface currentHost;
 
+            while (running)
+            {
+                currentHost = hostQueue.Dequeue();
+            }
+            
         }
 
 
         public void StartCrawlThread()
         {
-            Task.Factory.StartNew(() =>
-            {
-
-            });
+            
         }
 
         public void AddHosts()
         {
-           // hostQueue
+            hostQueue.Enqueue(new SiteGuru3d());
 
         }
 
