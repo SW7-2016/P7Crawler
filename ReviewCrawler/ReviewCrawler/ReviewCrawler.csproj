@@ -57,11 +57,13 @@
     </ApplicationDefinition>
     <Compile Include="Crawler.cs" />
     <Compile Include="Products\Chassis.cs" />
+    <Compile Include="Products\ComputerComponents.cs" />
     <Compile Include="Products\Cooling.cs" />
     <Compile Include="Products\CPU.cs" />
     <Compile Include="Products\GPU.cs" />
     <Compile Include="Products\HardDrive.cs" />
     <Compile Include="Products\Motherboard.cs" />
+    <Compile Include="Products\Product.cs" />
     <Compile Include="Products\PSU.cs" />
     <Compile Include="Products\RAM.cs" />
     <Compile Include="Products\SoundCard.cs" />
