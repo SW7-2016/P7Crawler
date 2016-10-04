@@ -28,6 +28,7 @@ namespace ReviewCrawler
 
         public void AddHosts()
         {
+           // hostQueue
 
         }
 
