@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ReviewCrawler.Reviews
+namespace ReviewCrawler.Products.Reviews
 {
     class ReviewComment
     {
+        String content;
+        double rating;
     }
 }

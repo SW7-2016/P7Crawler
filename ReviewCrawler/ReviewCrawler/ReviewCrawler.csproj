@@ -66,7 +66,7 @@
     <Compile Include="Products\Product.cs" />
     <Compile Include="Products\ProductComponents\PSU.cs" />
     <Compile Include="Products\ProductComponents\RAM.cs" />
-    <Compile Include="Products\Retailer\Retailer.cs" />
+    <Compile Include="Products\Retailers\Retailer.cs" />
     <Compile Include="Products\ProductComponents\SoundCard.cs" />
     <Compile Include="Products\Reviews\Review.cs" />
     <Compile Include="Products\Reviews\ReviewComment.cs" />

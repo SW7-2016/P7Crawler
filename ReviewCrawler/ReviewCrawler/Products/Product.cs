@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ReviewCrawler.Products;
-
+﻿using System.Collections.Generic;
+using ReviewCrawler.Products.Reviews;
+using ReviewCrawler.Products.Retailers;
 
 namespace ReviewCrawler.Products
 {
     abstract class Product
     {
+        string name;
         string description;
+        decimal price;
         byte[][] image;
         List<Retailer> retailers;
         List<Review> criticReviews;
-        List<Review> 
+        List<Review> userReviews;
     }
 }
