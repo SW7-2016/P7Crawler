@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ReviewCrawler.Products
 {
-    class CPU
+    class CPU : ComputerComponents
     {
         string formFactor;
         string model;

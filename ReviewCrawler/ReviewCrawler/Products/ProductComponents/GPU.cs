@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace ReviewCrawler.Products
 {
-    class GPU
+    class GPU : ComputerComponents
     {
-        //
         string processorManufacturer;
         string chipset;
         string model;

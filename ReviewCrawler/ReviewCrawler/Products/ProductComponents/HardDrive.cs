@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace ReviewCrawler.Products
 {
-    class HardDrive
+    class HardDrive : ComputerComponents
     {
-        //
         bool isInternal;
         string type;
         string formFactor;
@@ -20,6 +19,5 @@ namespace ReviewCrawler.Products
         string height;
         string depth;
         string width;
-
     }
 }

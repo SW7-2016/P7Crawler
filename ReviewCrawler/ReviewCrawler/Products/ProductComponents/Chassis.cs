@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace ReviewCrawler.Products
 {
-    class Chassis
+    class Chassis : ComputerComponents
     {
-        //
         string type;
         bool atx;
         bool miniAtx;

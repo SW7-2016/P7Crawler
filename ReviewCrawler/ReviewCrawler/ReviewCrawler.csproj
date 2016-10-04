@@ -56,17 +56,21 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Crawler.cs" />
-    <Compile Include="Products\Chassis.cs" />
+    <Compile Include="Products\ProductComponents\Chassis.cs" />
     <Compile Include="Products\ComputerComponents.cs" />
-    <Compile Include="Products\Cooling.cs" />
-    <Compile Include="Products\CPU.cs" />
-    <Compile Include="Products\GPU.cs" />
-    <Compile Include="Products\HardDrive.cs" />
-    <Compile Include="Products\Motherboard.cs" />
+    <Compile Include="Products\ProductComponents\Cooling.cs" />
+    <Compile Include="Products\ProductComponents\CPU.cs" />
+    <Compile Include="Products\ProductComponents\GPU.cs" />
+    <Compile Include="Products\ProductComponents\HardDrive.cs" />
+    <Compile Include="Products\ProductComponents\Motherboard.cs" />
     <Compile Include="Products\Product.cs" />
-    <Compile Include="Products\PSU.cs" />
-    <Compile Include="Products\RAM.cs" />
-    <Compile Include="Products\SoundCard.cs" />
+    <Compile Include="Products\ProductComponents\PSU.cs" />
+    <Compile Include="Products\ProductComponents\RAM.cs" />
+    <Compile Include="Products\Retailer\Retailer.cs" />
+    <Compile Include="Products\ProductComponents\SoundCard.cs" />
+    <Compile Include="Products\Reviews\Review.cs" />
+    <Compile Include="Products\Reviews\ReviewComment.cs" />
+    <Compile Include="Products\Reviews\ReviewReception.cs" />
     <Compile Include="Sites\Host.cs" />
     <Compile Include="Sites\HostInterface.cs" />
     <Compile Include="Sites\Sub\SiteAmazon.cs" />
@@ -122,9 +126,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Reviews\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

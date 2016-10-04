@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace ReviewCrawler.Products
 {
-    class SoundCard
+    class RAM : ComputerComponents
     {
-        //
-
         string type;
-        string speakerSupport;
-        string Socket;
-        string fullDuplex;
+        string capacity;
+        string speed;
+        string technology;
+        string formFactor;
+        string casLatens;
     }
 }

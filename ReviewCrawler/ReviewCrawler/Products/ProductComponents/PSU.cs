@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace ReviewCrawler.Products
 {
-    class PSU
+    class PSU : ComputerComponents
     {
-        //
         string power;
         string format;
         bool modular;

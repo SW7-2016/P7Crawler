@@ -6,14 +6,11 @@ using System.Threading.Tasks;
 
 namespace ReviewCrawler.Products
 {
-    class Cooling
+    class SoundCard : ComputerComponents
     {
         string type;
-        string speed;
-        string size;
-        string airflow;
-        string noise;
-        string connector;
-
+        string speakerSupport;
+        string Socket;
+        string fullDuplex;
     }
 }

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace ReviewCrawler.Products
 {
-    class ComputerComponents
+    abstract class ComputerComponents : Product
     {
+
     }
 }

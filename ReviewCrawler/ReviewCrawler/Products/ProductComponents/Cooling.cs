@@ -6,15 +6,13 @@ using System.Threading.Tasks;
 
 namespace ReviewCrawler.Products
 {
-    class RAM
+    class Cooling : ComputerComponents
     {
-        //
         string type;
-        string capacity;
         string speed;
-        string technology;
-        string formFactor;
-        string casLatens;
-
+        string size;
+        string airflow;
+        string noise;
+        string connector;
     }
 }

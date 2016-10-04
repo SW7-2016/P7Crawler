@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace ReviewCrawler.Products
 {
-    class Motherboard
+    class Motherboard : ComputerComponents
     {
-        //
         string formFactor;
         string chipset;
         bool netCard;
