@@ -24,5 +24,13 @@ namespace ReviewCrawler
         {
             InitializeComponent();
         }
+
+        private void crawl_bt_Click(object sender, RoutedEventArgs e)
+        {
+            Crawler currentCrawler = new Crawler();
+
+            currentCrawler.AddHosts();
+            currentCrawler.StartCrawl();
+        }
     }
 }
