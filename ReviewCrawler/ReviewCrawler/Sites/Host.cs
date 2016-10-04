@@ -33,12 +33,12 @@ namespace ReviewCrawler.Sites
                 return false;
             }
         }
-
-    }
-
         public DateTime GetLastAccessTime()
         {
             return timeStamp;
         }
     }
+
+
 }
+
