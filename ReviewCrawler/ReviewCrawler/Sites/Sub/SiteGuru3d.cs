@@ -21,7 +21,12 @@ namespace ReviewCrawler.Sites.Sub
             searchQueue.Enqueue("http://www.guru3d.com/articles-categories/cooling.html");
         }
 
-        public void crawlPage()
+        public void crawlPage(string currentSite)
+        {
+            
+        }
+
+        public override void Parse()
         {
 
         }
