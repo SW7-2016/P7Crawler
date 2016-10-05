@@ -12,6 +12,5 @@ namespace ReviewCrawler.Sites
         void Parse(string siteData);
         DateTime GetLastAccessTime();
         string GetSiteData(string siteUrl);
-        bool amIAllowed(string URL);
     }
 }
