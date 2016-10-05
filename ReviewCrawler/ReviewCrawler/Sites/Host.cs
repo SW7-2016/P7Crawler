@@ -9,9 +9,13 @@ namespace ReviewCrawler.Sites
 {
     abstract class Host : HostInterface
     {
-        public DateTime timeStamp = DateTime.Now;
-        public Queue<string> reviewQueue = new Queue<string>();
-        public Queue<string> searchQueue = new Queue<string>();
+        protected DateTime visitTimeStamp = DateTime.Now;
+        protected DateTime robotsTimeStamp;
+        private string domainUrl;
+        private List<string> disallow = new List<string>();
+        private List<string> allow = new List<string>();
+        protected Queue<string> reviewQueue = new Queue<string>();
+        protected Queue<string> searchQueue = new Queue<string>();
 
 
         public abstract void Parse(string siteData);
@@ -19,7 +23,6 @@ namespace ReviewCrawler.Sites
 
         public bool Crawl()
         {
-
             string currentSite = "";
             bool isReview = false;
 
@@ -49,7 +52,22 @@ namespace ReviewCrawler.Sites
 
         public DateTime GetLastAccessTime()
         {
-            return timeStamp;
+            return visitTimeStamp;
+        }
+
+        public bool amIAllowed(string URL)
+        {
+            string wantedSide = URL.Remove(0, domainUrl.Count());
+
+            foreach (string item in disallow)
+            {
+                if (wantedSide.Contains(item))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public string GetSiteData(string siteUrl)
@@ -71,6 +89,60 @@ namespace ReviewCrawler.Sites
             }
 
             return webData;
+        }
+
+        private void getRobotsTxt(Uri domain)
+        {
+            robotsTimeStamp = DateTime.Now;
+            System.Net.WebClient webClient = new System.Net.WebClient();
+            webClient.Proxy = null;
+            try
+            {
+                byte[] rawWebData = webClient.DownloadData(domain + "/robots.txt");
+
+                string webData = Encoding.UTF8.GetString(rawWebData);
+
+                string[] webDataLines = webData.Split('\n');
+
+                Boolean concernsMe = false;
+
+                for (int i = 0; i < webDataLines.Count(); i++)
+                {
+                    if (webDataLines[i] != "" && webDataLines[i].Count() > 11)
+                    {
+
+                        if (webDataLines[i].Remove(11, webDataLines[i].Count() - 11).ToLower() == "user-agent:")
+                        {
+
+                            concernsMe = false;
+                            if (webDataLines[i].Remove(13, webDataLines[i].Count() - 13).ToLower() == "user-agent: *")
+                            {
+                                concernsMe = true;
+                            }
+                        }
+                    }
+
+                    if (concernsMe && webDataLines[i] != "" && webDataLines[i].Count() > 10)
+                    {
+                        if (webDataLines[i].Remove(10, webDataLines[i].Count() - 10).ToLower() == "disallow: ")
+                        {
+                            disallow.Add(webDataLines[i].Remove(0, 10));
+                        }
+                    }
+
+                    if (concernsMe && webDataLines[i] != "" && webDataLines[i].Count() > 7)
+                    {
+                        if (webDataLines[i].Remove(7, webDataLines[i].Count() - 7).ToLower() == "allow: ")
+                        {
+                            allow.Add(webDataLines[i].Remove(0, 7));
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                Debug.WriteLine(domain + "does not contain /robots.txt!");
+            }
         }
     }
 }

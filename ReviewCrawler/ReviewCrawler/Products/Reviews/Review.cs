@@ -8,6 +8,9 @@ namespace ReviewCrawler.Products.Reviews
 {
     class Review
     {
+        private string productType;
+        string title;
+        bool isCriticReview;
         DateTime date;
         string content;
         double productRating;
@@ -18,6 +21,29 @@ namespace ReviewCrawler.Products.Reviews
         List<ReviewComment> comments;
         ReviewReception reception;
         double reviewRating;
-        Boolean verifiedPurchase;
+        bool verifiedPurchase;
+
+        public string ProductType
+        {
+            get
+            {
+                return productType;
+            }
+            set
+            {
+                if (value == "GPU"
+                    && value == "CPU"
+                    && value == "PSU"
+                    && value == "RAM"
+                    && value == "Chassis"
+                    && value == "Cooling"
+                    && value == "HardDrive"
+                    && value == "Motherboard"
+                    && value == "SoundCard")
+                {
+                    productType = value;
+                }
+            }
+        }
     }
 }

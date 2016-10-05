@@ -11,7 +11,5 @@ namespace ReviewCrawler.Products
         decimal price;
         byte[][] image;
         List<Retailer> retailers;
-        List<Review> criticReviews;
-        List<Review> userReviews;
     }
 }
