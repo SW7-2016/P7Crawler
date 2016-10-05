@@ -27,6 +27,7 @@ namespace ReviewCrawler.Sites.Sub
 
             if (!isReview)
             {
+                GetSearchLinks(siteData);
                 GetReviewLinks(siteData);
             }
             else if (isReview)
@@ -44,6 +45,16 @@ namespace ReviewCrawler.Sites.Sub
 
 
             return reviewLinks;
+        }
+
+        public List<string> GetSearchLinks(string siteData)
+        {
+            List<string> searchLinks = new List<string>();
+
+            string[] lines = siteData.Split('\n');
+
+
+            return searchLinks;
         }
 
         public override void Parse(string siteData)

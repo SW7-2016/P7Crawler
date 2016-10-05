@@ -9,12 +9,12 @@ namespace ReviewCrawler.Sites.Sub
     class SiteTechPowerUp : Host
     {
 
-        public override void CrawlPage(string currentSite)
+        public override void CrawlPage(string currentSite, bool isReview)
         {
 
         }
 
-        public override void Parse()
+        public override void Parse(string siteData)
         {
 
         }
