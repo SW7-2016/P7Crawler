@@ -8,5 +8,7 @@ namespace ReviewCrawler.Sites.Sub
 {
     class SiteTechRadar : Host
     {
+
+
     }
 }
