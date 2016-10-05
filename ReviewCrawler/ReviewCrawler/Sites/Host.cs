@@ -13,7 +13,6 @@ namespace ReviewCrawler.Sites
         protected DateTime robotsTimeStamp;
         private string domainUrl;
         private List<string> disallow = new List<string>();
-        private List<string> allow = new List<string>();
         protected Queue<string> reviewQueue = new Queue<string>();
         protected Queue<string> searchQueue = new Queue<string>();
 
@@ -57,6 +56,11 @@ namespace ReviewCrawler.Sites
 
         public bool amIAllowed(string URL)
         {
+            if (robotsTimeStamp == null || robotsTimeStamp.AddDays(1) >= DateTime.Now)
+            {
+                getRobotsTxt(domainUrl);
+            }
+
             string wantedSide = URL.Remove(0, domainUrl.Count());
 
             foreach (string item in disallow)
@@ -91,7 +95,7 @@ namespace ReviewCrawler.Sites
             return webData;
         }
 
-        private void getRobotsTxt(Uri domain)
+        private void getRobotsTxt(string domain)
         {
             robotsTimeStamp = DateTime.Now;
             System.Net.WebClient webClient = new System.Net.WebClient();
@@ -127,14 +131,6 @@ namespace ReviewCrawler.Sites
                         if (webDataLines[i].Remove(10, webDataLines[i].Count() - 10).ToLower() == "disallow: ")
                         {
                             disallow.Add(webDataLines[i].Remove(0, 10));
-                        }
-                    }
-
-                    if (concernsMe && webDataLines[i] != "" && webDataLines[i].Count() > 7)
-                    {
-                        if (webDataLines[i].Remove(7, webDataLines[i].Count() - 7).ToLower() == "allow: ")
-                        {
-                            allow.Add(webDataLines[i].Remove(0, 7));
                         }
                     }
                 }
