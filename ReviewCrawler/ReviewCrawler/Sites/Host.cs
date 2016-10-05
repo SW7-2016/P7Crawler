@@ -14,24 +14,27 @@ namespace ReviewCrawler.Sites
         public Queue<string> searchQueue = new Queue<string>();
 
 
-        public abstract void Parse();
-        public abstract void CrawlPage(string currentSite);
+        public abstract void Parse(string siteData);
+        public abstract void CrawlPage(string currentSite, bool isReview);
 
         public bool Crawl()
         {
 
             string currentSite = "";
+            bool isReview = false;
 
             if (searchQueue.Count > 0)
             {
+                isReview = false;
                 currentSite = searchQueue.Dequeue();
             }
             else if (reviewQueue.Count > 0)
             {
+                isReview = true;
                 currentSite = reviewQueue.Dequeue();
             }
 
-            CrawlPage(currentSite); //Handles the site specific crawling, is overwritten in subclasses
+            CrawlPage(currentSite, isReview); //Handles the site specific crawling, is overwritten in subclasses
 
             //Checks if there is more content to crawl on this host
             if (reviewQueue.Count < 1 && searchQueue.Count < 1)

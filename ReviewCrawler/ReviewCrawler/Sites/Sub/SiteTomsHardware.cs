@@ -8,5 +8,15 @@ namespace ReviewCrawler.Sites.Sub
 {
     class SiteTomsHardware : Host
     {
+
+        public override void CrawlPage(string currentSite)
+        {
+
+        }
+
+        public override void Parse()
+        {
+
+        }
     }
 }

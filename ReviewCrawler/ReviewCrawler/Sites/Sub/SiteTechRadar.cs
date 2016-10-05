@@ -9,6 +9,14 @@ namespace ReviewCrawler.Sites.Sub
     class SiteTechRadar : Host
     {
 
+        public override void CrawlPage(string currentSite)
+        {
 
+        }
+
+        public override void Parse()
+        {
+
+        }
     }
 }

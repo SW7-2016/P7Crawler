@@ -21,12 +21,32 @@ namespace ReviewCrawler.Sites.Sub
             searchQueue.Enqueue("http://www.guru3d.com/articles-categories/cooling.html");
         }
 
-        public void crawlPage(string currentSite)
+        public override void CrawlPage(string currentSite, bool isReview)
         {
-            
+            string siteData = GetSiteData(currentSite);
+
+            if (!isReview)
+            {
+                GetReviewLinks(siteData);
+            }
+            else if (isReview)
+            {
+                Parse(siteData);
+            }
+
         }
 
-        public override void Parse()
+        public List<string> GetReviewLinks(string siteData)
+        {
+            List<string> reviewLinks = new List<string>();
+
+
+
+
+            return reviewLinks;
+        }
+
+        public override void Parse(string siteData)
         {
 
         }

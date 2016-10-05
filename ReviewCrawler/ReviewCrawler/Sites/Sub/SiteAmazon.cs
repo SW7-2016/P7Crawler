@@ -8,5 +8,15 @@ namespace ReviewCrawler.Sites.Sub
 {
     class SiteAmazon : Host
     {
+
+        public override void CrawlPage(string currentSite)
+        {
+
+        }
+
+        public override void Parse()
+        {
+
+        }
     }
 }
