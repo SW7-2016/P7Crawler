@@ -149,6 +149,56 @@ namespace ReviewCrawler.Sites
                 Debug.WriteLine(domain + "does not contain /robots.txt!");
             }
         }
+
+        public string GetSearchLinks(string siteData, string selectedPage, string nextPage)
+        {
+            string newSearchLink = "";
+            string tempString = "";
+            bool linkFound = false;
+            bool copyLink = false;
+            siteData = siteData.ToLower();
+
+            string[] lines = siteData.Split('\n');
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (lines[i].Contains(selectedPage) && lines[i + 1].Contains(nextPage))
+                {
+                    for (int j = 0; j < lines[i + 1].Length; j++)
+                    {
+                        if (copyLink == true)
+                        {
+                            if ((lines[i + 1])[j] == '"')
+                            {
+                                break;
+                            }
+                            tempString += (lines[i + 1])[j];
+                        }
+
+                        if ((lines[i + 1])[j] == 'h'
+                            && (lines[i + 1])[j + 1] == 'r'
+                            && (lines[i + 1])[j + 2] == 'e'
+                            && (lines[i + 1])[j + 3] == 'f')
+                        {
+                            linkFound = true;
+                        }
+                        if (linkFound == true && (lines[i + 1])[j] == '"')
+                        {
+                            copyLink = true;
+                        }
+
+                    }
+                }
+                if (copyLink == true)
+                {
+                    break;
+                }
+            }
+
+            newSearchLink = (domainUrl + tempString);
+
+            return newSearchLink;
+        }
     }
 }
 
