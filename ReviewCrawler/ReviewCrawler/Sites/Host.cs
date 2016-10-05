@@ -11,7 +11,7 @@ namespace ReviewCrawler.Sites
     {
         protected DateTime visitTimeStamp = DateTime.Now;
         protected DateTime robotsTimeStamp;
-        protected string domainUrl;
+        protected string domainUrl = "";
         private List<string> disallow = new List<string>();
         protected Queue<string> reviewQueue = new Queue<string>();
         protected Queue<string> searchQueue = new Queue<string>();
@@ -22,6 +22,14 @@ namespace ReviewCrawler.Sites
 
         public bool Crawl()
         {
+
+            //Checks if there is more content to crawl on this host
+            if (reviewQueue.Count < 1 && searchQueue.Count < 1)
+            {
+                return true;
+            }
+            
+
             string currentSite = "";
             bool isReview = false;
 
@@ -45,15 +53,9 @@ namespace ReviewCrawler.Sites
                 Debug.WriteLine("Robot.txt disallow this site: " + currentSite);
             }
 
-            //Checks if there is more content to crawl on this host
-            if (reviewQueue.Count < 1 && searchQueue.Count < 1)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return false;
+
+
         }
 
         public DateTime GetLastAccessTime()
