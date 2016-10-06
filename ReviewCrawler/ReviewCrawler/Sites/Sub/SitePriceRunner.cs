@@ -11,6 +11,7 @@ namespace ReviewCrawler.Sites.Sub
 
         public SitePriceRunner()
         {
+            domainUrl = "http://www.pricerunner.dk";
             searchQueue.Enqueue("http://www.pricerunner.dk/cl/35/Bundkort");
             searchQueue.Enqueue("http://www.pricerunner.dk/cl/40/CPU");
             searchQueue.Enqueue("http://www.pricerunner.dk/cl/184/Computer-koeling");
@@ -50,9 +51,15 @@ namespace ReviewCrawler.Sites.Sub
         public List<string> GetReviewLinks(string siteData)
         {
             List<string> reviewLinks = new List<string>();
+            string firstTagForReviewLink = "<p class=\"button\"><a class=\"button-a\" href=\"";
+            string secondTagForReviewLink = "<a class=\"retailers\" href=\"";
 
+            string[] temp = siteData.Split(new string[] { "<a class=  \"add\" href=\"#\" style=\"display:none\" title=\"Tilføj til min liste\">" }, StringSplitOptions.None);
 
-
+            for (int i = 0; i < 20; i++)
+            {
+                reviewLinks.Add(GetSearchLinks(siteData, firstTagForReviewLink, secondTagForReviewLink));
+            }
 
             return reviewLinks;
         }
