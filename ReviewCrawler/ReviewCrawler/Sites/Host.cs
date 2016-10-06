@@ -150,7 +150,28 @@ namespace ReviewCrawler.Sites
             }
         }
 
-        public string GetSearchLinks(string siteData, string selectedPage, string nextPage)
+        public List<string> GetReviewLinks(string siteData, string firstTagForReviewLink, string secondTagForReviewLink, string splitTag)
+        {
+            List<string> reviewLinks = new List<string>();
+
+            string[] splitOnProducts = siteData.Split(new string[] { splitTag }, StringSplitOptions.None);
+            string tempReviewLink;
+
+            foreach (var item in splitOnProducts)
+            {
+                tempReviewLink = GetSearchLinks(item, firstTagForReviewLink, secondTagForReviewLink);
+
+                if (tempReviewLink != domainUrl)
+                {
+                    reviewLinks.Add(tempReviewLink);
+                }
+
+            }
+
+            return reviewLinks;
+        }
+
+        public string GetSearchLinks(string siteData, string firstIdentifier, string secondIdentifier)
         {
             string newSearchLink = "";
             string tempString = "";
@@ -162,7 +183,7 @@ namespace ReviewCrawler.Sites
 
             for (int i = 0; i < lines.Length; i++)
             {
-                if (lines[i].Contains(selectedPage) && lines[i + 1].Contains(nextPage))
+                if (lines[i].Contains(firstIdentifier) && lines[i + 1].Contains(secondIdentifier))
                 {
                     for (int j = 0; j < lines[i + 1].Length; j++)
                     {

@@ -29,13 +29,13 @@ namespace ReviewCrawler.Sites.Sub
 
             if (!isReview)
             {
-                tempLink = GetSearchLinks(siteData, "pagelinkselected", "pagelink");
+                tempLink = GetSearchLinks(siteData, "pagelinkselected", "pagelink"); //Returns domainUrl if no link is found
                 if (tempLink != domainUrl)
                 {
                     searchQueue.Enqueue(tempLink);
                 }
                 
-                GetReviewLinks(siteData);
+                GetReviewLinks(siteData, "<div>", "<a href=\"articles-pages", "<!-- Template: articles_teaserimage -->");
             }
             else if (isReview)
             {
@@ -43,16 +43,7 @@ namespace ReviewCrawler.Sites.Sub
             }
 
         }
-
-        public List<string> GetReviewLinks(string siteData)
-        {
-            List<string> reviewLinks = new List<string>();
-
-
-
-
-            return reviewLinks;
-        }
+       
 
         
 

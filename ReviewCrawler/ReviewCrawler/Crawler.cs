@@ -52,7 +52,7 @@ namespace ReviewCrawler
         //Adds all the hosts to be crawled - do this at startup
         public void AddHosts()
         {
-            hostQueue.Enqueue(new SitePriceRunner());
+            hostQueue.Enqueue(new SiteGuru3d());
         }
 
         //Checks if more than two seconds have passed since 'lastAccessTime' and returns a bool
