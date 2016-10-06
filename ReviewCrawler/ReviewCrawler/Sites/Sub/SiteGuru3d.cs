@@ -35,7 +35,7 @@ namespace ReviewCrawler.Sites.Sub
                     searchQueue.Enqueue(tempLink);
                 }
                 
-                GetReviewLinks(siteData, "<div>", "<a href=\"articles-pages", "<!-- Template: articles_teaserimage -->");
+                GetReviewLinks(siteData, "<div>", "<a href=\"articles-pages", "<div class=\"content\">");
             }
             else if (isReview)
             {
