@@ -39,7 +39,7 @@ namespace ReviewCrawler.Sites.Sub
                     searchQueue.Enqueue(tempLink);
                 }
 
-                GetReviewLinks(siteData);//this is products!
+                GetReviewLinks(siteData);
             }
             else if (isReview) //This is products
             {
@@ -54,11 +54,18 @@ namespace ReviewCrawler.Sites.Sub
             string firstTagForReviewLink = "<p class=\"button\"><a class=\"button-a\" href=\"";
             string secondTagForReviewLink = "<a class=\"retailers\" href=\"";
 
-            string[] temp = siteData.Split(new string[] { "<a class=  \"add\" href=\"#\" style=\"display:none\" title=\"Tilføj til min liste\">" }, StringSplitOptions.None);
+            string[] splitOnProducts = siteData.Split(new string[] { "<a class=\"add\" href=\"#\" style=\"display:none\" title=\"Tilføj til min liste\">" }, StringSplitOptions.None);
+            string tempReviewLink;
 
-            for (int i = 0; i < 20; i++)
+            foreach (var item in splitOnProducts)
             {
-                reviewLinks.Add(GetSearchLinks(siteData, firstTagForReviewLink, secondTagForReviewLink));
+                tempReviewLink = GetSearchLinks(item, firstTagForReviewLink, secondTagForReviewLink);
+
+                if (tempReviewLink != domainUrl)
+                {
+                    reviewLinks.Add(tempReviewLink);
+                }
+   
             }
 
             return reviewLinks;
