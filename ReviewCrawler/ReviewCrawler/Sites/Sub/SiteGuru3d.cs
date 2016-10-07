@@ -26,6 +26,7 @@ namespace ReviewCrawler.Sites.Sub
         {
             string siteData = GetSiteData(currentSite);
             string tempLink = "";
+           
 
             if (!isReview)
             {
