@@ -13,7 +13,7 @@ namespace ReviewCrawler.Sites
         protected DateTime robotsTimeStamp;
         protected string domainUrl = "";
         private List<string> disallow = new List<string>();
-        protected Queue<string> reviewQueue = new Queue<string>();
+        protected Queue<KeyValuePair<string, string>> reviewQueue = new Queue<KeyValuePair<string, string>>();
         protected Queue<string> searchQueue = new Queue<string>();
 
 
@@ -41,7 +41,7 @@ namespace ReviewCrawler.Sites
             else if (reviewQueue.Count > 0)
             {
                 isReview = true;
-                currentSite = reviewQueue.Dequeue();
+                currentSite = reviewQueue.Dequeue().Key;
             }
 
             if (amIAllowed(currentSite))

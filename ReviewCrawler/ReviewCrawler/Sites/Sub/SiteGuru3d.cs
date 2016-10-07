@@ -26,6 +26,8 @@ namespace ReviewCrawler.Sites.Sub
         {
             string siteData = GetSiteData(currentSite);
             string tempLink = "";
+            List<string> tempReviewLinks;
+            string tempProductType;
 
             if (!isReview)
             {
@@ -34,14 +36,58 @@ namespace ReviewCrawler.Sites.Sub
                 {
                     searchQueue.Enqueue(tempLink);
                 }
-                
-                GetReviewLinks(siteData, "<br />", "<a href=\"articles-pages", "<div class=\"content\">", true);
+                tempProductType = GetProductType(tempLink);
+                tempReviewLinks = GetReviewLinks(siteData, "<br />", "<a href=\"articles-pages", "<div class=\"content\">", true);
+                foreach (var item in tempReviewLinks)
+                {
+                    reviewQueue.Enqueue(new KeyValuePair<string, string>(item, tempProductType));
+                }
             }
             else if (isReview)
             {
                 Parse(siteData);
             }
 
+        }
+
+        public string GetProductType(string tempLink)
+        {
+            string temp = "";
+
+            if (tempLink.Contains("articles-categories/videocards"))
+            {
+                temp = "GPU";
+            }
+            else if (tempLink.Contains("articles-categories/processors"))
+            {
+                temp = "CPU";
+            }
+            else if (tempLink.Contains("articles-categories/soundcards-and-speakers"))
+            {
+                temp = "SoundCard";
+            }
+            else if (tempLink.Contains("articles-categories/mainboards"))
+            {
+                temp = "Motherboard";
+            }
+            else if (tempLink.Contains("articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd)"))
+            {
+                temp = "RAM/HDD";
+            }
+            else if (tempLink.Contains("articles-categories/pc-cases-and-modding"))
+            {
+                temp = "Chassis";
+            }
+            else if (tempLink.Contains("articles-categories/psu-power-supply-units"))
+            {
+                temp = "PSU";
+            }
+            else if (tempLink.Contains("articles-categories/cooling"))
+            {
+                temp = "Cooling";
+            }
+
+            return temp;
         }
        
 
