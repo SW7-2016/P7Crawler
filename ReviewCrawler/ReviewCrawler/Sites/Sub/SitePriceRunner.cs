@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,9 +15,8 @@ namespace ReviewCrawler.Sites.Sub
             domainUrl = "http://www.pricerunner.dk";
             searchQueue.Enqueue("http://www.pricerunner.dk/cl/35/Bundkort");
             searchQueue.Enqueue("http://www.pricerunner.dk/cl/40/CPU");
-            searchQueue.Enqueue("http://www.pricerunner.dk/cl/184/Computer-koeling");
             searchQueue.Enqueue("http://www.pricerunner.dk/cl/37/Grafikkort");
-            searchQueue.Enqueue("http://www.pricerunner.dk/cl/673/Harddisk-tilbehoer");
+            searchQueue.Enqueue("http://www.pricerunner.dk/cl/36/Harddiske");
             searchQueue.Enqueue("http://www.pricerunner.dk/cl/186/Kabinetter");
             searchQueue.Enqueue("http://www.pricerunner.dk/cl/48/Lydkort");
             searchQueue.Enqueue("http://www.pricerunner.dk/cl/38/RAM");
@@ -38,8 +38,22 @@ namespace ReviewCrawler.Sites.Sub
                 {
                     searchQueue.Enqueue(tempLink);
                 }
-
-                GetReviewLinks(siteData);
+                else
+                {
+                    Debug.WriteLine("Line 43 SitePriveRunner: couldnt find more pages then: " + pageNumber);
+                }
+                
+                //Finding the review links from a page.
+                List<string> siteReviewLinks = GetReviewLinks(siteData);
+                //Adding links to the queue
+                foreach (string link in siteReviewLinks)
+                {
+                    reviewQueue.Enqueue(link);
+                    if (currentSite.Contains("RAM"))
+                    {
+                        int i = 5;
+                    }
+                }
             }
             else if (isReview) //This is products
             {

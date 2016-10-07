@@ -53,6 +53,7 @@ namespace ReviewCrawler
         public void AddHosts()
         {
             hostQueue.Enqueue(new SiteGuru3d());
+            hostQueue.Enqueue(new SitePriceRunner());
         }
 
         //Checks if more than two seconds have passed since 'lastAccessTime' and returns a bool
