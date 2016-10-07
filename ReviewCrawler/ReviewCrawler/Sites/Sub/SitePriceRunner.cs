@@ -41,7 +41,7 @@ namespace ReviewCrawler.Sites.Sub
                 {
                     Debug.WriteLine("Line 43 SitePriceRunner: couldnt find more pages then: " + pageNumber);
                 }
-                
+
                 //Finding the review links from a page.
                 List<string> siteReviewLinks = GetReviewLinks(siteData
                     , "<p class=\"button\"><a class=\"button-a\" href=\""
@@ -62,6 +62,10 @@ namespace ReviewCrawler.Sites.Sub
             {
                 Parse(siteData);
             }
+        }
+
+        public void ParsePrice(string siteData)
+        {
 
         }
 

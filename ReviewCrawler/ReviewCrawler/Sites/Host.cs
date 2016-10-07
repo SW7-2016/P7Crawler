@@ -80,7 +80,7 @@ namespace ReviewCrawler.Sites
 
             foreach (string item in disallow)
             {
-                if (wantedSide.Contains(item))
+                if (wantedSide.Contains(item.Trim('\r')))
                 {
                     return false;
                 }
