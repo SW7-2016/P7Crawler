@@ -150,7 +150,7 @@ namespace ReviewCrawler.Sites
             }
         }
 
-        public List<string> GetReviewLinks(string siteData, string firstTagForReviewLink, string secondTagForReviewLink, string splitTag)
+        public List<string> GetReviewLinks(string siteData, string firstTagForReviewLink, string secondTagForReviewLink, string splitTag, bool reverse)
         {
             List<string> reviewLinks = new List<string>();
 
@@ -159,7 +159,7 @@ namespace ReviewCrawler.Sites
 
             foreach (var item in splitOnProducts)
             {
-                tempReviewLink = GetSearchLinks(item, firstTagForReviewLink, secondTagForReviewLink);
+                tempReviewLink = GetSearchLinks(item, firstTagForReviewLink, secondTagForReviewLink, reverse);
 
                 if (tempReviewLink != domainUrl)
                 {
@@ -171,7 +171,7 @@ namespace ReviewCrawler.Sites
             return reviewLinks;
         }
 
-        public string GetSearchLinks(string siteData, string firstIdentifier, string secondIdentifier)
+        public string GetSearchLinks(string siteData, string firstIdentifier, string secondIdentifier, bool reverse)
         {
             string newSearchLink = "";
             string tempString = "";
@@ -181,29 +181,38 @@ namespace ReviewCrawler.Sites
 
             string[] lines = siteData.Split('\n');
 
-            for (int i = 0; i < lines.Length; i++)
+            int firstLineModifier = 0;
+            int secondLineModifier = 1;
+
+            if (reverse)
             {
-                if (lines[i].Contains(firstIdentifier) && lines[i + 1].Contains(secondIdentifier))
+                firstLineModifier = 1;
+                secondLineModifier = 0;
+            }
+
+            for (int i = 0; i < lines.Length - 1; i++)
+            {
+                if (lines[i + firstLineModifier].Contains(firstIdentifier) && lines[i + secondLineModifier].Contains(secondIdentifier))
                 {
-                    for (int j = 0; j < lines[i + 1].Length; j++)
+                    for (int j = 0; j < lines[i + secondLineModifier].Length; j++)
                     {
                         if (copyLink == true)
                         {
-                            if ((lines[i + 1])[j] == '"')
+                            if ((lines[i + secondLineModifier])[j] == '"')
                             {
                                 break;
                             }
-                            tempString += (lines[i + 1])[j];
+                            tempString += (lines[i + secondLineModifier])[j];
                         }
 
-                        if ((lines[i + 1])[j] == 'h'
-                            && (lines[i + 1])[j + 1] == 'r'
-                            && (lines[i + 1])[j + 2] == 'e'
-                            && (lines[i + 1])[j + 3] == 'f')
+                        if ((lines[i + secondLineModifier])[j] == 'h'
+                            && (lines[i + secondLineModifier])[j + 1] == 'r'
+                            && (lines[i + secondLineModifier])[j + 2] == 'e'
+                            && (lines[i + secondLineModifier])[j + 3] == 'f')
                         {
                             linkFound = true;
                         }
-                        if (linkFound == true && (lines[i + 1])[j] == '"')
+                        if (linkFound == true && (lines[i + secondLineModifier])[j] == '"')
                         {
                             copyLink = true;
                         }
@@ -220,6 +229,7 @@ namespace ReviewCrawler.Sites
 
             return newSearchLink;
         }
+
     }
 }
 
