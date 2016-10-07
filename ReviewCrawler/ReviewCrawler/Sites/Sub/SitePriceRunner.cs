@@ -33,7 +33,7 @@ namespace ReviewCrawler.Sites.Sub
 
             if (!isReview)
             {
-                tempLink = GetSearchLinks(paginatorData, "<span>" + pageNumber + "</span>", "href");
+                tempLink = GetSearchLinks(paginatorData, "<span>" + pageNumber + "</span>", "href", false);
                 if (tempLink != domainUrl)
                 {
                     searchQueue.Enqueue(tempLink);
@@ -44,7 +44,11 @@ namespace ReviewCrawler.Sites.Sub
                 }
                 
                 //Finding the review links from a page.
-                List<string> siteReviewLinks = GetReviewLinks(siteData);
+                List<string> siteReviewLinks = GetReviewLinks(siteData
+                    , "<p class=\"button\"><a class=\"button-a\" href=\""
+                    , "<a class=\"retailers\" href=\""
+                    , "<a class=\"add\" href=\"#\" style=\"display:none\" title=\"Tilføj til min liste\">"
+                    , false);
                 //Adding links to the queue
                 foreach (string link in siteReviewLinks)
                 {
@@ -60,29 +64,6 @@ namespace ReviewCrawler.Sites.Sub
                 Parse(siteData);
             }
 
-        }
-
-        public List<string> GetReviewLinks(string siteData)
-        {
-            List<string> reviewLinks = new List<string>();
-            string firstTagForReviewLink = "<p class=\"button\"><a class=\"button-a\" href=\"";
-            string secondTagForReviewLink = "<a class=\"retailers\" href=\"";
-
-            string[] splitOnProducts = siteData.Split(new string[] { "<a class=\"add\" href=\"#\" style=\"display:none\" title=\"Tilføj til min liste\">" }, StringSplitOptions.None);
-            string tempReviewLink;
-
-            foreach (var item in splitOnProducts)
-            {
-                tempReviewLink = GetSearchLinks(item, firstTagForReviewLink, secondTagForReviewLink);
-
-                if (tempReviewLink != domainUrl)
-                {
-                    reviewLinks.Add(tempReviewLink);
-                }
-   
-            }
-
-            return reviewLinks;
         }
 
         public override void Parse(string siteData)
@@ -138,7 +119,7 @@ namespace ReviewCrawler.Sites.Sub
             }
             else
             {
-                return 1;
+                return 1;mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
             }
         }
     }
