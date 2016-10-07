@@ -40,7 +40,8 @@ namespace ReviewCrawler.Products.Reviews
                     && value == "Cooling"
                     && value == "HardDrive"
                     && value == "Motherboard"
-                    && value == "SoundCard")
+                    && value == "SoundCard"
+                    && value == "RAM/HDD")
                 {
                     productType = value;
                 }

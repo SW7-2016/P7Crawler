@@ -19,7 +19,6 @@ namespace ReviewCrawler.Sites.Sub
             searchQueue.Enqueue("http://www.pricerunner.dk/cl/36/Harddiske");
             searchQueue.Enqueue("http://www.pricerunner.dk/cl/186/Kabinetter");
             searchQueue.Enqueue("http://www.pricerunner.dk/cl/48/Lydkort");
-            searchQueue.Enqueue("http://www.pricerunner.dk/cl/38/RAM");
             searchQueue.Enqueue("http://www.pricerunner.dk/cl/640/Stroemforsyninger");
         }
 
@@ -40,7 +39,7 @@ namespace ReviewCrawler.Sites.Sub
                 }
                 else
                 {
-                    Debug.WriteLine("Line 43 SitePriveRunner: couldnt find more pages then: " + pageNumber);
+                    Debug.WriteLine("Line 43 SitePriceRunner: couldnt find more pages then: " + pageNumber);
                 }
                 
                 //Finding the review links from a page.
@@ -52,7 +51,7 @@ namespace ReviewCrawler.Sites.Sub
                 //Adding links to the queue
                 foreach (string link in siteReviewLinks)
                 {
-                    reviewQueue.Enqueue(link);
+                    reviewQueue.Enqueue(new KeyValuePair<string, string>(link, ""));
                     if (currentSite.Contains("RAM"))
                     {
                         int i = 5;
