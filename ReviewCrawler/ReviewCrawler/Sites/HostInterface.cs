@@ -11,6 +11,7 @@ namespace ReviewCrawler.Sites
         bool Crawl();
         void Parse(string siteData);
         DateTime GetLastAccessTime();
+        void SetLastAccessTime(DateTime newTime);
         string GetSiteData(string siteUrl);
     }
 }

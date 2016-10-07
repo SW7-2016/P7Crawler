@@ -28,6 +28,7 @@ namespace ReviewCrawler
                 {
                      //Starts crawling the host and returns a bool determining if the host has any more content to crawl
                      isHostDone = currentHost.Crawl();
+                     currentHost.SetLastAccessTime(DateTime.Now);
                 }
                 else
                 {

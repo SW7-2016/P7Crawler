@@ -22,6 +22,7 @@ namespace ReviewCrawler.Sites
 
         public bool Crawl()
         {
+            
 
             //Checks if there is more content to crawl on this host
             if (reviewQueue.Count < 1 && searchQueue.Count < 1)
@@ -61,6 +62,11 @@ namespace ReviewCrawler.Sites
         public DateTime GetLastAccessTime()
         {
             return visitTimeStamp;
+        }
+
+        public void SetLastAccessTime(DateTime newTime)
+        {
+            visitTimeStamp = newTime;
         }
 
         private bool amIAllowed(string URL)
