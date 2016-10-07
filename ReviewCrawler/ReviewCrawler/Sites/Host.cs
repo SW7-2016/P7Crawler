@@ -65,7 +65,7 @@ namespace ReviewCrawler.Sites
 
         private bool amIAllowed(string URL)
         {
-            if (robotsTimeStamp == null || robotsTimeStamp.AddDays(1) >= DateTime.Now)
+            if (robotsTimeStamp.AddDays(1) <= DateTime.Now)
             {
                 getRobotsTxt(domainUrl);
             }
