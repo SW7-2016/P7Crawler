@@ -6,10 +6,10 @@ namespace ReviewCrawler.Products
 {
     abstract class Product
     {
-        string name;
-        string description;
-        decimal price;
-        byte[][] image;
-        List<Retailer> retailers;
+        public string name;
+        public string description;
+        public decimal price;
+        public byte[][] image;
+        public List<Retailer> retailers;
     }
 }

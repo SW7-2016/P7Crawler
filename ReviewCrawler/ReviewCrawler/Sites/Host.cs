@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using ReviewCrawler.Products;
 
 namespace ReviewCrawler.Sites
 {
@@ -15,23 +16,16 @@ namespace ReviewCrawler.Sites
         private List<string> disallow = new List<string>();
         protected Queue<KeyValuePair<string, string>> reviewQueue = new Queue<KeyValuePair<string, string>>();
         protected Queue<string> searchQueue = new Queue<string>();
+        public List<Product> products = new List<Product>();
 
 
-        public abstract void Parse(string siteData);
-        public abstract void CrawlPage(string currentSite, bool isReview);
+        public abstract void Parse(string siteData, string productType);
+        public abstract void CrawlPage(string currentSite);
 
         public bool Crawl()
         {
-            
-
-            //Checks if there is more content to crawl on this host
-            if (reviewQueue.Count < 1 && searchQueue.Count < 1)
-            {
-                return true;
-            }
-            
-
             string currentSite = "";
+            string currentProductType = "";
             bool isReview = false;
 
             if (searchQueue.Count > 0)
@@ -42,12 +36,24 @@ namespace ReviewCrawler.Sites
             else if (reviewQueue.Count > 0)
             {
                 isReview = true;
+                currentProductType = reviewQueue.Peek().Value;
                 currentSite = reviewQueue.Dequeue().Key;
+            }
+            else
+            {
+                return true;
             }
 
             if (amIAllowed(currentSite))
             {
-                CrawlPage(currentSite, isReview); //Handles the site specific crawling, is overwritten in subclasses
+                if (isReview)
+                {
+                    Parse(GetSiteData(currentSite), currentProductType); //Parse information of review/product page.
+                }
+                else
+                {
+                    CrawlPage(currentSite); //Crawl for new reviews.
+                }
             }
             else
             {
@@ -94,13 +100,13 @@ namespace ReviewCrawler.Sites
             System.Net.WebClient wc = new System.Net.WebClient();
             wc.Proxy = null;
             byte[] raw;
-            string webData = "";
+            string webData = siteUrl + '\n';
 
             try
             {
                 raw = wc.DownloadData(siteUrl);
 
-                webData = Encoding.UTF8.GetString(raw);
+                webData += Encoding.UTF8.GetString(raw);
             }
             catch (Exception E)
             {

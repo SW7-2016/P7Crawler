@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WI"
         mc:Ignorable="d"
         Title="MainWindow" Height="605.401" Width="1125.98">
-    <Grid LayoutUpdated="Grid_LayoutUpdated" Margin="0,0,2,7">
+    <Grid Margin="0,0,2,7">
         <Label x:Name="lQueue" Content="Label" HorizontalAlignment="Left" Margin="235,54,0,0" VerticalAlignment="Top" Width="285"/>
         <Label x:Name="lCompleted" Content="Label" HorizontalAlignment="Left" Margin="235,85,0,0" VerticalAlignment="Top" Width="285"/>
         <Label x:Name="lCurSite" Content="Label" HorizontalAlignment="Left" Margin="235,147,0,0" VerticalAlignment="Top" Width="592"/>

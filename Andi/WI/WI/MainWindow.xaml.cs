@@ -25,7 +25,7 @@ namespace WI
     {
         //Settings
             //No. of sites the crawler max crawls
-        const int MAX_VISITS = 100;
+        const int MAX_VISITS = 2000;
             //Save folders for files
         public static string PATH_TOKENIZED = (Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\WI\Tokenized\");
         public static string PATH_RAW = (Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\WI\Raw\");
@@ -54,6 +54,11 @@ namespace WI
 
         public MainWindow()
         {
+            DispatcherTimer dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += dispatcherTimer_Tick;
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+            dispatcherTimer.Start();
+
             InitializeComponent();
         }
 
@@ -238,15 +243,15 @@ namespace WI
             }
         }
 
-        private void Grid_LayoutUpdated(object sender, EventArgs e)
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
             //Updates crawler info.
-           // lQueue.Content = urls.Count();
-           // lHosts.Content = hosts.Count();
-           // lCompleted.Content = (allUrls.Count() - urls.Count());
-            //lCurSite.Content = CurUrl;
-            //lTokenCount.Content = TokenizedPages;
-            //lIndexedCount.Content = IndexedTokens;
+            lQueue.Content = urls.Count();
+            lHosts.Content = hosts.Count();
+            lCompleted.Content = (allUrls.Count() - urls.Count());
+            lCurSite.Content = CurUrl;
+            lTokenCount.Content = TokenizedPages;
+            lIndexedCount.Content = IndexedTokens;
         }
 
         private void LookUpToken_Click(object sender, RoutedEventArgs e)

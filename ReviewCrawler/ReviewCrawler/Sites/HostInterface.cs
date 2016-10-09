@@ -9,7 +9,7 @@ namespace ReviewCrawler.Sites
     interface HostInterface
     {
         bool Crawl();
-        void Parse(string siteData);
+        void Parse(string siteData, string productType);
         DateTime GetLastAccessTime();
         void SetLastAccessTime(DateTime newTime);
         string GetSiteData(string siteUrl);

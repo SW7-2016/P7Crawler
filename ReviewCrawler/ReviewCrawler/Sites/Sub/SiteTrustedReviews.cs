@@ -9,12 +9,12 @@ namespace ReviewCrawler.Sites.Sub
     class SiteTrustedReviews : Host
     {
 
-        public override void CrawlPage(string currentSite, bool isReview)
+        public override void CrawlPage(string currentSite)
         {
 
         }
 
-        public override void Parse(string siteData)
+        public override void Parse(string siteData, string productType)
         {
 
         }

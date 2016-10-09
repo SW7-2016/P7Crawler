@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ReviewCrawler.Sites;
 using ReviewCrawler.Sites.Sub;
+using ReviewCrawler.Products;
 
 namespace ReviewCrawler
 {
@@ -53,7 +54,7 @@ namespace ReviewCrawler
         //Adds all the hosts to be crawled - do this at startup
         public void AddHosts()
         {
-            hostQueue.Enqueue(new SiteGuru3d());
+            //hostQueue.Enqueue(new SiteGuru3d());
             hostQueue.Enqueue(new SitePriceRunner());
         }
 

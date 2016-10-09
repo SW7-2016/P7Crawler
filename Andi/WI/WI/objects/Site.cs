@@ -50,7 +50,10 @@ namespace WI.objects
                 && !url.Contains(".gif")
                 && !url.Contains(".m4a")
                 && !url.Contains(".rss")
-                && !url.Contains(".svg"))
+                && !url.Contains(".svg")
+                && !url.Contains("type=mp3")
+                && !url.Contains("type=m4a")
+                && !url.Contains("type=flag"))
             {
                 foreach (var site in MainWindow.allUrls)
                 {
