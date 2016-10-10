@@ -18,6 +18,7 @@ using System.Windows.Threading;
 using System.Net;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace WI
 {
@@ -25,7 +26,7 @@ namespace WI
     {
         //Settings
             //No. of sites the crawler max crawls
-        const int MAX_VISITS = 2000;
+        const int MAX_VISITS = 25;
             //Save folders for files
         public static string PATH_TOKENIZED = (Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\WI\Tokenized\");
         public static string PATH_RAW = (Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\WI\Raw\");
@@ -45,6 +46,8 @@ namespace WI
         public static List<Host> hosts = new List<Host>();
         public static Queue<Site> urls = new Queue<Site>();
         public static List<Site> allUrls = new List<Site>();
+        public static List<KeyValuePair<string, List<string>>> pageRankData = new List<KeyValuePair<string, List<string>>>();
+        public static bool isPageRankEnabled = false;
 
         //Threads 
         Thread Crawler = new Thread(WI.MainWindow.crawling);
@@ -126,7 +129,7 @@ namespace WI
         public static void crawling(object data)
         {
             //Creating init frontier.
-            Site.Add("https://www.reddit.com");
+            Site.Add("https://en.wikipedia.org/wiki/Adolf_Hitler");
 
             //Creating web client, so that the program can fetch websites.
             WebClient webClient = new WebClient();
@@ -190,6 +193,8 @@ namespace WI
                     //Placeholder for the new url, as it is read char for char.
                     string newLinkUrl = "";
 
+                    List<string> linksTo = new List<string>();
+
                     //Loop to look through each line of the raw site.
                     for (int k = 0; k < lines.Count(); k++)
                     {
@@ -206,6 +211,7 @@ namespace WI
                                     link = false;
                                     //Add site to frontier (Some sites are sorted out under the "Site.add()")
                                     Site.Add(newLinkUrl);
+                                    linksTo.Add(newLinkUrl);
                                 }
 
                                 //Reading the link as long as it has not ended.
@@ -239,9 +245,90 @@ namespace WI
                             }
                         }
                     }
+                    pageRankData.Add(new KeyValuePair<string, List<string>>(CurUrl, linksTo));
                 }
             }
+            CreatePageRank();
         }
+
+        private static void CreatePageRank()
+        {
+            double[,] rankMatrix = new double[pageRankData.Count(), pageRankData.Count()];
+            int[] linkAmount = new int[pageRankData.Count() + 1];
+
+            for (int m = 0; m < pageRankData.Count(); m++)
+            {
+                linkAmount[m] = 0;
+                for (int n = 0; n < pageRankData[m].Value.Count(); n++)
+                {
+                    if (pageRankData[m].Value.Count() == 0)
+                    {
+                        linkAmount[m] = 0;
+                    }
+                    else
+                    {
+                        int tempErrorFinder = 0;
+                        for (int k = 0; k < pageRankData.Count(); k++)
+                        {
+                            if (pageRankData[m].Value[n] == pageRankData[k].Key)
+                            {
+                                linkAmount[m]++;
+                                tempErrorFinder++;
+                                rankMatrix[m, k] = 1;
+                            }
+                        }
+                        if (tempErrorFinder > 1)
+                        {
+                            Debug.WriteLine("This should not happen");
+                        }
+                    }
+                }
+            }
+
+            for (int m = 0; m < pageRankData.Count(); m++)
+            {
+                for (int n = 0; n < pageRankData.Count(); n++)
+                {
+                    if (linkAmount[m] <= 0.0f)
+                    {
+                        rankMatrix[m, n] = 1 / (pageRankData.Count() + 1);
+                    }
+                    else
+                    {
+                        rankMatrix[m, n] = (0.9 * (rankMatrix[m, n] / linkAmount[m]) + (0.1 / (pageRankData.Count() + 1)));
+                    }
+                }
+            }
+
+            double[] q = new double[pageRankData.Count()];
+            q[0] = 1;
+            for (int i = 0; i < 100; i++)
+            {
+                q = MatrixMult(q, rankMatrix);
+            }
+
+            isPageRankEnabled = true;
+        }
+
+        private static double[] MatrixMult(double[] m1, double[,] m2)
+        {
+            double[] result = new double[m1.Count()];
+
+            for (int i = 0; i < m1.Count(); i++)
+            {
+                double temp = 0;
+                for (int k = 0; k < m1.Count(); k++)
+                {
+                    temp += m1[k] * m2[k, i];
+                }
+                result[i] = temp;
+            }
+
+            return result;
+        }
+
+
+
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
