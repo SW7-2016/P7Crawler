@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using ReviewCrawler.Products;
+using ReviewCrawler.Products.Reviews;
+using ReviewCrawler.Sites.Sub;
 
 namespace ReviewCrawler.Sites
 {
@@ -14,18 +16,19 @@ namespace ReviewCrawler.Sites
         protected DateTime robotsTimeStamp;
         protected string domainUrl = "";
         private List<string> disallow = new List<string>();
-        protected Queue<KeyValuePair<string, string>> reviewQueue = new Queue<KeyValuePair<string, string>>();
+        protected Queue<string> reviewQueue = new Queue<string>();
         protected Queue<string> searchQueue = new Queue<string>();
-        public List<Product> products = new List<Product>();
+        protected string currentSite;
+        
 
 
-        public abstract void Parse(string siteData, string productType);
-        public abstract void CrawlPage(string currentSite);
+        public abstract void Parse(string siteData);
+        public abstract void CrawlPage(string siteData);
+        public abstract string GetSiteKey(string url);
+        public abstract void CrawlReviewPages(string siteData);
 
-        public bool Crawl()
+        public bool StartCycle()
         {
-            string currentSite = "";
-            string currentProductType = "";
             bool isReview = false;
 
             if (searchQueue.Count > 0)
@@ -36,8 +39,7 @@ namespace ReviewCrawler.Sites
             else if (reviewQueue.Count > 0)
             {
                 isReview = true;
-                currentProductType = reviewQueue.Peek().Value;
-                currentSite = reviewQueue.Dequeue().Key;
+                currentSite = reviewQueue.Dequeue();
             }
             else
             {
@@ -46,13 +48,15 @@ namespace ReviewCrawler.Sites
 
             if (amIAllowed(currentSite))
             {
+                string siteData = GetSiteData(currentSite);
                 if (isReview)
                 {
-                    Parse(GetSiteData(currentSite), currentProductType); //Parse information of review/product page.
+                    CrawlReviewPages(siteData);
+                    Parse(siteData); //Parse information of review/product page.
                 }
                 else
                 {
-                    CrawlPage(currentSite); //Crawl for new reviews.
+                    CrawlPage(siteData); //Crawl for new reviews.
                 }
             }
             else
@@ -241,6 +245,9 @@ namespace ReviewCrawler.Sites
 
             return newSearchLink;
         }
+
+        public abstract string GetProductType(string tempLink);
+
 
     }
 }

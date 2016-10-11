@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 using ReviewCrawler.Sites;
 using ReviewCrawler.Sites.Sub;
 using ReviewCrawler.Products;
+using ReviewCrawler.Products.Reviews;
 
 namespace ReviewCrawler
 {
     class Crawler
     {
         public Queue<HostInterface> hostQueue = new Queue<HostInterface>();
+        public static Dictionary<string, Review> reviews = new Dictionary<string, Review>();
+        public static Dictionary<string, Product> products = new Dictionary<string, Product>();
 
         //picks a host and starts crawling it
         public void StartCrawl()
@@ -28,7 +31,7 @@ namespace ReviewCrawler
                 if (PolitenessTimeCheck(currentHost.GetLastAccessTime()))
                 {
                     //Starts crawling the host and returns a bool determining if the host has any more content to crawl
-                    isHostDone = currentHost.Crawl();
+                    isHostDone = currentHost.StartCycle();
                     currentHost.SetLastAccessTime(DateTime.Now);
                 }
                 else
@@ -54,8 +57,8 @@ namespace ReviewCrawler
         //Adds all the hosts to be crawled - do this at startup
         public void AddHosts()
         {
-            //hostQueue.Enqueue(new SiteGuru3d());
-            hostQueue.Enqueue(new SitePriceRunner());
+            hostQueue.Enqueue(new SiteGuru3d());
+            //hostQueue.Enqueue(new SitePriceRunner());
         }
 
         //Checks if more than two seconds have passed since 'lastAccessTime' and returns a bool

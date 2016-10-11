@@ -8,10 +8,8 @@ namespace ReviewCrawler.Sites
 {
     interface HostInterface
     {
-        bool Crawl();
-        void Parse(string siteData, string productType);
+        bool StartCycle();
         DateTime GetLastAccessTime();
         void SetLastAccessTime(DateTime newTime);
-        string GetSiteData(string siteUrl);
     }
 }

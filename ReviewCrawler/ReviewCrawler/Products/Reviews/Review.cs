@@ -18,11 +18,17 @@ namespace ReviewCrawler.Products.Reviews
         List<string> pros;
         List<string> cons;
         string author;
-        Uri url;
+        string url;
         List<ReviewComment> comments;
         ReviewReception reception;
         double reviewRating;
         bool verifiedPurchase;
+
+        public Review(string Url, string PType)
+        {
+            productType = PType;
+            url = Url;
+        }
 
         public string ProductType
         {

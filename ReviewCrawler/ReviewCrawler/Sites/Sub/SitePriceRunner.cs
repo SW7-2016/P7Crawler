@@ -12,7 +12,6 @@ namespace ReviewCrawler.Sites.Sub
 {
     class SitePriceRunner : Host
     {
-        string currentSite;
 
         public SitePriceRunner()
         {
@@ -26,15 +25,18 @@ namespace ReviewCrawler.Sites.Sub
             //searchQueue.Enqueue("http://www.pricerunner.dk/cl/640/Stroemforsyninger");
         }
 
-        public override void CrawlPage(string CurrentSite)
+        public override void CrawlReviewPages(string siteData)
         {
-            currentSite = CurrentSite;
 
-            string siteData = GetSiteData(currentSite);
+        }
+
+        public override void CrawlPage(string siteData)
+        {
+
             string tempLink = "";
 
             string paginatorData = FindPaginator(siteData);
-            int pageNumber = FindPageNumber(currentSite);
+            int pageNumber = FindPageNumber(siteData);
 
             tempLink = GetSearchLinks(paginatorData, "<span>" + pageNumber + "</span>", "href", false);
             if (tempLink != domainUrl)
@@ -55,7 +57,7 @@ namespace ReviewCrawler.Sites.Sub
             //Adding links to the queue
             foreach (string link in siteReviewLinks)
             {
-                reviewQueue.Enqueue(new KeyValuePair<string, string>(link, GetProductType(link)));
+                reviewQueue.Enqueue(link);
             }
         }
 
@@ -74,45 +76,72 @@ namespace ReviewCrawler.Sites.Sub
             return new List<Retailer>();
         }
 
-        public override void Parse(string siteData, string productType)
+        public override string GetSiteKey(string url)
         {
-            string[] dataLines = siteData.ToLower().Trim().Split('\n');
-
-            Product newProduct;
-
-            if (productType == "CPU")
+            /*for (int i = url.Length; i > 0; i--)
             {
-                string specSite = getSpecLink(siteData);
+                if (url[i] == ',')
+                {
+                    url = url.Remove(i, url.Length - i);
 
-                newProduct = ParseCPU(GetSiteData(specSite).Split('\n'));
-
-                newProduct.retailers.AddRange(getRetailersFromSite(siteData));
+                }
             }
-            else if (productType == "GPU")
-            {
-
-            }
-            else if (productType == "SoundCard")
-            {
-
-            }
-            else if (productType == "Motherboard")
-            {
-
-            }
-            else if (productType == "HardDisk")
-            {
-
-            }
-            else if (productType == "Chassis")
-            {
-
-            }
-            else if (productType == "PSU")
-            {
-
-            }
+            */
+            return url;
         }
+
+        public override void Parse(string siteData)
+        {
+            Product currentProduct;
+
+            if (Crawler.products.ContainsKey(GetSiteKey(currentSite)))
+            {
+                currentProduct = Crawler.products[GetSiteKey(currentSite)];
+            }
+            else
+            {
+                string[] dataLines = siteData.ToLower().Trim().Split('\n');
+
+                /*
+                if (currentProduct. == "CPU")
+                {
+                    string specSite = getSpecLink(siteData);
+
+                    newProduct = ParseCPU();
+
+                    newProduct.retailers.AddRange(getRetailersFromSite(siteData));
+                }
+                else if (productType == "GPU")
+                {
+
+                }
+                else if (productType == "SoundCard")
+                {
+
+                }
+                else if (productType == "Motherboard")
+                {
+
+                }
+                else if (productType == "HardDisk")
+                {
+
+                }
+                else if (productType == "Chassis")
+                {
+
+                }
+                else if (productType == "PSU")
+                {
+
+                }
+                */
+            }
+
+
+
+        }
+
 
         public string FindPaginator(string siteData)
         {
@@ -166,7 +195,7 @@ namespace ReviewCrawler.Sites.Sub
             }
         }
 
-        private string GetProductType(string tempLink)
+        public override string GetProductType(string tempLink)
         {
 
             if (tempLink.Contains("/Grafikkort/"))

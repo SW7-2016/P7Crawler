@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ReviewCrawler.Products.Reviews;
 
 namespace ReviewCrawler.Sites.Sub
 {
@@ -23,9 +24,8 @@ namespace ReviewCrawler.Sites.Sub
             searchQueue.Enqueue("http://www.guru3d.com/articles-categories/cooling.html");
         }
 
-        public override void CrawlPage(string currentSite)
+        public override void CrawlPage(string siteData)
         {
-            string siteData = GetSiteData(currentSite);
             string tempLink = "";
             List<string> tempReviewLinks;
             string tempProductType;
@@ -39,11 +39,35 @@ namespace ReviewCrawler.Sites.Sub
             tempReviewLinks = GetReviewLinks(siteData, "<br />", "<a href=\"articles-pages", "<div class=\"content\">", true);
             foreach (var item in tempReviewLinks)
             {
-                reviewQueue.Enqueue(new KeyValuePair<string, string>(item, tempProductType));
+                reviewQueue.Enqueue(item);
+                if (!Crawler.reviews.ContainsKey(GetSiteKey(item)))
+                {
+                    Crawler.reviews.Add(item, new Review(item, GetProductType(currentSite)));
+                }
             }
+
         }
 
-        public string GetProductType(string tempLink)
+        public override void CrawlReviewPages(string siteData)
+        {
+            
+        }
+
+        public override string GetSiteKey(string url)
+        {
+            for (int i = url.Length - 1; i > 0; i--)
+            {
+                if (url[i] == ',')
+                {
+                    url = url.Remove(i, url.Length - i);
+
+                } 
+            }
+
+            return url;
+        }
+
+        public override string GetProductType(string tempLink)
         {
             if (tempLink.Contains("articles-categories/videocards"))
             {
@@ -88,10 +112,32 @@ namespace ReviewCrawler.Sites.Sub
 
         
 
-        public override void Parse(string siteData, string productType)
+        public override void Parse(string siteData)
         {
+            
 
         }
+
+        /*
+        public override void CrawlPage(string currentSite)
+        {
+            string siteData = GetSiteData(currentSite);
+            string tempLink = "";
+            List<string> tempReviewLinks;
+            string tempProductType;
+
+            tempLink = GetSearchLinks(siteData, "pagelinkselected", "pagelink", false); //Returns domainUrl if no link is found
+            if (tempLink != domainUrl)
+            {
+                searchQueue.Enqueue(tempLink);
+            }
+            tempProductType = GetProductType(tempLink);
+            tempReviewLinks = GetReviewLinks(siteData, "<br />", "<a href=\"articles-pages", "<div class=\"content\">", true);
+            foreach (var item in tempReviewLinks)
+            {
+                reviewQueue.Enqueue(new KeyValuePair<string, string>(item, tempProductType));
+            }
+        }*/
 
     }
 }
