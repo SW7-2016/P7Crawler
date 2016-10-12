@@ -11,5 +11,7 @@ namespace ReviewCrawler.Products.Retailers
         string name;
         Uri url;
         decimal price;
+
+
     }
 }

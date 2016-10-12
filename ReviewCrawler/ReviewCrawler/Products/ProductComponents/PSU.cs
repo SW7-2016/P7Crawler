@@ -16,5 +16,10 @@ namespace ReviewCrawler.Products.ProductComponents
         string depth;
         string width;
         string weight;
+
+        public override void ParseProductSpecifications(string siteData)
+        {
+
+        }
     }
 }

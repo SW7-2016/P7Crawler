@@ -14,5 +14,10 @@ namespace ReviewCrawler.Products.ProductComponents
         string airflow;
         string noise;
         string connector;
+
+        public override void ParseProductSpecifications(string siteData)
+        {
+
+        }
     }
 }

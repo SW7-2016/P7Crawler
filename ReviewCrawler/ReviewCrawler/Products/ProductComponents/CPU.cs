@@ -18,6 +18,11 @@ namespace ReviewCrawler.Products.ProductComponents
         string maxTurbo;
         string integratedGpu;
         string manufacturer;
+
+        public override void ParseProductSpecifications(string siteData)
+        {
+
+        }
     }
 }
 

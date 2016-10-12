@@ -22,5 +22,10 @@ namespace ReviewCrawler.Products.ProductComponents
         string maxMem;
         string memSlots;
         string memType;
+
+        public override void ParseProductSpecifications(string siteData)
+        {
+
+        }
     }
 }

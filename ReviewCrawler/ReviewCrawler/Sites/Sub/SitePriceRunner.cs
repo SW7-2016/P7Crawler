@@ -58,88 +58,98 @@ namespace ReviewCrawler.Sites.Sub
             foreach (string link in siteReviewLinks)
             {
                 reviewQueue.Enqueue(link);
+                reviewQueue.Enqueue(@"http://www.pricerunner.dk/pi" + GetSiteKey(link) + "-Produkt-Info");
             }
-        }
-
-        private string getSpecLink(string siteData)
-        {
-            return "link";
-        }
-
-        private Product ParseCPU(string[] siteData)
-        {
-            return new CPU();
-        }
-
-        private List<Retailer> getRetailersFromSite(string siteData)
-        {
-            return new List<Retailer>();
         }
 
         public override string GetSiteKey(string url)
         {
-            /*for (int i = url.Length; i > 0; i--)
+            for (int i = 5; i > 0; i++)
             {
-                if (url[i] == ',')
+                if (url[i] == 'l'
+                    && url[i-1] == 'p'
+                    && url[i-2] == '/')
                 {
-                    url = url.Remove(i, url.Length - i);
-
+                    url = url.Remove(0, i);
+                    break;
                 }
             }
-            */
+            for (int i = url.Length - 1; i > 0; i--)
+            {
+                if (url[i] == '-'
+                    && url[i+1] == 's')
+                {
+                    url = url.Remove(i, url.Length - i);
+                    break;
+                }
+            }
             return url;
         }
 
         public override void Parse(string siteData)
         {
+
             Product currentProduct;
 
             if (Crawler.products.ContainsKey(GetSiteKey(currentSite)))
             {
                 currentProduct = Crawler.products[GetSiteKey(currentSite)];
             }
+            else if (currentSite.Contains("/Grafikkort/"))
+            {
+                //product is a "GPU"
+                currentProduct = new GPU(); 
+            }
+            else if (currentSite.Contains("/CPU/"))
+            {
+                //product is a "CPU"
+                currentProduct = new CPU();
+            }
+            else if (currentSite.Contains("/Lydkort/"))
+            {
+                //product is a "SoundCard"
+                currentProduct = new SoundCard();
+            }
+            else if (currentSite.Contains("/Bundkort/"))
+            {
+                //product is a "Motherboard"
+                currentProduct = new Motherboard();
+            }
+            else if (currentSite.Contains("/Harddiske/"))
+            {
+                //product is a "HardDrive"
+                currentProduct = new HardDrive();
+            }
+            else if (currentSite.Contains("/Kabinetter/"))
+            {
+                //product is a "Chassis"
+                currentProduct = new Chassis();
+            }
+            else if (currentSite.Contains("/Stroemforsyninger/"))
+            {
+                //product is a "PSU"
+                currentProduct = new PSU();
+            }
             else
             {
-                string[] dataLines = siteData.ToLower().Trim().Split('\n');
-
-                /*
-                if (currentProduct. == "CPU")
-                {
-                    string specSite = getSpecLink(siteData);
-
-                    newProduct = ParseCPU();
-
-                    newProduct.retailers.AddRange(getRetailersFromSite(siteData));
-                }
-                else if (productType == "GPU")
-                {
-
-                }
-                else if (productType == "SoundCard")
-                {
-
-                }
-                else if (productType == "Motherboard")
-                {
-
-                }
-                else if (productType == "HardDisk")
-                {
-
-                }
-                else if (productType == "Chassis")
-                {
-
-                }
-                else if (productType == "PSU")
-                {
-
-                }
-                */
+                throw new FormatException("Pricerunner - couldnt determine product type", null);
             }
 
+            if (currentSite.Contains("/pl/"))
+            {
+                //This means that the side contains prices
+                currentProduct.ParsePrice(siteData);
+            }
+            else if (currentSite.Contains("/pi/"))
+            {
+                currentProduct.ParseProductSpecifications(siteData);
+                //this means that te side contains product information
 
-
+            }
+            else
+            {
+                Debug.WriteLine("Pricerunner - couldnt determine product type ");
+            }
         }
 
 
@@ -194,7 +204,8 @@ namespace ReviewCrawler.Sites.Sub
                 return 1;
             }
         }
-
+        
+        //skal vi bruge denne her på hver side????
         public override string GetProductType(string tempLink)
         {
 
@@ -216,7 +227,7 @@ namespace ReviewCrawler.Sites.Sub
             }
             else if (tempLink.Contains("/Harddiske/"))
             {
-                return "HardDisk";
+                return "HardDisk"; // rename????
             }
             else if (tempLink.Contains("/Kabinetter/"))
             {
@@ -228,7 +239,7 @@ namespace ReviewCrawler.Sites.Sub
             }
             else
             {
-                Debug.WriteLine("couldnt determine product type - GetProductType, guru3d");
+                Debug.WriteLine("Pricerunner - couldnt determine product type");
             }
 
             return "";

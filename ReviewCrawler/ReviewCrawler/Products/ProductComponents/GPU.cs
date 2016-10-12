@@ -16,5 +16,10 @@ namespace ReviewCrawler.Products.ProductComponents
         string cooling;
         string memSize;
         string manufacturer;
+
+        public override void ParseProductSpecifications(string siteData)
+        {
+
+        }
     }
 }

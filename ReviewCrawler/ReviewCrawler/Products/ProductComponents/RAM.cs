@@ -14,5 +14,10 @@ namespace ReviewCrawler.Products.ProductComponents
         string technology;
         string formFactor;
         string casLatens;
+
+        public override void ParseProductSpecifications(string siteData)
+        {
+
+        }
     }
 }

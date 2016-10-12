@@ -12,5 +12,10 @@ namespace ReviewCrawler.Products.ProductComponents
         string speakerSupport;
         string Socket;
         string fullDuplex;
+
+        public override void ParseProductSpecifications(string siteData)
+        {
+
+        }
     }
 }
