@@ -38,6 +38,7 @@ namespace ReviewCrawler
                 else
                 {
                     hostQueue.Enqueue(currentHost);
+                    Thread.Sleep(50);
                 }
 
                 //Requeues the host if it has more pages to be crawled
@@ -65,7 +66,7 @@ namespace ReviewCrawler
         //Checks if more than two seconds have passed since 'lastAccessTime' and returns a bool
         public bool PolitenessTimeCheck(DateTime lastAccessTime)
         {
-            Thread.Sleep(2000);
+            
             if ((DateTime.Now - lastAccessTime).TotalSeconds > 2)
             {
                 return true;
