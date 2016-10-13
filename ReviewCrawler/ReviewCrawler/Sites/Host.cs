@@ -7,6 +7,7 @@ using System.Diagnostics;
 using ReviewCrawler.Products;
 using ReviewCrawler.Products.Reviews;
 using ReviewCrawler.Sites.Sub;
+using System.Text.RegularExpressions;
 
 namespace ReviewCrawler.Sites
 {
@@ -244,6 +245,30 @@ namespace ReviewCrawler.Sites
             newSearchLink = (domainUrl + tempString);
 
             return newSearchLink;
+        }
+
+        public string removeTags(string siteData)
+        {
+
+            string tempString = "";
+
+            foreach (Match item in Regex.Matches(siteData, "((<p>|<p style).*?(<\\/p>))+"))
+            {
+                tempString += item + "\n";
+            }
+
+            Regex newlineAdd = new Regex("<br />", RegexOptions.Singleline);
+            Regex regexHtml = new Regex("(<.*?>)+", RegexOptions.Singleline);
+            Regex apostropheRemover = new Regex("\\&rsquo\\;", RegexOptions.Singleline);
+            Regex garbageRemover = new Regex("\\&nbsp\\;", RegexOptions.Singleline);
+            tempString = newlineAdd.Replace(tempString, "\n");
+            tempString = regexHtml.Replace(tempString, "");
+            tempString = apostropheRemover.Replace(tempString, "");
+            tempString = garbageRemover.Replace(tempString, " ");
+
+            tempString += "\n";
+
+            return tempString;
         }
 
         public abstract string GetProductType(string tempLink);

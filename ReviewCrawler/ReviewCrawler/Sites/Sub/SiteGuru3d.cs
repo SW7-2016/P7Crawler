@@ -140,39 +140,15 @@ namespace ReviewCrawler.Sites.Sub
         public override void Parse(string siteData)
         {
 
-            DateTime stamp = DateTime.Now;
-            bool copy = false;
-            string tempString = "";
+            string siteContentParsed = removeTags(siteData);
 
-            foreach (Match item in Regex.Matches(siteData, "((<p>|<p style).*?(<\\/p>))+"))
+            if (Crawler.reviews.ContainsKey(GetSiteKey(currentSite)))
             {
-                tempString += item + "\n";
-            }
-            
-
-            Regex newlineAdd = new Regex("<br />", RegexOptions.Singleline);
-            Regex regexHtml = new Regex("(<.*?>)+", RegexOptions.Singleline);
-            Regex apostropheRemover = new Regex("\\&rsquo\\;", RegexOptions.Singleline);
-            Regex garbageRemover = new Regex("\\&nbsp\\;", RegexOptions.Singleline);
-            tempString = newlineAdd.Replace(tempString, "\n");
-            tempString = regexHtml.Replace(tempString, "");
-            tempString = apostropheRemover.Replace(tempString, "");
-            tempString = garbageRemover.Replace(tempString, " ");
-
-            tempString += "\n";
-
-            string[] tempp = siteData.Split('\n');
-
-            if (Crawler.reviews.ContainsKey(GetSiteKey(tempp[0])))
-            {
-                Crawler.reviews[GetSiteKey(tempp[0])].content += tempString;
-            }
-
-
-
-            double newtime = (DateTime.Now - stamp).TotalMilliseconds;
-            
+                Crawler.reviews[GetSiteKey(currentSite)].content += siteContentParsed;
+            }          
         }
+
+        
 
         /*
         public override void CrawlPage(string currentSite)
