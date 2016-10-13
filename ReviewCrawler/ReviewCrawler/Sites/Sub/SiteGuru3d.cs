@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ReviewCrawler.Products.Reviews;
+using System.Text.RegularExpressions;
+using System.IO;
 
 namespace ReviewCrawler.Sites.Sub
 {
@@ -15,20 +17,19 @@ namespace ReviewCrawler.Sites.Sub
         {
             domainUrl = "http://www.guru3d.com/";
             searchQueue.Enqueue("http://www.guru3d.com/articles-categories/videocards.html");
-            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/processors.html");
-            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/soundcards-and-speakers.html");
-            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/mainboards.html");
-            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd).html");
-            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/pc-cases-and-modding.html");
-            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/psu-power-supply-units.html");
-            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/cooling.html");
+            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/processors.html");
+            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/soundcards-and-speakers.html");
+            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/mainboards.html");
+            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd).html");
+            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/pc-cases-and-modding.html");
+            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/psu-power-supply-units.html");
+            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/cooling.html");
         }
 
         public override void CrawlPage(string siteData)
         {
             string tempLink = "";
             List<string> tempReviewLinks;
-            string tempProductType;
 
             tempLink = GetSearchLinks(siteData, "pagelinkselected", "pagelink", false); //Returns domainUrl if no link is found
             if (tempLink != domainUrl)
@@ -39,10 +40,9 @@ namespace ReviewCrawler.Sites.Sub
             tempReviewLinks = GetReviewLinks(siteData, "<br />", "<a href=\"articles-pages", "<div class=\"content\">", true);
             foreach (var item in tempReviewLinks)
             {
-                if (reviewQueue.Count < 2) ///TEST
-                {
+                
                     reviewQueue.Enqueue(item);
-                }
+                
                 
                 if (!Crawler.reviews.ContainsKey(GetSiteKey(item)))
                 {
@@ -140,31 +140,25 @@ namespace ReviewCrawler.Sites.Sub
         public override void Parse(string siteData)
         {
 
+            DateTime stamp = DateTime.Now;
             bool copy = false;
             string tempString = "";
 
-            for (int i = 0; i < siteData.Length - 1; i++)
+            foreach (Match item in Regex.Matches(siteData, "((<p>|<p style).*?(<\\/p>))+"))
             {
-                if (i > 4)
-                {
-
-
-                    if (siteData[i - 3] == '<' && siteData[i - 2] == 'p' && siteData[i - 1] == '>')
-                    {
-                        copy = true;
-                    }
-                    else if (siteData[i] == '<' && siteData[i + 1] == '/' && siteData[i + 2] == 'p' && siteData[i + 3] == '>')
-                    {
-                        copy = false;
-                    }
-
-                    if (copy == true)
-                    {
-                        tempString += siteData[i];
-                    }
-                }
-
+                tempString += item + "\n";
             }
+            
+
+            Regex newlineAdd = new Regex("<br />", RegexOptions.Singleline);
+            Regex regexHtml = new Regex("(<.*?>)+", RegexOptions.Singleline);
+            Regex apostropheRemover = new Regex("\\&rsquo\\;", RegexOptions.Singleline);
+            Regex garbageRemover = new Regex("\\&nbsp\\;", RegexOptions.Singleline);
+            tempString = newlineAdd.Replace(tempString, "\n");
+            tempString = regexHtml.Replace(tempString, "");
+            tempString = apostropheRemover.Replace(tempString, "");
+            tempString = garbageRemover.Replace(tempString, " ");
+
             tempString += "\n";
 
             string[] tempp = siteData.Split('\n');
@@ -173,6 +167,10 @@ namespace ReviewCrawler.Sites.Sub
             {
                 Crawler.reviews[GetSiteKey(tempp[0])].content += tempString;
             }
+
+
+
+            double newtime = (DateTime.Now - stamp).TotalMilliseconds;
             
         }
 

@@ -38,6 +38,7 @@ namespace ReviewCrawler
                 else
                 {
                     hostQueue.Enqueue(currentHost);
+                    isHostDone = true; // to avoid enqueing twice
                     Thread.Sleep(50);
                 }
 
@@ -46,6 +47,9 @@ namespace ReviewCrawler
                 {
                     hostQueue.Enqueue(currentHost);
                 }
+
+                
+
 
                 //Stops if the hostQueue is empty
                 if (hostQueue.Count < 1)
