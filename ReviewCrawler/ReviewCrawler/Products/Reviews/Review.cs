@@ -13,7 +13,7 @@ namespace ReviewCrawler.Products.Reviews
         string title;
         bool isCriticReview;
         DateTime date;
-        string content;
+        public string content;
         double productRating;
         List<string> pros;
         List<string> cons;

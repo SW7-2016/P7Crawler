@@ -15,13 +15,13 @@ namespace ReviewCrawler.Sites.Sub
         {
             domainUrl = "http://www.guru3d.com/";
             searchQueue.Enqueue("http://www.guru3d.com/articles-categories/videocards.html");
-            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/processors.html");
-            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/soundcards-and-speakers.html");
-            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/mainboards.html");
-            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd).html");
-            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/pc-cases-and-modding.html");
-            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/psu-power-supply-units.html");
-            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/cooling.html");
+            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/processors.html");
+            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/soundcards-and-speakers.html");
+            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/mainboards.html");
+            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd).html");
+            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/pc-cases-and-modding.html");
+            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/psu-power-supply-units.html");
+            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/cooling.html");
         }
 
         public override void CrawlPage(string siteData)
@@ -35,14 +35,18 @@ namespace ReviewCrawler.Sites.Sub
             {
                 searchQueue.Enqueue(tempLink);
             }
-            tempProductType = GetProductType(tempLink);
+     
             tempReviewLinks = GetReviewLinks(siteData, "<br />", "<a href=\"articles-pages", "<div class=\"content\">", true);
             foreach (var item in tempReviewLinks)
             {
-                reviewQueue.Enqueue(item);
+                if (reviewQueue.Count < 2) ///TEST
+                {
+                    reviewQueue.Enqueue(item);
+                }
+                
                 if (!Crawler.reviews.ContainsKey(GetSiteKey(item)))
                 {
-                    Crawler.reviews.Add(item, new Review(item, GetProductType(currentSite)));
+                    Crawler.reviews.Add(GetSiteKey(item), new Review(item, GetProductType(currentSite)));
                 }
             }
 
@@ -50,7 +54,28 @@ namespace ReviewCrawler.Sites.Sub
 
         public override void CrawlReviewPages(string siteData)
         {
-            
+            string tempLink = "";
+            string[] tempLines = siteData.Split('\n');
+
+            if (!tempLines[0].Contains("articles-summary"))
+            {
+                tempLink = GetSearchLinks(siteData, "pagelinkselected", "pagelink", false); //Returns domainUrl if no link is found
+
+
+                if (tempLink != domainUrl)
+                {
+                    reviewQueue.Enqueue(tempLink);
+                }
+                else
+                {
+                    tempLines[0] = GetSiteKey(tempLines[0].Replace("articles-pages", "articles-summary"));
+                    //GetSiteKey(), just so happens to give the wanted output, even though it is not used as a key here
+
+
+                    reviewQueue.Enqueue(tempLines[0]);
+                }
+            }
+
         }
 
         public override string GetSiteKey(string url)
@@ -60,7 +85,7 @@ namespace ReviewCrawler.Sites.Sub
                 if (url[i] == ',')
                 {
                     url = url.Remove(i, url.Length - i);
-
+                    break;
                 } 
             }
 
@@ -108,14 +133,47 @@ namespace ReviewCrawler.Sites.Sub
 
             return "";
         }
-       
 
-        
+
+
 
         public override void Parse(string siteData)
         {
-            
 
+            bool copy = false;
+            string tempString = "";
+
+            for (int i = 0; i < siteData.Length - 1; i++)
+            {
+                if (i > 4)
+                {
+
+
+                    if (siteData[i - 3] == '<' && siteData[i - 2] == 'p' && siteData[i - 1] == '>')
+                    {
+                        copy = true;
+                    }
+                    else if (siteData[i] == '<' && siteData[i + 1] == '/' && siteData[i + 2] == 'p' && siteData[i + 3] == '>')
+                    {
+                        copy = false;
+                    }
+
+                    if (copy == true)
+                    {
+                        tempString += siteData[i];
+                    }
+                }
+
+            }
+            tempString += "\n";
+
+            string[] tempp = siteData.Split('\n');
+
+            if (Crawler.reviews.ContainsKey(GetSiteKey(tempp[0])))
+            {
+                Crawler.reviews[GetSiteKey(tempp[0])].content += tempString;
+            }
+            
         }
 
         /*
