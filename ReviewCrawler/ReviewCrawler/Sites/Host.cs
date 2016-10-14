@@ -35,12 +35,12 @@ namespace ReviewCrawler.Sites
             if (searchQueue.Count > 0)
             {
                 isReview = false;
-                currentSite = searchQueue.Dequeue();
+                currentSite = searchQueue.Dequeue().ToLower();
             }
             else if (reviewQueue.Count > 0)
             {
                 isReview = true;
-                currentSite = reviewQueue.Dequeue();
+                currentSite = reviewQueue.Dequeue().ToLower();
             }
             else
             {

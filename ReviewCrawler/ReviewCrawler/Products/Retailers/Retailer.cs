@@ -8,10 +8,8 @@ namespace ReviewCrawler.Products.Retailers
 {
     class Retailer
     {
-        string name;
-        Uri url;
-        decimal price;
-
-
+        public string name;
+        public Uri url;
+        public decimal price;
     }
 }

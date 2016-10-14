@@ -36,9 +36,10 @@ namespace ReviewCrawler.Sites.Sub
             string tempLink = "";
 
             string paginatorData = FindPaginator(siteData);
-            int pageNumber = FindPageNumber(siteData);
+            int pageNumber = FindPageNumber();
 
-            tempLink = GetSearchLinks(paginatorData, "<span>" + pageNumber + "</span>", "href", false);
+            //tempLink = GetSearchLinks(paginatorData, "<span>" + pageNumber + "</span>", "href", false);
+            tempLink = domainUrl;
             if (tempLink != domainUrl)
             {
                 searchQueue.Enqueue(tempLink);
@@ -66,18 +67,23 @@ namespace ReviewCrawler.Sites.Sub
         {
             for (int i = 5; i > 0; i++)
             {
-                if (url[i] == 'l'
+                if ((url[i] == 'l'
                     && url[i-1] == 'p'
                     && url[i-2] == '/')
+                    || (url[i] == 'i'
+                    && url[i - 1] == 'p'
+                    && url[i - 2] == '/'))
                 {
-                    url = url.Remove(0, i);
+                    url = url.Remove(0, i + 1);
                     break;
                 }
             }
             for (int i = url.Length - 1; i > 0; i--)
             {
-                if (url[i] == '-'
+                if ((url[i] == '-'
                     && url[i+1] == 's')
+                    ||(url[i] == '-'
+                    && url[i + 1] == 'p'))
                 {
                     url = url.Remove(i, url.Length - i);
                     break;
@@ -95,37 +101,37 @@ namespace ReviewCrawler.Sites.Sub
             {
                 currentProduct = Crawler.products[GetSiteKey(currentSite)];
             }
-            else if (currentSite.Contains("/Grafikkort/"))
+            else if (currentSite.Contains("/grafikkort/"))
             {
                 //product is a "GPU"
                 currentProduct = new GPU(); 
             }
-            else if (currentSite.Contains("/CPU/"))
+            else if (currentSite.Contains("/cpu/"))
             {
                 //product is a "CPU"
                 currentProduct = new CPU();
             }
-            else if (currentSite.Contains("/Lydkort/"))
+            else if (currentSite.Contains("/lydkort/"))
             {
                 //product is a "SoundCard"
                 currentProduct = new SoundCard();
             }
-            else if (currentSite.Contains("/Bundkort/"))
+            else if (currentSite.Contains("/bundkort/"))
             {
                 //product is a "Motherboard"
                 currentProduct = new Motherboard();
             }
-            else if (currentSite.Contains("/Harddiske/"))
+            else if (currentSite.Contains("/harddiske/"))
             {
                 //product is a "HardDrive"
                 currentProduct = new HardDrive();
             }
-            else if (currentSite.Contains("/Kabinetter/"))
+            else if (currentSite.Contains("/kabinetter/"))
             {
                 //product is a "Chassis"
                 currentProduct = new Chassis();
             }
-            else if (currentSite.Contains("/Stroemforsyninger/"))
+            else if (currentSite.Contains("/stroemforsyninger/"))
             {
                 //product is a "PSU"
                 currentProduct = new PSU();
@@ -142,9 +148,8 @@ namespace ReviewCrawler.Sites.Sub
             }
             else if (currentSite.Contains("/pi/"))
             {
-                currentProduct.ParseProductSpecifications(siteData);
                 //this means that te side contains product information
-
+                currentProduct.ParseProductSpecifications(siteData);
             }
             else
             {
@@ -178,26 +183,26 @@ namespace ReviewCrawler.Sites.Sub
             return result;
         }
 
-        public int FindPageNumber(string url)
+        public int FindPageNumber()
         {
-            if (url.Contains("?page="))
+            if (currentSite.Contains("?page="))
             {
                 string tempPageNumber = "";
                 bool eqFound = false;
 
-                for (int i = 0; i < url.Count(); i++)
+                for (int i = 0; i <= currentSite.Length - 1; i++)
                 {
                     if (eqFound)
                     {
-                        tempPageNumber += url[i];
+                        tempPageNumber += currentSite[i];
                     }
-                    if (url[i] == '=')
+                    if (currentSite[i] == '=')
                     {
                         eqFound = true;
                     }
                 }
 
-                return Convert.ToInt32(tempPageNumber);
+                return int.Parse(tempPageNumber);
             }
             else
             {
