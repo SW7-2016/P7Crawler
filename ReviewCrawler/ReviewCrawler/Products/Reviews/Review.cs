@@ -12,7 +12,8 @@ namespace ReviewCrawler.Products.Reviews
         public string productType;
         public string title;
         public bool isCriticReview;
-        public DateTime date;
+        public DateTime reviewDate;
+        public DateTime crawlDate;
         public string content;
         public double productRating;
         public List<string> pros;

@@ -186,6 +186,7 @@ namespace ReviewCrawler.Sites.Sub
                     Crawler.reviews[siteKey].title = dataSplit[0];
                     Crawler.reviews[siteKey].productRating = GetRating(siteData);
                     Crawler.reviews[siteKey].maxRating = maxRating;
+                    Crawler.reviews[siteKey].crawlDate = DateTime.Now;
                 }
             }
         }
@@ -195,7 +196,7 @@ namespace ReviewCrawler.Sites.Sub
             string strValue = "";
             string temp = Regex.Match(siteData, "<meta itemprop=\"value\" content=\".*?\"/>").Value;
 
-            for (int i = 0; i < temp.Length; i++)
+            for (int i = 0; i < temp.Length - 1; i++)
             {
                 if (char.IsNumber(temp[i]))
                 {
