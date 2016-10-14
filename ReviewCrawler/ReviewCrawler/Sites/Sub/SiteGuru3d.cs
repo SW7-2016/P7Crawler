@@ -12,6 +12,7 @@ namespace ReviewCrawler.Sites.Sub
 {
     class SiteGuru3d : Host
     {
+        double maxRating = 5;
 
         public SiteGuru3d()
         {
@@ -40,8 +41,11 @@ namespace ReviewCrawler.Sites.Sub
             tempReviewLinks = GetReviewLinks(siteData, "<br />", "<a href=\"articles-pages", "<div class=\"content\">", true);
             foreach (var item in tempReviewLinks)
             {
-                
+                if (reviewQueue.Count < 3)
+                {
                     reviewQueue.Enqueue(item);
+                }
+                    
                 
                 
                 if (!Crawler.reviews.ContainsKey(GetSiteKey(item)))
@@ -52,6 +56,29 @@ namespace ReviewCrawler.Sites.Sub
 
         }
 
+        public override void CrawlReviewPages(string siteData)
+        {
+            string tempLink = "";
+            
+            if (!currentSite.Contains("articles-summary"))
+            {
+                tempLink = GetSearchLinks(siteData, "pagelinkselected", "pagelink", false); //Returns domainUrl if no link is found
+
+
+                if (tempLink != domainUrl)
+                {
+                    reviewQueue.Enqueue(tempLink);
+                }
+                else
+                {
+                    //GetSiteKey just so happens to give the wanted output, even though it is not used as a key here
+                    reviewQueue.Enqueue(GetSiteKey(currentSite.Replace("articles-pages", "articles-summary")));
+                }
+            }
+
+        }
+
+        /*
         public override void CrawlReviewPages(string siteData)
         {
             string tempLink = "";
@@ -69,14 +96,15 @@ namespace ReviewCrawler.Sites.Sub
                 else
                 {
                     tempLines[0] = GetSiteKey(tempLines[0].Replace("articles-pages", "articles-summary"));
-                    //GetSiteKey(), just so happens to give the wanted output, even though it is not used as a key here
+                    //GetSiteKey just so happens to give the wanted output, even though it is not used as a key here
 
 
                     reviewQueue.Enqueue(tempLines[0]);
                 }
             }
 
-        }
+        }*/
+
 
         public override string GetSiteKey(string url)
         {
@@ -134,21 +162,48 @@ namespace ReviewCrawler.Sites.Sub
             return "";
         }
 
-
-
-
         public override void Parse(string siteData)
         {
-
             string siteContentParsed = removeTags(siteData);
+            string siteKey;
+            string[] dataSplit = siteContentParsed.Split('\n');
 
-            if (Crawler.reviews.ContainsKey(GetSiteKey(currentSite)))
+            if (!currentSite.Contains("articles-summary"))
             {
-                Crawler.reviews[GetSiteKey(currentSite)].content += siteContentParsed;
-            }          
+               siteKey = GetSiteKey(currentSite);
+            }
+            else
+            {
+                siteKey = GetSiteKey(currentSite.Replace("articles-summary", "articles-pages"));
+            }
+
+            if (Crawler.reviews.ContainsKey(siteKey))
+            {
+                Crawler.reviews[siteKey].content += siteContentParsed;
+
+                if (currentSite.Contains(",1.html"))
+                {
+                    Crawler.reviews[siteKey].title = dataSplit[0];
+                    Crawler.reviews[siteKey].productRating = GetRating(siteData);
+                    Crawler.reviews[siteKey].maxRating = maxRating;
+                }
+            }
         }
 
-        
+        public double GetRating(string siteData)
+        {
+            string strValue = "";
+            string temp = Regex.Match(siteData, "<meta itemprop=\"value\" content=\".*?\"/>").Value;
+
+            for (int i = 0; i < temp.Length; i++)
+            {
+                if (char.IsNumber(temp[i]))
+                {
+                    strValue += temp[i];
+                }
+            }
+            return double.Parse(strValue);
+        }
 
         /*
         public override void CrawlPage(string currentSite)

@@ -48,8 +48,7 @@ namespace ReviewCrawler
                     hostQueue.Enqueue(currentHost);
                 }
 
-                
-
+              
 
                 //Stops if the hostQueue is empty
                 if (hostQueue.Count < 1)

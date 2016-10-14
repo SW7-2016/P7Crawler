@@ -9,20 +9,21 @@ namespace ReviewCrawler.Products.Reviews
 {
     class Review
     {
-        private string productType;
-        string title;
-        bool isCriticReview;
-        DateTime date;
+        public string productType;
+        public string title;
+        public bool isCriticReview;
+        public DateTime date;
         public string content;
-        double productRating;
-        List<string> pros;
-        List<string> cons;
-        string author;
-        string url;
-        List<ReviewComment> comments;
-        ReviewReception reception;
-        double reviewRating;
-        bool verifiedPurchase;
+        public double productRating;
+        public List<string> pros;
+        public List<string> cons;
+        public string author;
+        public string url;
+        public List<ReviewComment> comments;
+        public ReviewReception reception;
+        public double reviewRating;
+        public bool verifiedPurchase;
+        public double maxRating;
 
         public Review(string Url, string PType)
         {
