@@ -8,7 +8,13 @@ namespace ReviewCrawler.Products.Reviews
 {
     class ReviewComment
     {
-        String content;
-        double rating;
+        public string content;
+        public double rating;
+
+        public ReviewComment(string Content, double Rating)
+        {
+            content = Content;
+            rating = Rating;
+        }
     }
 }

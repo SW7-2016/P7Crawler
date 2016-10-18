@@ -30,6 +30,7 @@ namespace ReviewCrawler.Sites.Sub
         public override void CrawlPage(string siteData)
         {
             string tempLink = "";
+            string tempSiteKey = "";
             List<string> tempReviewLinks;
 
             tempLink = GetSearchLinks(siteData, "pagelinkselected", "pagelink", false); //Returns domainUrl if no link is found
@@ -41,17 +42,19 @@ namespace ReviewCrawler.Sites.Sub
             tempReviewLinks = GetReviewLinks(siteData, "<br />", "<a href=\"articles-pages", "<div class=\"content\">", true);
             foreach (var item in tempReviewLinks)
             {
-                if (reviewQueue.Count < 3)
-                {
+                tempSiteKey = GetSiteKey(item);
+                //if (reviewQueue.Count < 3)
+                //{
                     reviewQueue.Enqueue(item);
-                }
-                    
-                
-                
-                if (!Crawler.reviews.ContainsKey(GetSiteKey(item)))
+                //}
+
+                if (!Crawler.reviews.ContainsKey(tempSiteKey))
                 {
-                    Crawler.reviews.Add(GetSiteKey(item), new Review(item, GetProductType(currentSite)));
+                    Crawler.reviews.Add(tempSiteKey, new Review(item, GetProductType(currentSite)));
                 }
+
+
+
             }
 
         }
@@ -138,7 +141,7 @@ namespace ReviewCrawler.Sites.Sub
             {
                 return "Motherboard";
             }
-            else if (tempLink.Contains("articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd)"))
+            else if (tempLink.Contains("articles-categories") && tempLink.Contains("memory") && tempLink.Contains("storage"))
             {
                 return "RAM/HDD";
             }
@@ -170,25 +173,86 @@ namespace ReviewCrawler.Sites.Sub
 
             if (!currentSite.Contains("articles-summary"))
             {
-               siteKey = GetSiteKey(currentSite);
+                siteKey = GetSiteKey(currentSite);
+                siteContentParsed = removeTags(siteData);
+                dataSplit = siteContentParsed.Split('\n');
+
+                if (Crawler.reviews.ContainsKey(siteKey))
+                {
+                    Crawler.reviews[siteKey].content += siteContentParsed;
+
+                    if (currentSite.Contains(",1.html"))
+                    {
+                        Crawler.reviews[siteKey].title = dataSplit[0];
+                        Crawler.reviews[siteKey].productRating = GetRating(siteData);
+                        Crawler.reviews[siteKey].maxRating = maxRating;
+                        Crawler.reviews[siteKey].crawlDate = DateTime.Now;
+                        Crawler.reviews[siteKey].reviewDate = GetReviewDate(siteData);
+                    }
+                }
             }
             else
             {
                 siteKey = GetSiteKey(currentSite.Replace("articles-summary", "articles-pages"));
-            }
 
-            if (Crawler.reviews.ContainsKey(siteKey))
-            {
-                Crawler.reviews[siteKey].content += siteContentParsed;
-
-                if (currentSite.Contains(",1.html"))
+                if (Crawler.reviews.ContainsKey(siteKey))
                 {
-                    Crawler.reviews[siteKey].title = dataSplit[0];
-                    Crawler.reviews[siteKey].productRating = GetRating(siteData);
-                    Crawler.reviews[siteKey].maxRating = maxRating;
-                    Crawler.reviews[siteKey].crawlDate = DateTime.Now;
+                    Crawler.reviews[siteKey].comments = GetReviewComments(siteData);
                 }
             }
+
+            
+        }
+
+        public List<ReviewComment> GetReviewComments(string siteData)
+        {
+            List<ReviewComment> commentResults = new List<ReviewComment>();
+            Regex regexTags = new Regex("(<.*?>)+", RegexOptions.Singleline);
+            Regex regexDateRemove = new Regex("(<strong>Posted on:.*?</strong>)", RegexOptions.Singleline);
+            string tempComment;
+
+            string[] commentSplit = siteData.Split(new string[] { "<!-- Template: articles_summary_comment -->" }, StringSplitOptions.None);
+
+            for (int i = 0; i < commentSplit.Length; i++)
+            {
+                tempComment = Regex.Match(commentSplit[i], "<strong>Posted on:(.*?(\n)*)*<\\/div>").Value;
+
+                tempComment = regexDateRemove.Replace(tempComment, "");
+                tempComment = regexTags.Replace(tempComment, "");
+
+                if (tempComment != "")
+                {
+                    commentResults.Add(new ReviewComment(tempComment, 0));
+                }
+            }
+            return commentResults;
+        }
+
+        public DateTime GetReviewDate(string siteData)
+        {
+            DateTime date; 
+            string temp = Regex.Match(siteData, "<span itemprop=\"dtreviewed\">.*?</span>").Value;
+            
+
+            temp = temp.Replace("<span itemprop=\"dtreviewed\">", "");
+            temp = temp.Replace("</span>", "");
+
+            string[] tempDate = temp.Split('/');
+
+            tempDate[2] = tempDate[2].Substring(0, 4);
+
+            if ((tempDate[0])[0] == '0')
+            {
+                tempDate[0] = (tempDate[0])[1].ToString();
+            }
+
+            int day = int.Parse(tempDate[1]);
+            int month = int.Parse(tempDate[0]);
+            int year = int.Parse(tempDate[2]);
+
+            date = new DateTime(year, month, day);
+
+            return date;
         }
 
         public double GetRating(string siteData)
