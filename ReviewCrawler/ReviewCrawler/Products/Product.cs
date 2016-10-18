@@ -18,9 +18,9 @@ namespace ReviewCrawler.Products
         {
             Dictionary<string, string> productInfo = new Dictionary<string, string>();
 
-            string rawProductInformation = (Regex.Match(siteData, "<div class=\"product-specs\">\\s*<table>(.*?(\n)*)*</table>")).Value;
+            string rawProductInformation = (Regex.Match(siteData, "<div class=\"product-specs\">\\s*<table>.*?</table>", RegexOptions.Singleline)).Value;
 
-            foreach (Match rawInformationRow in Regex.Matches(rawProductInformation, "<tr\\s*>(.*?(\n)*)*</tr>"))
+            foreach (Match rawInformationRow in Regex.Matches(rawProductInformation, "<tr\\s*>.*?</tr>", RegexOptions.Singleline))
             {
                 // - find type of row - 
                 //Used to pass sentence so that only the information is saved.(and not multible spaces and tags)
@@ -36,7 +36,11 @@ namespace ReviewCrawler.Products
                 tempValue = tempValue.Replace("<td>", "");
                 tempValue = tempValue.Replace("</td>", "");
 
+                productInfo.Add(tempType, tempValue);
+
             }
+
+            AddInformation(productInfo);
         }
 
         public void ParsePrice(string siteData)
