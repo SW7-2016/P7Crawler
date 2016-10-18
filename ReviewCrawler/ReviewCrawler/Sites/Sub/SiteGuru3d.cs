@@ -18,13 +18,13 @@ namespace ReviewCrawler.Sites.Sub
         {
             domainUrl = "http://www.guru3d.com/";
             searchQueue.Enqueue("http://www.guru3d.com/articles-categories/videocards.html");
-            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/processors.html");
-            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/soundcards-and-speakers.html");
-            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/mainboards.html");
-            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd).html");
-            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/pc-cases-and-modding.html");
-            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/psu-power-supply-units.html");
-            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/cooling.html");
+            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/processors.html");
+            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/soundcards-and-speakers.html");
+            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/mainboards.html");
+            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd).html");
+            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/pc-cases-and-modding.html");
+            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/psu-power-supply-units.html");
+            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/cooling.html");
         }
 
         public override void CrawlPage(string siteData)
@@ -43,7 +43,7 @@ namespace ReviewCrawler.Sites.Sub
             foreach (var item in tempReviewLinks)
             {
                 tempSiteKey = GetSiteKey(item);
-                //if (reviewQueue.Count < 3)
+                //if (reviewQueue.Count < 4)
                 //{
                     reviewQueue.Enqueue(item);
                 //}
@@ -208,17 +208,27 @@ namespace ReviewCrawler.Sites.Sub
         {
             List<ReviewComment> commentResults = new List<ReviewComment>();
             Regex regexTags = new Regex("(<.*?>)+", RegexOptions.Singleline);
-            Regex regexDateRemove = new Regex("(<strong>Posted on:.*?</strong>)", RegexOptions.Singleline);
+            Regex regexDateRemove = new Regex("(<strong>Posted on:(.*?)</strong>)", RegexOptions.Singleline);
+            Regex regexQuote = new Regex("(<table(.*?)</table>)", RegexOptions.Singleline);
+            Regex regexQuoteBlock = new Regex("(<div class=\"quoteblock(.*?)</div>)", RegexOptions.Singleline);
             string tempComment;
 
-            string[] commentSplit = siteData.Split(new string[] { "<!-- Template: articles_summary_comment -->" }, StringSplitOptions.None);
+            string[] commentSplit = siteData.Split(new string[] { "<div class=\"comments\">" }, StringSplitOptions.None);
 
             for (int i = 0; i < commentSplit.Length; i++)
             {
-                tempComment = Regex.Match(commentSplit[i], "<strong>Posted on:(.*?(\n)*)*<\\/div>").Value;
+                
+                tempComment = Regex.Match(commentSplit[i], "(<strong>Posted on:.*?<!-- Template: articles)", RegexOptions.Singleline).Value;
+                if (tempComment != "")
+                {
+                    tempComment += '>';
+                }
+                
 
                 tempComment = regexDateRemove.Replace(tempComment, "");
                 tempComment = regexTags.Replace(tempComment, "");
+                tempComment = regexQuote.Replace(tempComment, "");
+                tempComment = regexQuoteBlock.Replace(tempComment, "");
 
                 if (tempComment != "")
                 {
