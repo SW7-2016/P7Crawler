@@ -19,7 +19,7 @@ namespace ReviewCrawler.Products.ProductComponents
         string integratedGpu;
         string manufacturer;
 
-        public override void ParseProductSpecifications(string siteData)
+        protected override void AddInformation(Dictionary<string, string> productInformation)
         {
 
         }

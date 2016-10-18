@@ -15,7 +15,7 @@ namespace ReviewCrawler.Products.ProductComponents
         string noise;
         string connector;
 
-        public override void ParseProductSpecifications(string siteData)
+        protected override void AddInformation(Dictionary<string, string> productInformation)
         {
 
         }

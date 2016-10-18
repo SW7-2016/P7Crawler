@@ -17,7 +17,7 @@ namespace ReviewCrawler.Products.ProductComponents
         string memSize;
         string manufacturer;
 
-        public override void ParseProductSpecifications(string siteData)
+        protected override void AddInformation(Dictionary<string, string> productInformation)
         {
 
         }

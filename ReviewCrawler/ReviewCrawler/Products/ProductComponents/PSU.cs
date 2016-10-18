@@ -17,7 +17,7 @@ namespace ReviewCrawler.Products.ProductComponents
         string width;
         string weight;
 
-        public override void ParseProductSpecifications(string siteData)
+        protected override void AddInformation(Dictionary<string, string> productInformation)
         {
 
         }

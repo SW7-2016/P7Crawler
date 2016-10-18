@@ -20,7 +20,7 @@ namespace ReviewCrawler.Products.ProductComponents
         string depth;
         string width;
 
-        public override void ParseProductSpecifications(string siteData)
+        protected override void AddInformation(Dictionary<string, string> productInformation)
         {
 
         }

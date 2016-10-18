@@ -13,7 +13,7 @@ namespace ReviewCrawler.Products.ProductComponents
         string Socket;
         string fullDuplex;
 
-        public override void ParseProductSpecifications(string siteData)
+        protected override void AddInformation(Dictionary<string, string> productInformation)
         {
 
         }
