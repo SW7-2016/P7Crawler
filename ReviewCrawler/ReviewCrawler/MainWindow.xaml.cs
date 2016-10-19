@@ -38,10 +38,10 @@ namespace ReviewCrawler
 
         private void sendDataTest_bt_Click(object sender, RoutedEventArgs e)
         {
-            /*
-            DBConnect john = new DBConnect();
 
-            john.DbTEST();*/
+            DBConnect newDBConnection = new DBConnect();
+
+            newDBConnection.DbInitialize();
         }
     }
 }

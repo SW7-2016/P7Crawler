@@ -8,7 +8,7 @@ namespace ReviewCrawler.Products.Reviews
 {
     class ReviewReception
     {
-        int positive;
-        int negative;
+        public int positive;
+        public int negative;
     }
 }
