@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ReviewCrawler.Sites;
 
 namespace ReviewCrawler
 {
@@ -33,6 +34,14 @@ namespace ReviewCrawler
 
             crawl.AddHosts();
             crawl.StartCrawl();
+        }
+
+        private void sendDataTest_bt_Click(object sender, RoutedEventArgs e)
+        {
+            /*
+            DBConnect john = new DBConnect();
+
+            john.DbTEST();*/
         }
     }
 }
