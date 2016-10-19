@@ -72,8 +72,9 @@ namespace ReviewCrawler.Products
                     tempPrice = tempPrice.Remove(0, 3).Replace(",", ".");
                     tempRetailer.price = decimal.Parse(tempPrice);
                 }
+
                 // looking for URL of retailer
-                //Eneste link på siden, er et redirect link der går gennem pricerunner.
+                //Eneste link på siden, er et redirect link der går gennem pricerunner. 
 
 
                 retailers.Add(tempRetailer);

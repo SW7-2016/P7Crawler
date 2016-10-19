@@ -15,7 +15,24 @@ namespace ReviewCrawler.Products.ProductComponents
 
         protected override void AddInformation(Dictionary<string, string> productInformation)
         {
-
+            foreach (KeyValuePair<string, string> info in productInformation)
+            {
+                switch (info.Key.ToLower())
+                {
+                    case "type":
+                        type = info.Value;
+                        break;
+                    case "højtalersuppport":
+                        speakerSupport = info.Value;
+                        break;
+                    case "brugerflade":
+                        Socket = info.Value;
+                        break;
+                    case "full duplex":
+                        fullDuplex = info.Value;
+                        break;
+                }
+            }
         }
     }
 }

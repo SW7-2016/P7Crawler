@@ -47,7 +47,6 @@ namespace ReviewCrawler.Products.ProductComponents
                     case "radeon serie":
                         model = info.Value;
                         break;
-
                 }
             }
         }

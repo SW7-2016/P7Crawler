@@ -155,6 +155,11 @@ namespace ReviewCrawler.Sites.Sub
             {
                 Debug.WriteLine("Pricerunner - couldnt determine product type ");
             }
+
+            if (!Crawler.products.ContainsKey(GetSiteKey(currentSite)))
+            {
+                Crawler.products.Add(GetSiteKey(currentSite), currentProduct);
+            }
         }
 
 

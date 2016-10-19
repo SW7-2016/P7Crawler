@@ -21,7 +21,7 @@ namespace ReviewCrawler.Products.ProductComponents
         string socket;
         bool sli;
         int maxMem;
-        string memSlots;
+        int memSlots;
         string memType;
 
         protected override void AddInformation(Dictionary<string, string> productInformation)
@@ -61,10 +61,10 @@ namespace ReviewCrawler.Products.ProductComponents
                         sli = (info.Value.ToLower() == "ja") ? true : false;
                         break;
                     case "max ram mængde":
-                        cpuCount = int.Parse(info.Value);
+                        maxMem = int.Parse(info.Value);
                         break;
                     case "antal dimm-pladser":
-                        maxMem = int.Parse(info.Value);
+                        memSlots = int.Parse(info.Value);
                         break;
                     case "ram type":
                         memType = info.Value;
@@ -72,7 +72,8 @@ namespace ReviewCrawler.Products.ProductComponents
                     case "lydkort indbygget":
                         soundCard = (info.Value.ToLower() == "ja") ? true : false;
                         break;
-                    default:
+                    case "chipset others":
+                        chipset = info.Value;
                         break;
                 }
             }
