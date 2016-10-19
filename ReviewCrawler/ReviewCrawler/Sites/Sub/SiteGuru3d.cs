@@ -277,7 +277,15 @@ namespace ReviewCrawler.Sites.Sub
                     strValue += temp[i];
                 }
             }
-            return double.Parse(strValue);
+            if (strValue != "")
+            {
+                return double.Parse(strValue);
+            }
+            else
+            {
+                return -1;
+            }
+            
         }
 
         /*

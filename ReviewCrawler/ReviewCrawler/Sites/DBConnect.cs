@@ -26,8 +26,6 @@ namespace ReviewCrawler.Sites
             connection.Close();
         }
 
-        //productRaiting -> productRating
-
         public void InsertReview(string date, string content, double productRating, double reviewRating, string author, int positiveCount,
             int negativeCount, bool verifiedPurchase, bool isCriticReview, string productType, string url, string title)
         {
@@ -35,11 +33,11 @@ namespace ReviewCrawler.Sites
 
             MySqlCommand command = new MySqlCommand("INSERT INTO Review" +
                       "(date,content,productRaiting,reviewRating,author,positiveCount,negativeCount,verifiedPurchase,isCriticReview,productType,url,title)" 
-                      + "VALUES(@date, @content, @productRaiting, @reviewRating, @author, @positiveCount,"
+                      + "VALUES(@date, @content, @productRating, @reviewRating, @author, @positiveCount,"
                       + "@negativeCount, @verifiedPurchase, @isCriticReview, @productType, @url, @title)",connection);
             command.Parameters.AddWithValue("@date", date);
             command.Parameters.AddWithValue("@content", content);
-            command.Parameters.AddWithValue("@productRaiting", productRating);
+            command.Parameters.AddWithValue("@productRating", productRating);
             command.Parameters.AddWithValue("@reviewRating", reviewRating);
             command.Parameters.AddWithValue("@author", author);
             command.Parameters.AddWithValue("@positiveCount", positiveCount);
