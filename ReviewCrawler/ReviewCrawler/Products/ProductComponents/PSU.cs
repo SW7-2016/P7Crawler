@@ -8,14 +8,14 @@ namespace ReviewCrawler.Products.ProductComponents
 {
     class PSU : ComputerComponents
     {
-        string power;
-        string formFactor;
+        string power = "";
+        string formFactor = "";
         bool modular;
-        string brand;
-        string height;
-        string depth;
-        string width;
-        string weight;
+        string brand = "";
+        string height = "";
+        string depth = "";
+        string width = "";
+        string weight = "";
 
         protected override void AddInformation(Dictionary<string, string> productInformation)
         {
@@ -44,10 +44,74 @@ namespace ReviewCrawler.Products.ProductComponents
                     case "bredde":
                         depth = info.Value;
                         break;
-                    case "bybde":
+                    case "dybde":
                         width = info.Value;
                         break;
                 }
+            }
+        }
+
+        public string Power
+        {
+            get
+            {
+                return power;
+            }
+        }
+
+        public string FormFactor
+        {
+            get
+            {
+                return formFactor;
+            }
+        }
+
+        public bool Modular
+        {
+            get
+            {
+                return modular;
+            }
+        }
+
+        public string Brand
+        {
+            get
+            {
+                return brand;
+            }
+        }
+
+        public string Height
+        {
+            get
+            {
+                return height;
+            }
+        }
+
+        public string Depth
+        {
+            get
+            {
+                return depth;
+            }
+        }
+
+        public string Width
+        {
+            get
+            {
+                return width;
+            }
+        }
+
+        public string Weight
+        {
+            get
+            {
+                return weight;
             }
         }
     }

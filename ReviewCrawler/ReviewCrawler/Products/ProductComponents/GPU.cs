@@ -8,14 +8,15 @@ namespace ReviewCrawler.Products.ProductComponents
 {
     class GPU : ComputerComponents
     {
-        string processorManufacturer;
-        string chipset;
-        string model;
-        string architecture;
+        string processorManufacturer = "";
+        string chipset = "";
+        string model = "";
+        string architecture = "";
         int pciSlots;
-        string cooling;
-        string memSize;
-        string manufacturer;
+        string cooling = "";
+        string memSize = "";
+        string manufacturer = "";
+
 
         protected override void AddInformation(Dictionary<string, string> productInformation)
         {
@@ -50,5 +51,69 @@ namespace ReviewCrawler.Products.ProductComponents
                 }
             }
         }
+        public string ProcessorManufacturer
+        {
+            get
+            {
+                return processorManufacturer;
+            }
+        }
+
+        public string Chipset
+        {
+            get
+            {
+                return chipset;
+            }
+        }
+
+        public string Model
+        {
+            get
+            {
+                return model;
+            }
+        }
+
+        public string Architecture
+        {
+            get
+            {
+                return architecture;
+            }
+        }
+
+        public int PciSlots
+        {
+            get
+            {
+                return pciSlots;
+            }
+        }
+
+        public string Cooling
+        {
+            get
+            {
+                return cooling;
+            }
+        }
+
+        public string MemSize
+        {
+            get
+            {
+                return memSize;
+            }
+        }
+
+        public string Manufacturer
+        {
+            get
+            {
+                return manufacturer;
+            }
+        }
+
     }
 }

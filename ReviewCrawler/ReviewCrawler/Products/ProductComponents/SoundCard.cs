@@ -8,10 +8,11 @@ namespace ReviewCrawler.Products.ProductComponents
 {
     class SoundCard : ComputerComponents
     {
-        string type;
-        string speakerSupport;
-        string Socket;
-        string fullDuplex;
+        string type = "";
+        string speakerSupport = "";
+        string socket = "";
+        string fullDuplex = "";
+
 
         protected override void AddInformation(Dictionary<string, string> productInformation)
         {
@@ -26,12 +27,46 @@ namespace ReviewCrawler.Products.ProductComponents
                         speakerSupport = info.Value;
                         break;
                     case "brugerflade":
-                        Socket = info.Value;
+                        socket = info.Value;
                         break;
                     case "full duplex":
                         fullDuplex = info.Value;
                         break;
                 }
+            }
+        }
+
+
+
+        public string Type
+        {
+            get
+            {
+                return type;
+            }
+        }
+
+        public string SpeakerSupport
+        {
+            get
+            {
+                return speakerSupport;
+            }
+        }
+
+        public string Socket
+        {
+            get
+            {
+                return socket;
+            }
+        }
+
+        public string FullDuplex
+        {
+            get
+            {
+                return fullDuplex;
             }
         }
     }
