@@ -23,7 +23,7 @@ namespace ReviewCrawler.Products.ProductComponents
                     case "type":
                         type = info.Value;
                         break;
-                    case "højtalersuppport":
+                    case "højttalersupport":
                         speakerSupport = info.Value;
                         break;
                     case "brugerflade":

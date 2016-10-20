@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ReviewCrawler.Products.ProductComponents
@@ -41,7 +42,7 @@ namespace ReviewCrawler.Products.ProductComponents
                         fans = info.Value;
                         break;
                     case "mærke":
-                        brand = info.Value;
+                        brand = Regex.Replace(info.Value, "(<.*?>)+", "");
                         break;
                     case "vægt":
                         weight = info.Value;

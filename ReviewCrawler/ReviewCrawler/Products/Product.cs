@@ -37,7 +37,6 @@ namespace ReviewCrawler.Products
                 tempValue = tempValue.Replace("</td>", "");
 
                 productInfo.Add(tempType, tempValue);
-
             }
 
             AddInformation(productInfo);
@@ -78,7 +77,7 @@ namespace ReviewCrawler.Products
 
 
                 //find title of product
-                name = Regex.Match(siteData, "<title>.*?-", RegexOptions.Singleline).Value.Replace("<title>", "").Replace("-", "").Trim();
+                name = Regex.Match(siteData, "<title>.*? - sammenlign priser", RegexOptions.Singleline).Value.Replace("<title>", "").Replace("- sammenlign priser", "").Trim();
 
                 retailers.Add(tempRetailer);
             }
