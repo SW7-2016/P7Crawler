@@ -44,6 +44,10 @@ namespace ReviewCrawler.Products
 
         public void ParsePrice(string siteData)
         {
+            //find title of product
+            name = Regex.Match(siteData, "<title>.*? - Sammenlign priser", RegexOptions.Singleline).Value.Replace("<title>", "").Replace("- Sammenlign priser", "").Trim();
+
+            // Find retailers and add to product
             string retailerTag = "<a rel=\"nofollow\" title=\"\" target=\"_blank\" class=\"google-analytic-retailer-data pricelink\" retailer-data=\"";
 
             MatchCollection retailerCode = Regex.Matches(siteData, "(" + retailerTag + "(.*?(\n)*)*<\\/a>)+");
@@ -75,9 +79,6 @@ namespace ReviewCrawler.Products
                 // looking for URL of retailer
                 //Eneste link på siden, er et redirect link der går gennem pricerunner. 
 
-
-                //find title of product
-                name = Regex.Match(siteData, "<title>.*? - sammenlign priser", RegexOptions.Singleline).Value.Replace("<title>", "").Replace("- sammenlign priser", "").Trim();
 
                 retailers.Add(tempRetailer);
             }

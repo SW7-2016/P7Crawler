@@ -13,7 +13,7 @@ namespace ReviewCrawler.Products.ProductComponents
         string clock = "";
         string socket = "";
         bool stockCooler;
-        string cpuSerie = "";
+        string cpuSeries = "";
         int physicalCores;
         int logicalCores;
         string maxTurbo = "";
@@ -27,7 +27,7 @@ namespace ReviewCrawler.Products.ProductComponents
                 switch (info.Key.ToLower())
                 {
                     case "processor serie":
-                        cpuSerie = info.Value;
+                        cpuSeries = info.Value;
                         break;
                     case "processor model":
                         model = info.Value;
@@ -93,11 +93,11 @@ namespace ReviewCrawler.Products.ProductComponents
             }
         }
 
-        public string CpuSerie
+        public string CpuSeries
         {
             get
             {
-                return cpuSerie;
+                return cpuSeries;
             }
         }
 
