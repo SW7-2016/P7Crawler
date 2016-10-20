@@ -42,6 +42,20 @@ namespace ReviewCrawler
             DBConnect newDBConnection = new DBConnect();
 
             newDBConnection.DbInitialize();
+
+            newDBConnection.connection.Open();
+
+            foreach (var product in Crawler.products)
+            {
+                newDBConnection.InsertProduct(product.Value);
+            }
+
+            foreach (var review in Crawler.reviews)
+            {
+                newDBConnection.InsertReview(review.Value);
+            }
+
+            newDBConnection.connection.Close();
         }
     }
 }
