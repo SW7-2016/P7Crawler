@@ -41,13 +41,13 @@ namespace ReviewCrawler.Sites.Sub
                 
             }
      
-            tempReviewLinks = GetReviewLinks(siteData, "<br />", "<a href=\"articles-pages", "<div class=\"content\">", true);
+            tempReviewLinks = GetItemLinks(siteData, "<br />", "<a href=\"articles-pages", "<div class=\"content\">", true);
             foreach (var item in tempReviewLinks)
             {
                 tempSiteKey = GetSiteKey(item);
-                if (reviewQueue.Count < 40)
+                if (itemQueue.Count < 40)
                 {
-                    reviewQueue.Enqueue(item);
+                    itemQueue.Enqueue(item);
                 }
 
                 if (!Crawler.reviews.ContainsKey(tempSiteKey) && Crawler.reviews.Count < 40)
@@ -72,12 +72,12 @@ namespace ReviewCrawler.Sites.Sub
 
                 if (tempLink != domainUrl)
                 {
-                    reviewQueue.Enqueue(tempLink);
+                    itemQueue.Enqueue(tempLink);
                 }
                 else
                 {
                     //GetSiteKey just so happens to give the wanted output, even though it is not used as a key here
-                    reviewQueue.Enqueue(GetSiteKey(currentSite.Replace("articles-pages", "articles-summary")));
+                    itemQueue.Enqueue(GetSiteKey(currentSite.Replace("articles-pages", "articles-summary")));
                 }
             }
 
@@ -168,7 +168,7 @@ namespace ReviewCrawler.Sites.Sub
 
         public override void Parse(string siteData)
         {
-            string siteContentParsed = removeTags(siteData);
+            string siteContentParsed = removeTagsFromReview(siteData);
             string siteKey;
             string[] dataSplit = siteContentParsed.Split('\n');
 

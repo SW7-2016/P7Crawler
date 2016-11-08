@@ -14,25 +14,84 @@ namespace ReviewCrawler.Sites
         public override abstract void CrawlReviewPages(string siteData);
 
 
-        public List<string> GetReviewLinks(string siteData, string firstTagForReviewLink, string secondTagForReviewLink, string splitTag, bool reverse)
+        //Item refers to product/review links
+        public List<string> GetItemLinks(string siteData, string firstTagForItemLink, string secondTagForItemLink, string splitTag, bool reverse)
         {
-            List<string> reviewLinks = new List<string>();
+            List<string> itemLinks = new List<string>();
 
-            string[] splitOnProducts = siteData.Split(new string[] { splitTag }, StringSplitOptions.None);
-            string tempReviewLink;
+            string[] splitOnItems = siteData.Split(new string[] { splitTag }, StringSplitOptions.None);
+            string tempItemLink;
 
-            foreach (var item in splitOnProducts)
+            foreach (var item in splitOnItems)
             {
-                tempReviewLink = GetSearchLinks(item, firstTagForReviewLink, secondTagForReviewLink, reverse);
+                tempItemLink = GetSearchLinks(item, firstTagForItemLink, secondTagForItemLink, reverse);
 
-                if (tempReviewLink != domainUrl)
+                if (tempItemLink != domainUrl)
                 {
-                    reviewLinks.Add(tempReviewLink);
+                    itemLinks.Add(tempItemLink);
                 }
 
             }
+            return itemLinks;
+        }
 
-            return reviewLinks;
+        public string GetSearchLinks(string siteData, string firstIdentifier, string secondIdentifier, bool reverse)
+        {
+            string newSearchLink = "";
+            string tempString = "";
+            bool linkFound = false;
+            bool copyLink = false;
+            siteData = siteData.ToLower();
+
+            string[] lines = siteData.Split('\n');
+
+            int firstLineModifier = 0;
+            int secondLineModifier = 1;
+
+            if (reverse)
+            {
+                firstLineModifier = 1;
+                secondLineModifier = 0;
+            }
+
+            for (int i = 0; i < lines.Length - 1; i++)
+            {
+                if (lines[i + firstLineModifier].Contains(firstIdentifier) && lines[i + secondLineModifier].Contains(secondIdentifier))
+                {
+                    for (int j = 0; j < lines[i + secondLineModifier].Length; j++)
+                    {
+                        if (copyLink == true)
+                        {
+                            if ((lines[i + secondLineModifier])[j] == '"')
+                            {
+                                break;
+                            }
+                            tempString += (lines[i + secondLineModifier])[j];
+                        }
+
+                        if ((lines[i + secondLineModifier])[j] == 'h'
+                            && (lines[i + secondLineModifier])[j + 1] == 'r'
+                            && (lines[i + secondLineModifier])[j + 2] == 'e'
+                            && (lines[i + secondLineModifier])[j + 3] == 'f')
+                        {
+                            linkFound = true;
+                        }
+                        if (linkFound == true && (lines[i + secondLineModifier])[j] == '"')
+                        {
+                            copyLink = true;
+                        }
+
+                    }
+                }
+                if (copyLink == true)
+                {
+                    break;
+                }
+            }
+
+            newSearchLink = (domainUrl + tempString);
+
+            return newSearchLink;
         }
 
     }

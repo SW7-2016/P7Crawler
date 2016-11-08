@@ -50,7 +50,7 @@ namespace ReviewCrawler.Sites.Sub
             }
 
             //Finding the review links from a page.
-            List<string> siteReviewLinks = GetReviewLinks(siteData
+            List<string> siteReviewLinks = GetItemLinks(siteData
                 , "<p class=\"button\"><a class=\"button-a\" href=\""
                 , "<a class=\"retailers\" href=\""
                 , "<a class=\"add\" href=\"#\" style=\"display:none\" title=\"Tilføj til min liste\">"
@@ -58,8 +58,8 @@ namespace ReviewCrawler.Sites.Sub
             //Adding links to the queue
             foreach (string link in siteReviewLinks)
             {
-                reviewQueue.Enqueue(link);
-                reviewQueue.Enqueue(@"http://www.pricerunner.dk/pi" + GetSiteKey(link) + "-Produkt-Info");
+                itemQueue.Enqueue(link);
+                itemQueue.Enqueue(@"http://www.pricerunner.dk/pi" + GetSiteKey(link) + "-Produkt-Info");
             }
         }
 

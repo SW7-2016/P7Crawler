@@ -80,7 +80,7 @@ namespace ReviewCrawler
 
              SiteGuru3d dub = new SiteGuru3d();
 
-            dub.removeTags(result);
+            dub.removeTagsFromReview(result);
         }
     }
 }

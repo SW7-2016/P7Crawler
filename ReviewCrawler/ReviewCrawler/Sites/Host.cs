@@ -17,7 +17,7 @@ namespace ReviewCrawler.Sites
         protected DateTime robotsTimeStamp;
         protected string domainUrl = "";
         private List<string> disallow = new List<string>();
-        protected Queue<string> reviewQueue = new Queue<string>();
+        protected Queue<string> itemQueue = new Queue<string>(); //itemQueue refers to products/reviews
         protected Queue<string> searchQueue = new Queue<string>();
         protected string currentSite;
 
@@ -25,6 +25,7 @@ namespace ReviewCrawler.Sites
         public abstract void CrawlPage(string siteData);
         public abstract string GetSiteKey(string url);
         public abstract void CrawlReviewPages(string siteData);
+        public abstract string GetProductType(string tempLink);
 
         public bool StartCycle()
         {
@@ -35,10 +36,10 @@ namespace ReviewCrawler.Sites
                 isReview = false;
                 currentSite = searchQueue.Dequeue().ToLower();
             }
-            else if (reviewQueue.Count > 0)
+            else if (itemQueue.Count > 0)
             {
                 isReview = true;
-                currentSite = reviewQueue.Dequeue().ToLower();
+                currentSite = itemQueue.Dequeue().ToLower();
             }
             else
             {
@@ -164,94 +165,6 @@ namespace ReviewCrawler.Sites
                 Debug.WriteLine(domain + "does not contain /robots.txt!");
             }
         }
-
-
-
-        public string GetSearchLinks(string siteData, string firstIdentifier, string secondIdentifier, bool reverse)
-        {
-            string newSearchLink = "";
-            string tempString = "";
-            bool linkFound = false;
-            bool copyLink = false;
-            siteData = siteData.ToLower();
-
-            string[] lines = siteData.Split('\n');
-
-            int firstLineModifier = 0;
-            int secondLineModifier = 1;
-
-            if (reverse)
-            {
-                firstLineModifier = 1;
-                secondLineModifier = 0;
-            }
-
-            for (int i = 0; i < lines.Length - 1; i++)
-            {
-                if (lines[i + firstLineModifier].Contains(firstIdentifier) && lines[i + secondLineModifier].Contains(secondIdentifier))
-                {
-                    for (int j = 0; j < lines[i + secondLineModifier].Length; j++)
-                    {
-                        if (copyLink == true)
-                        {
-                            if ((lines[i + secondLineModifier])[j] == '"')
-                            {
-                                break;
-                            }
-                            tempString += (lines[i + secondLineModifier])[j];
-                        }
-
-                        if ((lines[i + secondLineModifier])[j] == 'h'
-                            && (lines[i + secondLineModifier])[j + 1] == 'r'
-                            && (lines[i + secondLineModifier])[j + 2] == 'e'
-                            && (lines[i + secondLineModifier])[j + 3] == 'f')
-                        {
-                            linkFound = true;
-                        }
-                        if (linkFound == true && (lines[i + secondLineModifier])[j] == '"')
-                        {
-                            copyLink = true;
-                        }
-
-                    }
-                }
-                if (copyLink == true)
-                {
-                    break;
-                }
-            }
-
-            newSearchLink = (domainUrl + tempString);
-
-            return newSearchLink;
-        }
-
-        public string removeTags(string siteData)
-        {
-
-            string tempString = "";
-
-            foreach (Match item in Regex.Matches(siteData, "((<p>|<p style|<p align=\"left\">).*?(<\\/p>))+", RegexOptions.IgnoreCase))
-            {
-                tempString += item + "\n";
-            }
-
-            Regex newlineAdd = new Regex("<br />", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-            Regex regexHtml = new Regex("(<.*?>)+", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-            Regex apostropheRemover = new Regex("\\&rsquo\\;", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-            Regex garbageRemover = new Regex("\\&nbsp\\;", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-            tempString = newlineAdd.Replace(tempString, "\n");
-            tempString = regexHtml.Replace(tempString, "");
-            tempString = apostropheRemover.Replace(tempString, "");
-            tempString = garbageRemover.Replace(tempString, " ");
-
-            tempString += "\n";     
-
-            return tempString;
-        }
-
-        public abstract string GetProductType(string tempLink);
-
     }
 }
 
