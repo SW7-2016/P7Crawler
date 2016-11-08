@@ -10,19 +10,19 @@ using ReviewCrawler.Products.Retailers;
 
 namespace ReviewCrawler.Sites.Sub
 {
-    class SitePriceRunner : Host
+    class SitePriceRunner : ProductSite
     {
 
         public SitePriceRunner()
         {
             domainUrl = "http://www.pricerunner.dk";
             //searchQueue.Enqueue("http://www.pricerunner.dk/cl/35/Bundkort");
-            //searchQueue.Enqueue("http://www.pricerunner.dk/cl/40/CPU");
+            searchQueue.Enqueue("http://www.pricerunner.dk/cl/40/CPU");
             //searchQueue.Enqueue("http://www.pricerunner.dk/cl/37/Grafikkort");
-            //searchQueue.Enqueue("http://www.pricerunner.dk/cl/36/Harddiske");
+            //searchQueue.Enqueue("http://www.pricerunner.dk/cl/36/Harddiske"); ///////////////////7
             //searchQueue.Enqueue("http://www.pricerunner.dk/cl/186/Kabinetter");
             //searchQueue.Enqueue("http://www.pricerunner.dk/cl/48/Lydkort");
-            searchQueue.Enqueue("http://www.pricerunner.dk/cl/640/Stroemforsyninger");
+            //searchQueue.Enqueue("http://www.pricerunner.dk/cl/640/Stroemforsyninger");
         }
 
         public override void CrawlReviewPages(string siteData)
@@ -38,8 +38,8 @@ namespace ReviewCrawler.Sites.Sub
             string paginatorData = FindPaginator(siteData);
             int pageNumber = FindPageNumber();
 
-            //tempLink = GetSearchLinks(paginatorData, "<span>" + pageNumber + "</span>", "href", false);
-            tempLink = domainUrl;
+            tempLink = GetSearchLinks(paginatorData, "<span>" + pageNumber + "</span>", "href", false);
+            //tempLink = domainUrl;
             if (tempLink != domainUrl)
             {
                 searchQueue.Enqueue(tempLink);

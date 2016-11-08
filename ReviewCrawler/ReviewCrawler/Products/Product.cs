@@ -40,6 +40,7 @@ namespace ReviewCrawler.Products
             }
 
             AddInformation(productInfo);
+            //databasethis(this);
         }
 
         public void ParsePrice(string siteData)
@@ -54,7 +55,10 @@ namespace ReviewCrawler.Products
 
             foreach (Match oneRetailerCode in retailerCode)//""("
             {
-                if (oneRetailerCode.Value == "") { break; }
+                if (oneRetailerCode.Value == "")
+                {
+                    break;
+                }
                 Retailer tempRetailer = new Retailer();
 
                 // looking for name of retailer
@@ -79,8 +83,11 @@ namespace ReviewCrawler.Products
                 // looking for URL of retailer
                 //Eneste link på siden, er et redirect link der går gennem pricerunner. 
 
-
-                retailers.Add(tempRetailer);
+                if (tempRetailer.name != "")
+                {
+                    retailers.Add(tempRetailer);
+                }
+                
             }
         }
     }

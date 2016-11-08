@@ -10,7 +10,7 @@ using System.IO;
 
 namespace ReviewCrawler.Sites.Sub
 {
-    class SiteGuru3d : Host
+    class SiteGuru3d : ReviewSite
     {
         double maxRating = 5;
 
@@ -18,12 +18,12 @@ namespace ReviewCrawler.Sites.Sub
         {
             domainUrl = "http://www.guru3d.com/";
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/videocards.html");
-            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/processors.html");
+            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/processors.html");
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/soundcards-and-speakers.html");
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/mainboards.html");
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd).html");
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/pc-cases-and-modding.html");
-            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/psu-power-supply-units.html");
+            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/psu-power-supply-units.html");
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/cooling.html");
         }
 
@@ -36,21 +36,23 @@ namespace ReviewCrawler.Sites.Sub
             tempLink = GetSearchLinks(siteData, "pagelinkselected", "pagelink", false); //Returns domainUrl if no link is found
             if (tempLink != domainUrl)
             {
+
                 searchQueue.Enqueue(tempLink);
+                
             }
      
             tempReviewLinks = GetReviewLinks(siteData, "<br />", "<a href=\"articles-pages", "<div class=\"content\">", true);
             foreach (var item in tempReviewLinks)
             {
                 tempSiteKey = GetSiteKey(item);
-                if (reviewQueue.Count < 4)
+                if (reviewQueue.Count < 40)
                 {
                     reviewQueue.Enqueue(item);
                 }
 
-                if (!Crawler.reviews.ContainsKey(tempSiteKey))
+                if (!Crawler.reviews.ContainsKey(tempSiteKey) && Crawler.reviews.Count < 40)
                 {
-                    Crawler.reviews.Add(tempSiteKey, new Review(item, GetProductType(currentSite)));
+                    Crawler.reviews.Add(tempSiteKey, new Review(item, GetProductType(currentSite), true));
                 }
 
 
@@ -107,7 +109,6 @@ namespace ReviewCrawler.Sites.Sub
             }
 
         }*/
-
 
         public override string GetSiteKey(string url)
         {
@@ -174,8 +175,8 @@ namespace ReviewCrawler.Sites.Sub
             if (!currentSite.Contains("articles-summary"))
             {
                 siteKey = GetSiteKey(currentSite);
-                siteContentParsed = removeTags(siteData);
-                dataSplit = siteContentParsed.Split('\n');
+                //siteContentParsed = removeTags(siteData);
+                //dataSplit = siteContentParsed.Split('\n');
 
                 if (Crawler.reviews.ContainsKey(siteKey))
                 {
@@ -183,7 +184,7 @@ namespace ReviewCrawler.Sites.Sub
 
                     if (currentSite.Contains(",1.html"))
                     {
-                        Crawler.reviews[siteKey].title = dataSplit[0];
+                        Crawler.reviews[siteKey].title = GetTitle(siteData);
                         Crawler.reviews[siteKey].productRating = GetRating(siteData);
                         Crawler.reviews[siteKey].maxRating = maxRating;
                         Crawler.reviews[siteKey].crawlDate = DateTime.Now;
@@ -200,8 +201,20 @@ namespace ReviewCrawler.Sites.Sub
                     Crawler.reviews[siteKey].comments = GetReviewComments(siteData);
                 }
             }
-
             
+            
+        }
+
+        public string GetTitle(string data)
+        {
+            string result = "";
+
+            result = Regex.Match(data, "<meta itemprop=\"name\" property=\"og:title\" content=\".*?/>", RegexOptions.Singleline).Value;
+
+            result = result.Replace("<meta itemprop=\"name\" property=\"og:title\" content=\"", "");
+            result = result.Replace("\" />", "");
+
+            return result;
         }
 
         public List<ReviewComment> GetReviewComments(string siteData)

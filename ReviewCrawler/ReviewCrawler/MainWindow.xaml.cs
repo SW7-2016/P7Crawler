@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ReviewCrawler.Sites;
+using System.IO;
+using ReviewCrawler.Sites.Sub;
 
 namespace ReviewCrawler
 {
@@ -49,13 +51,36 @@ namespace ReviewCrawler
             {
                 newDBConnection.InsertProduct(product.Value);
             }
-
+            
             foreach (var review in Crawler.reviews)
             {
                 newDBConnection.InsertReview(review.Value);
             }
 
+
+
+
+
             newDBConnection.connection.Close();
+        }
+
+        private void test_bt_Click(object sender, RoutedEventArgs e)
+        {
+            string result = "";
+            using (StreamReader inputFile = new StreamReader(@"C:\Users\Malthe\Desktop\Damp.txt"))
+            {
+
+                while (!inputFile.EndOfStream)
+                {
+
+                    result += inputFile.ReadLine();
+
+                }
+            }
+
+             SiteGuru3d dub = new SiteGuru3d();
+
+            dub.removeTags(result);
         }
     }
 }

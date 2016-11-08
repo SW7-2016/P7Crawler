@@ -20,8 +20,6 @@ namespace ReviewCrawler.Sites
         protected Queue<string> reviewQueue = new Queue<string>();
         protected Queue<string> searchQueue = new Queue<string>();
         protected string currentSite;
-        
-
 
         public abstract void Parse(string siteData);
         public abstract void CrawlPage(string siteData);
@@ -167,26 +165,7 @@ namespace ReviewCrawler.Sites
             }
         }
 
-        public List<string> GetReviewLinks(string siteData, string firstTagForReviewLink, string secondTagForReviewLink, string splitTag, bool reverse)
-        {
-            List<string> reviewLinks = new List<string>();
 
-            string[] splitOnProducts = siteData.Split(new string[] { splitTag }, StringSplitOptions.None);
-            string tempReviewLink;
-
-            foreach (var item in splitOnProducts)
-            {
-                tempReviewLink = GetSearchLinks(item, firstTagForReviewLink, secondTagForReviewLink, reverse);
-
-                if (tempReviewLink != domainUrl)
-                {
-                    reviewLinks.Add(tempReviewLink);
-                }
-
-            }
-
-            return reviewLinks;
-        }
 
         public string GetSearchLinks(string siteData, string firstIdentifier, string secondIdentifier, bool reverse)
         {
@@ -252,27 +231,26 @@ namespace ReviewCrawler.Sites
 
             string tempString = "";
 
-            foreach (Match item in Regex.Matches(siteData, "((<p>|<p style).*?(<\\/p>))+"))
+            foreach (Match item in Regex.Matches(siteData, "((<p>|<p style|<p align=\"left\">).*?(<\\/p>))+", RegexOptions.IgnoreCase))
             {
                 tempString += item + "\n";
             }
 
-            Regex newlineAdd = new Regex("<br />", RegexOptions.Singleline);
-            Regex regexHtml = new Regex("(<.*?>)+", RegexOptions.Singleline);
-            Regex apostropheRemover = new Regex("\\&rsquo\\;", RegexOptions.Singleline);
-            Regex garbageRemover = new Regex("\\&nbsp\\;", RegexOptions.Singleline);
+            Regex newlineAdd = new Regex("<br />", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            Regex regexHtml = new Regex("(<.*?>)+", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            Regex apostropheRemover = new Regex("\\&rsquo\\;", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            Regex garbageRemover = new Regex("\\&nbsp\\;", RegexOptions.Singleline | RegexOptions.IgnoreCase);
             tempString = newlineAdd.Replace(tempString, "\n");
             tempString = regexHtml.Replace(tempString, "");
             tempString = apostropheRemover.Replace(tempString, "");
             tempString = garbageRemover.Replace(tempString, " ");
 
-            tempString += "\n";
+            tempString += "\n";     
 
             return tempString;
         }
 
         public abstract string GetProductType(string tempLink);
-
 
     }
 }

@@ -20,16 +20,30 @@ namespace ReviewCrawler.Products.Reviews
         public List<string> cons;
         public string author;
         public string url;
-        public List<ReviewComment> comments;
-        public ReviewReception reception;
+        public List<ReviewComment> comments = new List<ReviewComment>();
+        public ReviewReception reception = new ReviewReception();
         public double reviewRating;
         public bool verifiedPurchase;
         public double maxRating;
 
-        public Review(string Url, string PType)
+        public Review(string Url, string PType, bool IsCriticReview)
         {
             productType = PType;
             url = Url;
+            reception.positive = 0;
+            reception.negative = 0;
+
+            title = "unknown";
+            isCriticReview = IsCriticReview;
+            reviewDate = DateTime.Now;
+            crawlDate = DateTime.Now;
+            content = "";
+            productRating = 0;
+            author = "unknown";
+            reviewRating = 0;
+            verifiedPurchase = false;
+
+
         }
 
         public string ProductType
@@ -59,5 +73,6 @@ namespace ReviewCrawler.Products.Reviews
                 }
             }
         }
+
     }
 }

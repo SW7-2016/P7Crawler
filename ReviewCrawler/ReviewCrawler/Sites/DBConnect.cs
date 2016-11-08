@@ -11,6 +11,7 @@ using ReviewCrawler.Products.Retailers;
 using ReviewCrawler.Products.ProductComponents;
 using ReviewCrawler.Products;
 using System.Threading;
+using System.Diagnostics;
 
 namespace ReviewCrawler.Sites
 {
@@ -29,35 +30,62 @@ namespace ReviewCrawler.Sites
 
         public void InsertReview(Review review)
         {
-
-            MySqlCommand command = new MySqlCommand("INSERT INTO Review" +
-                      "(date,content,productRating,reviewRating,author,positiveCount,negativeCount,verifiedPurchase,isCriticReview,productType,url,title,maxRating)" 
-                      + "VALUES(@date, @content, @productRating, @reviewRating, @author, @positiveCount,"
-                      + "@negativeCount, @verifiedPurchase, @isCriticReview, @productType, @url, @title, @maxRating)", connection);
-            command.Parameters.AddWithValue("@date", review.reviewDate);
-            command.Parameters.AddWithValue("@content", review.content);
-            command.Parameters.AddWithValue("@productRating", review.productRating);
-            command.Parameters.AddWithValue("@reviewRating", review.reviewRating);
-            command.Parameters.AddWithValue("@author", review.author);
-            command.Parameters.AddWithValue("@positiveCount", review.reception.positive);
-            command.Parameters.AddWithValue("@negativeCount", review.reception.negative);
-            command.Parameters.AddWithValue("@verifiedPurchase", review.verifiedPurchase);
-            command.Parameters.AddWithValue("@isCriticReview", review.isCriticReview);
-            command.Parameters.AddWithValue("@productType", review.productType);
-            command.Parameters.AddWithValue("@url", review.url);
-            command.Parameters.AddWithValue("@title", review.title);
-            command.Parameters.AddWithValue("@maxRating", review.maxRating);
-
-            command.ExecuteNonQuery();
-
-            int ID = GetReviewID(review.url);
-
-            foreach (ReviewComment comment in review.comments)
+            if (!DoesReviewExist(review))
             {
-                InsertReviewComment(comment, ID);
+                MySqlCommand command = new MySqlCommand("INSERT INTO Review" +
+                          "(reviewDate, crawlDate, content,productRating,reviewRating,author,positiveCount,negativeCount,verifiedPurchase,isCriticReview,productType,url,title,maxRating)"
+                          + "VALUES(@reviewDate, @crawlDate, @content, @productRating, @reviewRating, @author, @positiveCount,"
+                          + "@negativeCount, @verifiedPurchase, @isCriticReview, @productType, @url, @title, @maxRating)", connection);
+                command.Parameters.AddWithValue("@reviewDate", DateToString(review.reviewDate));
+                command.Parameters.AddWithValue("@crawlDate", DateToString(review.crawlDate));
+                command.Parameters.AddWithValue("@content", review.content);
+                command.Parameters.AddWithValue("@productRating", review.productRating);
+                command.Parameters.AddWithValue("@reviewRating", review.reviewRating);
+                command.Parameters.AddWithValue("@author", review.author);
+                command.Parameters.AddWithValue("@positiveCount", review.reception.positive);
+                command.Parameters.AddWithValue("@negativeCount", review.reception.negative);
+                command.Parameters.AddWithValue("@verifiedPurchase", review.verifiedPurchase);
+                command.Parameters.AddWithValue("@isCriticReview", review.isCriticReview);
+                command.Parameters.AddWithValue("@productType", review.productType);
+                command.Parameters.AddWithValue("@url", review.url);
+                command.Parameters.AddWithValue("@title", review.title);
+                command.Parameters.AddWithValue("@maxRating", review.maxRating);
+
+                command.ExecuteNonQuery();
+
+                int ID = GetReviewID(review.url);
+
+                foreach (ReviewComment comment in review.comments)
+                {
+                    InsertReviewComment(comment, ID);
+                }
+            }
+            else
+            {
+                Debug.WriteLine("Review " + review.url + " does already exist");
             }
         }
 
+        public bool DoesReviewExist(Review review)
+        {
+            MySqlCommand command = new MySqlCommand("SELECT * FROM Review WHERE url=@url", connection);
+            command.Parameters.AddWithValue("@url", review.url);
+
+            if (command.ExecuteScalar() == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+
+        }
+
+        private string DateToString(DateTime date)
+        {
+            return date.Year + "-" + date.Month + "-" + date.Day;
+        }
 
         private void InsertReviewComment(ReviewComment comment, int ID)
         {
@@ -68,51 +96,78 @@ namespace ReviewCrawler.Sites
             command.Parameters.AddWithValue("@content", comment.content);
             command.Parameters.AddWithValue("@rating", comment.rating);
             command.ExecuteNonQuery();
+            
         }
 
         private int GetReviewID(string url)
         {
-            MySqlCommand command = new MySqlCommand("SELECT ID FROM Review WHERE url=@url", connection);
+            MySqlCommand command = new MySqlCommand("SELECT ReviewID FROM Review WHERE url=@url", connection);
             command.Parameters.AddWithValue("@url", url);
 
             MySqlDataReader reader = command.ExecuteReader();
 
             reader.Read();
 
-            return (int)reader.GetValue(0);
+            int result = (int)reader.GetValue(0);
+
+            reader.Close();
+
+            return result;
         }
 
 
+        public bool DoesProductExist(Product product)
+        {
+            MySqlCommand command = new MySqlCommand("SELECT * FROM Product WHERE name=@name", connection);
+            command.Parameters.AddWithValue("@name", product.name);
+
+            if (command.ExecuteScalar() == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+
+        }
 
         public void InsertProduct(Product product)
         {
-            MySqlCommand command = new MySqlCommand("INSERT INTO Product" +
-          "(description, name)" +
-          "VALUES(@description, @name)", connection);
-            command.Parameters.AddWithValue("@description", product.description);
-            command.Parameters.AddWithValue("@name", product.name);
-            command.ExecuteNonQuery();
 
-            int RID;
-
-            int PID = GetProductID(product.name);
-
-            
-            InsertComponent(product, PID);
-            
-
-            foreach (var retailer in product.retailers)
+            if (!DoesProductExist(product))
             {
-                if (!RetailerExists(retailer.name))
+                MySqlCommand command = new MySqlCommand("INSERT INTO Product" +
+              "(description, name)" +
+              "VALUES(@description, @name)", connection);
+                command.Parameters.AddWithValue("@description", product.description);
+                command.Parameters.AddWithValue("@name", product.name);
+                command.ExecuteNonQuery();
+
+                int RID;
+
+                int PID = GetProductID(product.name);
+
+
+                InsertComponent(product, PID);
+
+
+                foreach (var retailer in product.retailers)
                 {
-                    InsertRetailer(retailer.name);
+                    if (!RetailerExists(retailer.name))
+                    {
+                        InsertRetailer(retailer.name);
+                    }
+
+                    RID = GetRetailerID(retailer.name);
+
+                    InsertProductRetailer(retailer, RID, PID);
                 }
-
-                RID = GetRetailerID(retailer.name);
-                 
-                InsertProductRetailer(retailer, RID, PID);
             }
-
+            else
+            {
+                Debug.WriteLine("product " + product.name + " does already exist");
+            }
         }
 
         private void InsertComponent(Product product, int PID)
@@ -290,16 +345,16 @@ namespace ReviewCrawler.Sites
         {
 
             MySqlCommand command = new MySqlCommand("INSERT INTO CPU" +
-                      "(ProductID, model, clock, maxTurbo, integratedGpu, stockCooler, manufacturer, cpuType, logicalCores, physicalCores)" +
-                      "VALUES(@ProductID, @model, @clock, @maxTurbo, @integratedGpu, @stockcooler, @manufacturer, @cpuType, @logicalCores, @physicalCores)", connection);
+                      "(ProductID, model, clock, maxTurbo, integratedGpu, stockCooler, manufacturer, cpuSeries, logicalCores, physicalCores)" +
+                      "VALUES(@ProductID, @model, @clock, @maxTurbo, @integratedGpu, @stockcooler, @manufacturer, @cpuSeries, @logicalCores, @physicalCores)", connection);
             command.Parameters.AddWithValue("@ProductID", PID);
             command.Parameters.AddWithValue("@model", cpu.Model);
             command.Parameters.AddWithValue("@clock", cpu.Clock);
             command.Parameters.AddWithValue("@maxTurbo", cpu.MaxTurbo);
             command.Parameters.AddWithValue("@integratedGpu", cpu.IntegratedGpu);
-            command.Parameters.AddWithValue("@stockCoolor", cpu.StockCooler);
+            command.Parameters.AddWithValue("@stockCooler", cpu.StockCooler);
             command.Parameters.AddWithValue("@manufacturer", cpu.Manufacturer );
-            command.Parameters.AddWithValue("@cpuType", cpu.CpuSeries);
+            command.Parameters.AddWithValue("@cpuSeries", cpu.CpuSeries);
             command.Parameters.AddWithValue("@logicalCores", cpu.LogicalCores);
             command.Parameters.AddWithValue("@physicalCores", cpu.PhysicalCores);
 

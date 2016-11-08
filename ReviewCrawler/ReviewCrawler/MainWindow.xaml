@@ -9,6 +9,7 @@
     <Grid>
         <Button x:Name="crawl_bt" Content="CRAWL" HorizontalAlignment="Left" Height="53" Margin="81,245,0,0" VerticalAlignment="Top" Width="390" FontSize="40" FontWeight="Bold" Click="crawl_bt_Click"/>
         <Button x:Name="sendDataTest_bt" Content="Button" HorizontalAlignment="Left" Height="138" Margin="105,46,0,0" VerticalAlignment="Top" Width="301" Click="sendDataTest_bt_Click"/>
+        <Button x:Name="test_bt" Content="test" HorizontalAlignment="Left" Height="91" Margin="21,66,0,0" VerticalAlignment="Top" Width="48" Click="test_bt_Click"/>
 
     </Grid>
 </Window>

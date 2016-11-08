@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ReviewCrawler.Sites.Sub
 {
-    class SiteBitTech : Host
+    class SiteBitTech : ReviewSite
     {
 
         public override void CrawlPage(string siteData)
