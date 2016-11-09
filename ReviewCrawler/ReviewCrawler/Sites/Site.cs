@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ReviewCrawler.Sites
@@ -13,6 +14,26 @@ namespace ReviewCrawler.Sites
         public override abstract string GetSiteKey(string url);
         public override abstract void CrawlReviewPages(string siteData);
 
+        public string regexMatch(string data, string start, string end)
+        {
+            Match match = Regex.Match(data, start + ".*?" + end);
+            return match.Value.Replace(start, "").Replace(end, "").Trim();
+        }
+
+        public string[] regexMatches(string data, string start, string end)
+        {
+            MatchCollection matches = Regex.Matches(data, start + ".*?" + end);
+
+            string[] result = new string[matches.Count];
+            int i = 0;
+
+            foreach (Match match in matches)
+            {
+                result[i++] = match.Value.Replace(start, "").Replace(end, "").Trim();
+            }
+
+            return result;
+        }
 
         //Item refers to product/review links
         public List<string> GetItemLinks(string siteData, string firstTagForItemLink, string secondTagForItemLink, string splitTag, bool reverse)

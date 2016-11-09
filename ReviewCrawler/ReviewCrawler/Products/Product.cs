@@ -5,6 +5,8 @@ using System.Text.RegularExpressions;
 
 namespace ReviewCrawler.Products
 {
+
+    //HUSK at ram indeholder 2x model. fix det.
     abstract class Product
     {
         public string name;
@@ -90,5 +92,11 @@ namespace ReviewCrawler.Products
                 
             }
         }
+
+        //edbpriser match title -> <h1 class=\"product-details-header\" itemprop=\"name\">.*?</h1>        //edbpriser match alle retailers -> <div class=\"ProductDealerList\">.*?        //edbpriser matches pris -> <td><strong>.*? kr</strong></td>
+        //edbpriser matches navn -> <div class=\"vendor-name\">.*?</div>   + html remove (<REMOVE>) + trim() + TEST DET
+
+        //edbpriser matches spec tables -> <td class=\"headline\" colspan=.*?</table>        //edbpriser matches specs ->  <tr class=\"sec\">.*?</tr>        //edbpriser match spec navn -> <td class=\"spec\">.*?</td>
+        //edbpriser match spec value -> <td>.*?</td>
     }
 }
