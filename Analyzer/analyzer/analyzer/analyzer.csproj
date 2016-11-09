@@ -77,19 +77,16 @@
     <Compile Include="Products\ComputerComponents.cs" />
     <Compile Include="Products\Product.cs" />
     <Compile Include="Products\ProductComponents\Chassis.cs" />
-    <Compile Include="Products\ProductComponents\Cooling.cs" />
     <Compile Include="Products\ProductComponents\CPU.cs" />
     <Compile Include="Products\ProductComponents\GPU.cs" />
     <Compile Include="Products\ProductComponents\HardDrive.cs" />
     <Compile Include="Products\ProductComponents\Motherboard.cs" />
     <Compile Include="Products\ProductComponents\PSU.cs" />
     <Compile Include="Products\ProductComponents\RAM.cs" />
-    <Compile Include="Products\ProductComponents\SoundCard.cs" />
     <Compile Include="Products\Retailers\Retailer.cs" />
     <Compile Include="Products\Reviews\CriticReview.cs" />
     <Compile Include="Products\Reviews\Review.cs" />
     <Compile Include="Products\Reviews\ReviewComment.cs" />
-    <Compile Include="Products\Reviews\ReviewReception.cs" />
     <Compile Include="Products\Reviews\UserReview.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

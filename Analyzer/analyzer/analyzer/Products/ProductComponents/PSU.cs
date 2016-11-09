@@ -18,40 +18,6 @@ namespace analyzer.Products.ProductComponents
         string width = "";
         string weight = "";
 
-        protected override void AddInformation(Dictionary<string, string> productInformation)
-        {
-            foreach (KeyValuePair<string, string> info in productInformation)
-            {
-                switch (info.Key.ToLower())
-                {
-                    case "effekt":
-                        power = info.Value;
-                        break;
-                    case "formfaktor":
-                        formFactor = info.Value;
-                        break;
-                    case "modularitet":
-                        modular = (info.Value.ToLower() == "ja") ? true : false;
-                        break;
-                    case "mærke":
-                        brand = Regex.Replace(info.Value, "(<.*?>)+", "");
-                        break;
-                    case "vægt":
-                        weight = info.Value;
-                        break;
-                    case "højde":
-                        height = info.Value;
-                        break;
-                    case "bredde":
-                        depth = info.Value;
-                        break;
-                    case "dybde":
-                        width = info.Value;
-                        break;
-                }
-            }
-        }
-
         public string Power
         {
             get

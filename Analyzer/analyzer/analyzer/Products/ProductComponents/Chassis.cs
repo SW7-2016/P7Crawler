@@ -20,46 +20,6 @@ namespace analyzer.Products.ProductComponents
         string depth = "";
         string width = "";
 
-        protected override void AddInformation(Dictionary<string, string> productInformation)
-        {
-            foreach (KeyValuePair<string, string> info in productInformation)
-            {
-                switch (info.Key.ToLower())
-                {
-                    case "type":
-                        type = info.Value;
-                        break;
-                    case "atx":
-                        atx = (info.Value.ToLower() == "ja") ? true : false;
-                        break;
-                    case "micro-atx":
-                        miniAtx = (info.Value.ToLower() == "ja") ? true : false;
-                        break;
-                    case "mini-itx":
-                        miniItx = (info.Value.ToLower() == "ja") ? true : false;
-                        break;
-                    case "blæsere":
-                        fans = info.Value;
-                        break;
-                    case "mærke":
-                        brand = Regex.Replace(info.Value, "(<.*?>)+", "");
-                        break;
-                    case "vægt":
-                        weight = info.Value;
-                        break;
-                    case "højde":
-                        height = info.Value;
-                        break;
-                    case "bredde":
-                        depth = info.Value;
-                        break;
-                    case "dybde":
-                        width = info.Value;
-                        break;
-                }
-            }
-        }
-
         public string Type
         {
             get

@@ -8,23 +8,16 @@ namespace analyzer.Products.Reviews
 {
     class ReviewComment
     {
-        private int _reviewId;
-        private string _content;
-        private double _rating;
-
-        public ReviewComment(int id, int reviewId, string content, double rating)
+        public ReviewComment(int id, int reviewId, string content)
         {
             Id = id;
             ReviewId = reviewId;
             Content = content;
-            Rating = rating;
         }
 
         public int Id { get; }
         public int ReviewId { get; }
         public string Content { get; }
-        public double Rating { get; }
-
     }
 }
 

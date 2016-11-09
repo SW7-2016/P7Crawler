@@ -21,50 +21,6 @@ namespace analyzer.Products.ProductComponents
         string depth = "";
         string width = "";
 
-
-        protected override void AddInformation(Dictionary<string, string> productInformation)
-        {
-            foreach (KeyValuePair<string, string> info in productInformation)
-            {
-                switch (info.Key.ToLower())
-                {
-                    case "intern/ ekstern":
-                        isInternal = (info.Value.ToLower() == "intern") ? true : false;
-                        break;
-                    case "type":
-                        type = info.Value;
-                        break;
-                    case "formfaktor":
-                        formFactor = info.Value;
-                        break;
-                    case "harddisk størrelse":
-                        capacity = info.Value;
-                        break;
-                    case "cachehukommelse":
-                        cacheSize = info.Value;
-                        break;
-                    case "transfer rate":
-                        transferRate = info.Value;
-                        break;
-                    case "mærke":
-                        brand = Regex.Replace(info.Value, "(<.*?>)+", "");
-                        break;
-                    case "sata":
-                        sata = info.Value;
-                        break;
-                    case "højde":
-                        height = info.Value;
-                        break;
-                    case "dybde":
-                        depth = info.Value;
-                        break;
-                    case "bredde":
-                        width = info.Value;
-                        break;
-                }
-            }
-        }
-
         public bool IsInternal
         {
             get

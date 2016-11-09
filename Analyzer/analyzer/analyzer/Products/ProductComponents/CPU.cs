@@ -20,47 +20,6 @@ namespace analyzer.Products.ProductComponents
         string integratedGpu = "";
         string manufacturer = "";
 
-        protected override void AddInformation(Dictionary<string, string> productInformation)
-        {
-            foreach (KeyValuePair<string, string> info in productInformation)
-            {
-                switch (info.Key.ToLower())
-                {
-                    case "processor serie":
-                        cpuSeries = info.Value;
-                        break;
-                    case "processor model":
-                        model = info.Value;
-                        break;
-                    case "clockfrekvens":
-                        clock = info.Value;
-                        break;
-                    case "integreret gpu":
-                        integratedGpu = info.Value;
-                        break;
-                    case "boxed (inkluderer blæser eller køler)":
-                        stockCooler = (info.Value.ToLower() == "ja") ? true : false; ;
-                        break;
-                    case "mærke":
-                        manufacturer = Regex.Replace(info.Value, "(<.*?>)+", "");
-                        break;
-                    case "processorkerner":
-                        Match noOfCores = Regex.Match(info.Value, "\\d*");
-                        physicalCores = int.Parse(noOfCores.Value);
-                        break;
-                    case "processor tråde":
-                        Match noOfThreads = Regex.Match(info.Value, "\\d*");
-                        logicalCores = int.Parse(noOfThreads.Value);
-                        break;
-                    case "max turbo frequency":
-                        maxTurbo = info.Value;
-                        break;
-                    case "sokkel":
-                        socket = info.Value;
-                        break;
-                }
-            }
-        }
         public string Model
         {
             get
