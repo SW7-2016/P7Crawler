@@ -12,7 +12,6 @@ namespace ReviewCrawler.Sites.Sub
 {
     class SitePriceRunner : ProductSite
     {
-
         public SitePriceRunner()
         {
             domainUrl = "http://www.pricerunner.dk";
@@ -27,12 +26,10 @@ namespace ReviewCrawler.Sites.Sub
 
         public override void CrawlReviewPages(string siteData)
         {
-
         }
 
         public override void CrawlPage(string siteData)
         {
-
             string tempLink = "";
 
             string paginatorData = FindPaginator(siteData);
@@ -68,11 +65,11 @@ namespace ReviewCrawler.Sites.Sub
             for (int i = 5; i > 0; i++)
             {
                 if ((url[i] == 'l'
-                    && url[i-1] == 'p'
-                    && url[i-2] == '/')
+                     && url[i - 1] == 'p'
+                     && url[i - 2] == '/')
                     || (url[i] == 'i'
-                    && url[i - 1] == 'p'
-                    && url[i - 2] == '/'))
+                        && url[i - 1] == 'p'
+                        && url[i - 2] == '/'))
                 {
                     url = url.Remove(0, i + 1);
                     break;
@@ -81,9 +78,9 @@ namespace ReviewCrawler.Sites.Sub
             for (int i = url.Length - 1; i > 0; i--)
             {
                 if ((url[i] == '-'
-                    && url[i+1] == 's')
-                    ||(url[i] == '-'
-                    && url[i + 1] == 'p'))
+                     && url[i + 1] == 's')
+                    || (url[i] == '-'
+                        && url[i + 1] == 'p'))
                 {
                     url = url.Remove(i, url.Length - i);
                     break;
@@ -92,10 +89,10 @@ namespace ReviewCrawler.Sites.Sub
             return url;
         }
 
-        public override void Parse(string siteData)
+        public override bool Parse(string siteData)
         {
-
             Product currentProduct;
+            bool isDone = false;
 
             if (Crawler.products.ContainsKey(GetSiteKey(currentSite)))
             {
@@ -104,7 +101,7 @@ namespace ReviewCrawler.Sites.Sub
             else if (currentSite.Contains("/grafikkort/"))
             {
                 //product is a "GPU"
-                currentProduct = new GPU(); 
+                currentProduct = new GPU();
             }
             else if (currentSite.Contains("/cpu/"))
             {
@@ -150,6 +147,7 @@ namespace ReviewCrawler.Sites.Sub
             {
                 //this means that te side contains product information
                 currentProduct.ParseProductSpecifications(siteData);
+                isDone = true;
             }
             else
             {
@@ -160,6 +158,7 @@ namespace ReviewCrawler.Sites.Sub
             {
                 Crawler.products.Add(GetSiteKey(currentSite), currentProduct);
             }
+            return isDone;
         }
 
 
@@ -214,11 +213,10 @@ namespace ReviewCrawler.Sites.Sub
                 return 1;
             }
         }
-        
+
         //skal vi bruge denne her på hver side????
         public override string GetProductType(string tempLink)
         {
-
             if (tempLink.Contains("/Grafikkort/"))
             {
                 return "GPU";

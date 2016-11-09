@@ -48,7 +48,6 @@ namespace ReviewCrawler
                     hostQueue.Enqueue(currentHost);
                 }
 
-              
 
                 //Stops if the hostQueue is empty
                 if (hostQueue.Count < 1)
@@ -56,20 +55,18 @@ namespace ReviewCrawler
                     running = false;
                 }
             }
-            
         }
 
         //Adds all the hosts to be crawled - do this at startup
         public void AddHosts()
         {
             hostQueue.Enqueue(new SiteGuru3d());
-            hostQueue.Enqueue(new SitePriceRunner());
+            //hostQueue.Enqueue(new SitePriceRunner());
         }
 
         //Checks if more than two seconds have passed since 'lastAccessTime' and returns a bool
         public bool PolitenessTimeCheck(DateTime lastAccessTime)
         {
-            
             if ((DateTime.Now - lastAccessTime).TotalSeconds > 2)
             {
                 return true;
@@ -79,6 +76,5 @@ namespace ReviewCrawler
                 return false;
             }
         }
-
     }
 }

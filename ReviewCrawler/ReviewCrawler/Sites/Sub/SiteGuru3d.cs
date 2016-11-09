@@ -12,13 +12,13 @@ namespace ReviewCrawler.Sites.Sub
 {
     class SiteGuru3d : ReviewSite
     {
-        double maxRating = 5;
+        private const double maxRating = 5;
 
         public SiteGuru3d()
         {
             domainUrl = "http://www.guru3d.com/";
-            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/videocards.html");
-            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/processors.html");
+            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/videocards.html");
+            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/processors.html");
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/soundcards-and-speakers.html");
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/mainboards.html");
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd).html");
@@ -33,82 +33,49 @@ namespace ReviewCrawler.Sites.Sub
             string tempSiteKey = "";
             List<string> tempReviewLinks;
 
-            tempLink = GetSearchLinks(siteData, "pagelinkselected", "pagelink", false); //Returns domainUrl if no link is found
+            tempLink = GetSearchLinks(siteData, "pagelinkselected", "pagelink", false);
+            //Returns domainUrl if no link is found
             if (tempLink != domainUrl)
             {
-
                 searchQueue.Enqueue(tempLink);
-                
             }
-     
-            tempReviewLinks = GetItemLinks(siteData, "<br />", "<a href=\"articles-pages", "<div class=\"content\">", true);
+
+            tempReviewLinks = GetItemLinks(siteData, "<br />", "<a href=\"articles-pages", "<div class=\"content\">",
+                true);
             foreach (var item in tempReviewLinks)
             {
                 tempSiteKey = GetSiteKey(item);
-                if (itemQueue.Count < 40)
-                {
-                    itemQueue.Enqueue(item);
-                }
 
-                if (!Crawler.reviews.ContainsKey(tempSiteKey) && Crawler.reviews.Count < 40)
+                searchQueue.Enqueue(item);
+
+                if (!Crawler.reviews.ContainsKey(tempSiteKey))
                 {
                     Crawler.reviews.Add(tempSiteKey, new Review(item, GetProductType(currentSite), true));
                 }
-
-
-
             }
-
+            CrawlReviewPages(siteData);
         }
 
         public override void CrawlReviewPages(string siteData)
         {
             string tempLink = "";
-            
-            if (!currentSite.Contains("articles-summary"))
+
+            if (currentSite.Contains(",1.html"))
             {
-                tempLink = GetSearchLinks(siteData, "pagelinkselected", "pagelink", false); //Returns domainUrl if no link is found
+                string siteNumber = Regex.Match(siteData, "<span class=\"pagelink\">.*? pages</span>").Value;
+                siteNumber = siteNumber.Replace("<span class=\"pagelink\">", "");
+                siteNumber = siteNumber.Replace(" pages</span>", "").Trim();
+                int totalPages = int.Parse(siteNumber);
 
-
-                if (tempLink != domainUrl)
+                for (int i = 1; i <= totalPages; i++)
                 {
+                    tempLink = currentSite.Replace("1.html", i + ".html");
                     itemQueue.Enqueue(tempLink);
                 }
-                else
-                {
-                    //GetSiteKey just so happens to give the wanted output, even though it is not used as a key here
-                    itemQueue.Enqueue(GetSiteKey(currentSite.Replace("articles-pages", "articles-summary")));
-                }
+                itemQueue.Enqueue(GetSiteKey(currentSite.Replace("articles-pages", "articles-summary")));
             }
-
         }
 
-        /*
-        public override void CrawlReviewPages(string siteData)
-        {
-            string tempLink = "";
-            string[] tempLines = siteData.Split('\n');
-
-            if (!tempLines[0].Contains("articles-summary"))
-            {
-                tempLink = GetSearchLinks(siteData, "pagelinkselected", "pagelink", false); //Returns domainUrl if no link is found
-
-
-                if (tempLink != domainUrl)
-                {
-                    reviewQueue.Enqueue(tempLink);
-                }
-                else
-                {
-                    tempLines[0] = GetSiteKey(tempLines[0].Replace("articles-pages", "articles-summary"));
-                    //GetSiteKey just so happens to give the wanted output, even though it is not used as a key here
-
-
-                    reviewQueue.Enqueue(tempLines[0]);
-                }
-            }
-
-        }*/
 
         public override string GetSiteKey(string url)
         {
@@ -118,7 +85,7 @@ namespace ReviewCrawler.Sites.Sub
                 {
                     url = url.Remove(i, url.Length - i);
                     break;
-                } 
+                }
             }
 
             return url;
@@ -166,7 +133,7 @@ namespace ReviewCrawler.Sites.Sub
             return "";
         }
 
-        public override void Parse(string siteData)
+        public override bool Parse(string siteData)
         {
             string siteContentParsed = removeTagsFromReview(siteData);
             string siteKey;
@@ -175,8 +142,6 @@ namespace ReviewCrawler.Sites.Sub
             if (!currentSite.Contains("articles-summary"))
             {
                 siteKey = GetSiteKey(currentSite);
-                //siteContentParsed = removeTags(siteData);
-                //dataSplit = siteContentParsed.Split('\n');
 
                 if (Crawler.reviews.ContainsKey(siteKey))
                 {
@@ -200,16 +165,18 @@ namespace ReviewCrawler.Sites.Sub
                 {
                     Crawler.reviews[siteKey].comments = GetReviewComments(siteData);
                 }
+                return true;
             }
-            
-            
+            return false;
         }
 
         public string GetTitle(string data)
         {
             string result = "";
 
-            result = Regex.Match(data, "<meta itemprop=\"name\" property=\"og:title\" content=\".*?/>", RegexOptions.Singleline).Value;
+            result =
+                Regex.Match(data, "<meta itemprop=\"name\" property=\"og:title\" content=\".*?/>",
+                    RegexOptions.Singleline).Value;
 
             result = result.Replace("<meta itemprop=\"name\" property=\"og:title\" content=\"", "");
             result = result.Replace("\" />", "");
@@ -226,17 +193,18 @@ namespace ReviewCrawler.Sites.Sub
             Regex regexQuoteBlock = new Regex("(<div class=\"quoteblock(.*?)</div>)", RegexOptions.Singleline);
             string tempComment;
 
-            string[] commentSplit = siteData.Split(new string[] { "<div class=\"comments\">" }, StringSplitOptions.None);
+            string[] commentSplit = siteData.Split(new string[] {"<div class=\"comments\">"}, StringSplitOptions.None);
 
             for (int i = 0; i < commentSplit.Length; i++)
             {
-                
-                tempComment = Regex.Match(commentSplit[i], "(<strong>Posted on:.*?<!-- Template: articles)", RegexOptions.Singleline).Value;
+                tempComment =
+                    Regex.Match(commentSplit[i], "(<strong>Posted on:.*?<!-- Template: articles)",
+                        RegexOptions.Singleline).Value;
                 if (tempComment != "")
                 {
                     tempComment += '>';
                 }
-                
+
 
                 tempComment = regexDateRemove.Replace(tempComment, "");
                 tempComment = regexTags.Replace(tempComment, "");
@@ -253,9 +221,9 @@ namespace ReviewCrawler.Sites.Sub
 
         public DateTime GetReviewDate(string siteData)
         {
-            DateTime date; 
+            DateTime date;
             string temp = Regex.Match(siteData, "<span itemprop=\"dtreviewed\">.*?</span>").Value;
-            
+
 
             temp = temp.Replace("<span itemprop=\"dtreviewed\">", "");
             temp = temp.Replace("</span>", "");
@@ -298,29 +266,6 @@ namespace ReviewCrawler.Sites.Sub
             {
                 return -1;
             }
-            
         }
-
-        /*
-        public override void CrawlPage(string currentSite)
-        {
-            string siteData = GetSiteData(currentSite);
-            string tempLink = "";
-            List<string> tempReviewLinks;
-            string tempProductType;
-
-            tempLink = GetSearchLinks(siteData, "pagelinkselected", "pagelink", false); //Returns domainUrl if no link is found
-            if (tempLink != domainUrl)
-            {
-                searchQueue.Enqueue(tempLink);
-            }
-            tempProductType = GetProductType(tempLink);
-            tempReviewLinks = GetReviewLinks(siteData, "<br />", "<a href=\"articles-pages", "<div class=\"content\">", true);
-            foreach (var item in tempReviewLinks)
-            {
-                reviewQueue.Enqueue(new KeyValuePair<string, string>(item, tempProductType));
-            }
-        }*/
-
     }
 }

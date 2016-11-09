@@ -19,9 +19,9 @@ namespace ReviewCrawler.Sites.Sub
 
         }
 
-        public override void Parse(string siteData)
+        public override bool Parse(string siteData)
         {
-
+            return false;
         }
 
         public override string GetProductType(string tempLink)

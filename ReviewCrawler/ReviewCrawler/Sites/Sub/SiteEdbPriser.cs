@@ -41,12 +41,11 @@ namespace ReviewCrawler.Sites.Sub
 
         public override void CrawlReviewPages(string siteData)
         {
-            
         }
 
-        public override void Parse(string siteData)
+        public override bool Parse(string siteData)
         {
-
+            return false;
         }
 
         public override string GetProductType(string tempLink)
@@ -65,7 +64,7 @@ namespace ReviewCrawler.Sites.Sub
                 }
             }
             */
-            return url.Remove(0 , domainUrl.Length);
+            return url;
         }
     }
 }

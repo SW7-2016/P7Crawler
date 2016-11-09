@@ -21,15 +21,17 @@ namespace ReviewCrawler.Sites
         protected Queue<string> searchQueue = new Queue<string>();
         protected string currentSite;
 
-        public abstract void Parse(string siteData);
+        public abstract bool Parse(string siteData);
         public abstract void CrawlPage(string siteData);
         public abstract string GetSiteKey(string url);
         public abstract void CrawlReviewPages(string siteData);
         public abstract string GetProductType(string tempLink);
 
+
         public bool StartCycle()
         {
             bool isReview = false;
+            bool isItemDone = false;
 
             if (searchQueue.Count > 0)
             {
@@ -46,13 +48,12 @@ namespace ReviewCrawler.Sites
                 return true;
             }
 
-            if (amIAllowed(currentSite))
+            if (AmIAllowed(currentSite))
             {
                 string siteData = GetSiteData(currentSite);
                 if (isReview)
                 {
-                    CrawlReviewPages(siteData);
-                    Parse(siteData); //Parse information of review/product page.
+                    isItemDone = Parse(siteData); //Parse information of review/product page.
                 }
                 else
                 {
@@ -64,9 +65,12 @@ namespace ReviewCrawler.Sites
                 Debug.WriteLine("Robot.txt disallow this site: " + currentSite);
             }
 
+            if (isItemDone) //If a review or product was just "completed" then add it to DB
+            {
+                //db stuff
+            }
+
             return false;
-
-
         }
 
         public DateTime GetLastAccessTime()
@@ -79,7 +83,7 @@ namespace ReviewCrawler.Sites
             visitTimeStamp = newTime;
         }
 
-        private bool amIAllowed(string URL)
+        private bool AmIAllowed(string URL)
         {
             if (robotsTimeStamp.AddDays(1) <= DateTime.Now)
             {
@@ -139,10 +143,8 @@ namespace ReviewCrawler.Sites
                 {
                     if (webDataLines[i] != "" && webDataLines[i].Count() > 11)
                     {
-
                         if (webDataLines[i].Remove(11, webDataLines[i].Count() - 11).ToLower() == "user-agent:")
                         {
-
                             concernsMe = false;
                             if (webDataLines[i].Remove(13, webDataLines[i].Count() - 13).ToLower() == "user-agent: *")
                             {
@@ -167,4 +169,3 @@ namespace ReviewCrawler.Sites
         }
     }
 }
-
