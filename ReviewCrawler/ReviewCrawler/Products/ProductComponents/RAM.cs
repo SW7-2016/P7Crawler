@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace ReviewCrawler.Products.ProductComponents
 {
@@ -95,6 +96,22 @@ namespace ReviewCrawler.Products.ProductComponents
             {
                 return casLatens;
             }
+        }
+
+        public override void InsertComponentToDB(int PID)
+        {
+            MySqlCommand command = new MySqlCommand("INSERT INTO RAM" +
+                      "(ProductID, capacity, technology, formFactor, speed, casLatens, type)" +
+                      "VALUES(@ProductID, @capacity, @technology, @formFactor, @speed, @casLatens, @type)", connection);
+            command.Parameters.AddWithValue("@ProductID", PID);
+            command.Parameters.AddWithValue("@capacity", Capacity);
+            command.Parameters.AddWithValue("@technology", Technology);
+            command.Parameters.AddWithValue("@formFactor", FormFactor);
+            command.Parameters.AddWithValue("@speed", Speed);
+            command.Parameters.AddWithValue("@casLatens", CasLatens);
+            command.Parameters.AddWithValue("@type", Type);
+
+            command.ExecuteNonQuery();
         }
     }
 }

@@ -8,6 +8,7 @@ using ReviewCrawler.Sites.Sub;
 using ReviewCrawler.Products;
 using ReviewCrawler.Products.Reviews;
 using System.Threading;
+using MySql.Data.MySqlClient;
 
 namespace ReviewCrawler
 {
@@ -16,6 +17,7 @@ namespace ReviewCrawler
         public Queue<HostInterface> hostQueue = new Queue<HostInterface>();
         public static Dictionary<string, Review> reviews = new Dictionary<string, Review>();
         public static Dictionary<string, Product> products = new Dictionary<string, Product>();
+        public MySqlConnection connection = new MySqlConnection("server=172.25.23.57;database=crawlerdb;user=crawler;port=3306;password=Crawler23!;");
 
         //picks a host and starts crawling it
         public void StartCrawl()
@@ -32,7 +34,7 @@ namespace ReviewCrawler
                 if (PolitenessTimeCheck(currentHost.GetLastAccessTime()))
                 {
                     //Starts crawling the host and returns a bool determining if the host has any more content to crawl
-                    isHostDone = currentHost.StartCycle();
+                    isHostDone = currentHost.StartCycle(connection);
                     currentHost.SetLastAccessTime(DateTime.Now);
                 }
                 else

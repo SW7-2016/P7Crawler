@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace ReviewCrawler.Products.ProductComponents
 {
@@ -46,7 +47,7 @@ namespace ReviewCrawler.Products.ProductComponents
                         socket = info.Value;
                         break;
                     case "netværkskort indbygget":
-                        netCard = (info.Value.ToLower() == "ja") ? true : false; 
+                        netCard = (info.Value.ToLower() == "ja") ? true : false;
                         break;
                     case "grafikkort indbygget":
                         graphicsCard = (info.Value.ToLower() == "ja") ? true : false;
@@ -88,114 +89,99 @@ namespace ReviewCrawler.Products.ProductComponents
 
         public string FormFactor
         {
-            get
-            {
-                return formFactor;
-            }
+            get { return formFactor; }
         }
 
         public string Chipset
         {
-            get
-            {
-                return chipset;
-            }
+            get { return chipset; }
         }
 
         public bool NetCard
         {
-            get
-            {
-                return netCard;
-            }
+            get { return netCard; }
         }
 
         public bool SoundCard
         {
-            get
-            {
-                return soundCard;
-            }
+            get { return soundCard; }
         }
 
         public bool GraphicsCard
         {
-            get
-            {
-                return graphicsCard;
-            }
+            get { return graphicsCard; }
         }
 
         public bool MultiGpu
         {
-            get
-            {
-                return multiGpu;
-            }
+            get { return multiGpu; }
         }
 
         public bool Crossfire
         {
-            get
-            {
-                return crossfire;
-            }
+            get { return crossfire; }
         }
 
         public string CpuType
         {
-            get
-            {
-                return cpuType;
-            }
+            get { return cpuType; }
         }
 
         public int CpuCount
         {
-            get
-            {
-                return cpuCount;
-            }
+            get { return cpuCount; }
         }
 
         public string Socket
         {
-            get
-            {
-                return socket;
-            }
+            get { return socket; }
         }
 
         public bool Sli
         {
-            get
-            {
-                return sli;
-            }
+            get { return sli; }
         }
 
         public int MaxMem
         {
-            get
-            {
-                return maxMem;
-            }
+            get { return maxMem; }
         }
 
         public int MemSlots
         {
-            get
-            {
-                return memSlots;
-            }
+            get { return memSlots; }
         }
 
         public string MemType
         {
-            get
-            {
-                return memType;
-            }
+            get { return memType; }
+        }
+
+        public override void InsertComponentToDB(int PID)
+        {
+            MySqlCommand command = new MySqlCommand("INSERT INTO Motherboard" +
+                                                    "(ProductID, formFactor, cpuType, cpuCount, socket, netCard, soundCard," +
+                                                    " multiGPU, crossfire, sli, maxMem, memSlots, memType, graphicsCard, chipset)" +
+                                                    "VALUES(@ProductID, @formFactor, @cpuType, @cpuCount, @socket, @netCard, @soundCard," +
+                                                    " @multiGPU, @crossFire, @sli, @maxMem, @memSlots, @memType, @graphicsCard, @chipset)",
+                                                    connection);
+            command.Parameters.AddWithValue("@ProductID", PID);
+            command.Parameters.AddWithValue("@formFactor", FormFactor);
+            command.Parameters.AddWithValue("@cpuType", CpuType);
+            command.Parameters.AddWithValue("@cpuCount", CpuCount);
+            command.Parameters.AddWithValue("@socket", Socket);
+            command.Parameters.AddWithValue("@netCard", NetCard);
+            command.Parameters.AddWithValue("@soundCard", SoundCard);
+            command.Parameters.AddWithValue("@multiGPU", MultiGpu);
+            command.Parameters.AddWithValue("@crossFire", Crossfire);
+            command.Parameters.AddWithValue("@sli", Sli);
+            command.Parameters.AddWithValue("@maxMem", MaxMem);
+            command.Parameters.AddWithValue("@memSlots", MemSlots);
+            command.Parameters.AddWithValue("@memType", MemType);
+            command.Parameters.AddWithValue("@graphicsCard", GraphicsCard);
+            command.Parameters.AddWithValue("@chipset", Chipset);
+
+            command.ExecuteNonQuery();
         }
     }
 }

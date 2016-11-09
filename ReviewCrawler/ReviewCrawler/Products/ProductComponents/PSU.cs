@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace ReviewCrawler.Products.ProductComponents
 {
@@ -114,6 +115,25 @@ namespace ReviewCrawler.Products.ProductComponents
             {
                 return weight;
             }
+        }
+
+        public override void InsertComponentToDB(int PID)
+        {
+
+            MySqlCommand command = new MySqlCommand("INSERT INTO PSU" +
+                      "(ProductID, power, formFactor, modular, width, depth, height, weight, brand)" +
+                      "VALUES(@ProductID, @power, @formFactor, @modular, @width, @depth, @height, @weight, @brand)", connection);
+            command.Parameters.AddWithValue("@ProductID", PID);
+            command.Parameters.AddWithValue("@power", Power);
+            command.Parameters.AddWithValue("@formFactor", FormFactor);
+            command.Parameters.AddWithValue("@modular", Modular);
+            command.Parameters.AddWithValue("@width", Width);
+            command.Parameters.AddWithValue("@depth", Depth);
+            command.Parameters.AddWithValue("@height", Height);
+            command.Parameters.AddWithValue("@weight", Weight);
+            command.Parameters.AddWithValue("@brand", Brand);
+
+            command.ExecuteNonQuery();
         }
     }
 }

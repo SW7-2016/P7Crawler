@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace ReviewCrawler.Products.ProductComponents
 {
@@ -67,90 +68,81 @@ namespace ReviewCrawler.Products.ProductComponents
 
         public bool IsInternal
         {
-            get
-            {
-                return isInternal;
-            }
+            get { return isInternal; }
         }
 
         public string Type
         {
-            get
-            {
-                return type;
-            }
+            get { return type; }
         }
 
         public string FormFactor
         {
-            get
-            {
-                return formFactor;
-            }
+            get { return formFactor; }
         }
 
         public string Capacity
         {
-            get
-            {
-                return capacity;
-            }
+            get { return capacity; }
         }
 
         public string CacheSize
         {
-            get
-            {
-                return cacheSize;
-            }
+            get { return cacheSize; }
         }
 
         public string TransferRate
         {
-            get
-            {
-                return transferRate;
-            }
+            get { return transferRate; }
         }
 
         public string Brand
         {
-            get
-            {
-                return brand;
-            }
+            get { return brand; }
         }
 
         public string Sata
         {
-            get
-            {
-                return sata;
-            }
+            get { return sata; }
         }
 
         public string Height
         {
-            get
-            {
-                return height;
-            }
+            get { return height; }
         }
 
         public string Depth
         {
-            get
-            {
-                return depth;
-            }
+            get { return depth; }
         }
 
         public string Width
         {
-            get
-            {
-                return width;
-            }
+            get { return width; }
+        }
+
+        public override void InsertComponentToDB(int PID)
+        {
+            MySqlCommand command = new MySqlCommand("INSERT INTO HardDrive" +
+                                                    "(ProductID, isInternal, type, formFactor, capacity, cacheSize," +
+                                                    " transforRate, brand, sata, height, depth, width)" +
+                                                    "VALUES(@ProductID, @isInternal, @type, @formFactor, @capacity, " +
+                                                    " @cacheSize, @transforRate, @brand, @sata, @height, @depth, @width)",
+                connection);
+            command.Parameters.AddWithValue("@ProductID", PID);
+            command.Parameters.AddWithValue("@isInternal", IsInternal);
+            command.Parameters.AddWithValue("@type", Type);
+            command.Parameters.AddWithValue("@formFactor", FormFactor);
+            command.Parameters.AddWithValue("@capacity", Capacity);
+            command.Parameters.AddWithValue("@cacheSize", CacheSize);
+            command.Parameters.AddWithValue("@transforRate", TransferRate);
+            command.Parameters.AddWithValue("@brand", Brand);
+            command.Parameters.AddWithValue("@sata", Sata);
+            command.Parameters.AddWithValue("@height", Height);
+            command.Parameters.AddWithValue("@depth", Depth);
+            command.Parameters.AddWithValue("@width", Width);
+
+            command.ExecuteNonQuery();
         }
     }
 }

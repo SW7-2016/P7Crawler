@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace ReviewCrawler.Products.ProductComponents
 {
@@ -39,7 +40,8 @@ namespace ReviewCrawler.Products.ProductComponents
                         integratedGpu = info.Value;
                         break;
                     case "boxed (inkluderer blæser eller køler)":
-                        stockCooler = (info.Value.ToLower() == "ja") ? true : false; ;
+                        stockCooler = (info.Value.ToLower() == "ja") ? true : false;
+                        ;
                         break;
                     case "mærke":
                         manufacturer = Regex.Replace(info.Value, "(<.*?>)+", "");
@@ -61,84 +63,77 @@ namespace ReviewCrawler.Products.ProductComponents
                 }
             }
         }
+
         public string Model
         {
-            get
-            {
-                return model;
-            }
+            get { return model; }
         }
 
         public string Clock
         {
-            get
-            {
-                return clock;
-            }
+            get { return clock; }
         }
 
         public string Socket
         {
-            get
-            {
-                return socket;
-            }
+            get { return socket; }
         }
 
         public bool StockCooler
         {
-            get
-            {
-                return stockCooler;
-            }
+            get { return stockCooler; }
         }
 
         public string CpuSeries
         {
-            get
-            {
-                return cpuSeries;
-            }
+            get { return cpuSeries; }
         }
 
         public int PhysicalCores
         {
-            get
-            {
-                return physicalCores;
-            }
+            get { return physicalCores; }
         }
 
         public int LogicalCores
         {
-            get
-            {
-                return logicalCores;
-            }
+            get { return logicalCores; }
         }
 
         public string MaxTurbo
         {
-            get
-            {
-                return maxTurbo;
-            }
+            get { return maxTurbo; }
         }
 
         public string IntegratedGpu
         {
-            get
-            {
-                return integratedGpu;
-            }
+            get { return integratedGpu; }
         }
 
         public string Manufacturer
         {
-            get
-            {
-                return manufacturer;
-            }
+            get { return manufacturer; }
+        }
+
+        public override void InsertComponentToDB(int PID)
+        {
+            MySqlCommand command = new MySqlCommand("INSERT INTO CPU" +
+                                                    "(ProductID, model, clock, maxTurbo, integratedGpu," +
+                                                    " stockCooler, manufacturer, cpuSeries, logicalCores, physicalCores)" +
+                                                    "VALUES(@ProductID, @model, @clock, @maxTurbo, @integratedGpu," +
+                                                    " @stockcooler, @manufacturer, @cpuSeries, @logicalCores, @physicalCores)",
+                connection);
+            command.Parameters.AddWithValue("@ProductID", PID);
+            command.Parameters.AddWithValue("@model", Model);
+            command.Parameters.AddWithValue("@clock", Clock);
+            command.Parameters.AddWithValue("@maxTurbo", MaxTurbo);
+            command.Parameters.AddWithValue("@integratedGpu", IntegratedGpu);
+            command.Parameters.AddWithValue("@stockCooler", StockCooler);
+            command.Parameters.AddWithValue("@manufacturer", Manufacturer);
+            command.Parameters.AddWithValue("@cpuSeries", CpuSeries);
+            command.Parameters.AddWithValue("@logicalCores", LogicalCores);
+            command.Parameters.AddWithValue("@physicalCores", PhysicalCores);
+
+            command.ExecuteNonQuery();
         }
     }
 }

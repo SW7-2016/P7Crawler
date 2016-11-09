@@ -8,6 +8,7 @@ using ReviewCrawler.Products;
 using ReviewCrawler.Products.Reviews;
 using ReviewCrawler.Sites.Sub;
 using System.Text.RegularExpressions;
+using MySql.Data.MySqlClient;
 
 namespace ReviewCrawler.Sites
 {
@@ -26,12 +27,13 @@ namespace ReviewCrawler.Sites
         public abstract string GetSiteKey(string url);
         public abstract void CrawlReviewPages(string siteData);
         public abstract string GetProductType(string tempLink);
+        public abstract void AddItemToDatabase(MySqlConnection connection);
 
-
-        public bool StartCycle()
+        public bool StartCycle(MySqlConnection connection)
         {
             bool isReview = false;
             bool isItemDone = false;
+            //bool startParse = false;
 
             if (searchQueue.Count > 0)
             {
@@ -67,7 +69,9 @@ namespace ReviewCrawler.Sites
 
             if (isItemDone) //If a review or product was just "completed" then add it to DB
             {
-                //db stuff
+                connection.Open();
+                AddItemToDatabase(connection);
+                connection.Close();
             }
 
             return false;
@@ -87,7 +91,7 @@ namespace ReviewCrawler.Sites
         {
             if (robotsTimeStamp.AddDays(1) <= DateTime.Now)
             {
-                getRobotsTxt(domainUrl);
+                GetRobotsTxt(domainUrl);
             }
 
             string wantedSide = URL.Remove(0, domainUrl.Count());
@@ -124,7 +128,7 @@ namespace ReviewCrawler.Sites
             return webData;
         }
 
-        private void getRobotsTxt(string domain)
+        private void GetRobotsTxt(string domain)
         {
             robotsTimeStamp = DateTime.Now;
             System.Net.WebClient webClient = new System.Net.WebClient();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace ReviewCrawler.Products.ProductComponents
 {
@@ -51,69 +52,66 @@ namespace ReviewCrawler.Products.ProductComponents
                 }
             }
         }
+
         public string ProcessorManufacturer
         {
-            get
-            {
-                return processorManufacturer;
-            }
+            get { return processorManufacturer; }
         }
 
         public string Chipset
         {
-            get
-            {
-                return chipset;
-            }
+            get { return chipset; }
         }
 
         public string Model
         {
-            get
-            {
-                return model;
-            }
+            get { return model; }
         }
 
         public string Architecture
         {
-            get
-            {
-                return architecture;
-            }
+            get { return architecture; }
         }
 
         public int PciSlots
         {
-            get
-            {
-                return pciSlots;
-            }
+            get { return pciSlots; }
         }
 
         public string Cooling
         {
-            get
-            {
-                return cooling;
-            }
+            get { return cooling; }
         }
 
         public string MemSize
         {
-            get
-            {
-                return memSize;
-            }
+            get { return memSize; }
         }
 
         public string Manufacturer
         {
-            get
-            {
-                return manufacturer;
-            }
+            get { return manufacturer; }
         }
 
+        public override void InsertComponentToDB(int PID)
+        {
+            MySqlCommand command = new MySqlCommand("INSERT INTO GPU" +
+                                                    "(ProductID, processorManufacturer, chipset, model," +
+                                                    " architecture, cooling, memSize, pciSlots, manufacturer)" +
+                                                    "VALUES(@ProductID, @processorManufacturer, @chipset, @model, " +
+                                                    " @architecture, @cooling, @memSize, @pciSlots, @manufacturer)",
+                connection);
+            command.Parameters.AddWithValue("@ProductID", PID);
+            command.Parameters.AddWithValue("@processorManufacturer", ProcessorManufacturer);
+            command.Parameters.AddWithValue("@chipset", Chipset);
+            command.Parameters.AddWithValue("@model", Model);
+            command.Parameters.AddWithValue("@architecture", Architecture);
+            command.Parameters.AddWithValue("@cooling", Cooling);
+            command.Parameters.AddWithValue("@memSize", MemSize);
+            command.Parameters.AddWithValue("@pciSlots", PciSlots);
+            command.Parameters.AddWithValue("@manufacturer", Manufacturer);
+
+            command.ExecuteNonQuery();
+        }
     }
 }

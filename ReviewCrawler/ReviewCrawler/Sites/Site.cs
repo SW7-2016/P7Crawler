@@ -9,7 +9,7 @@ namespace ReviewCrawler.Sites
 {
     abstract class Site : Host
     {
-        public override abstract void Parse(string siteData);
+        public override abstract bool Parse(string siteData);
         public override abstract void CrawlPage(string siteData);
         public override abstract string GetSiteKey(string url);
         public override abstract void CrawlReviewPages(string siteData);
