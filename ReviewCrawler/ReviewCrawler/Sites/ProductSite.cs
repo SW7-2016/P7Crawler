@@ -15,7 +15,6 @@ namespace ReviewCrawler.Sites
         public override abstract bool Parse(string siteData);
         public override abstract void CrawlPage(string siteData);
         public override abstract string GetSiteKey(string url);
-        public override abstract void CrawlReviewPages(string siteData);
 
         public override void AddItemToDatabase(MySqlConnection connection)
         {

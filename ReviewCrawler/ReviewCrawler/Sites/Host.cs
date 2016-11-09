@@ -25,7 +25,6 @@ namespace ReviewCrawler.Sites
         public abstract bool Parse(string siteData);
         public abstract void CrawlPage(string siteData);
         public abstract string GetSiteKey(string url);
-        public abstract void CrawlReviewPages(string siteData);
         public abstract string GetProductType(string tempLink);
         public abstract void AddItemToDatabase(MySqlConnection connection);
 

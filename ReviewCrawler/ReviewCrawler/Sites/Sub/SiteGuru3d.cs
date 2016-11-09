@@ -17,7 +17,7 @@ namespace ReviewCrawler.Sites.Sub
         public SiteGuru3d()
         {
             domainUrl = "http://www.guru3d.com/";
-            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/videocards.html");
+            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/videocards.html");
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/processors.html");
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/mainboards.html");
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd).html");
@@ -29,12 +29,17 @@ namespace ReviewCrawler.Sites.Sub
         {
             string tempLink = "";
             List<string> tempReviewLinks;
+            string tempProductType = "unknown";
 
-            tempLink = GetSearchLinks(siteData, "pagelinkselected", "pagelink", false);
-            //Returns domainUrl if no link is found
-            if (tempLink != domainUrl)
+            if (currentSite.Contains("articles-categories"))
             {
-                searchQueue.Enqueue(tempLink);
+                tempLink = GetSearchLinks(siteData, "pagelinkselected", "pagelink", false);
+                //Returns domainUrl if no link is found
+                if (tempLink != domainUrl)
+                {
+                    searchQueue.Enqueue(tempLink);
+                }
+                tempProductType = GetProductType(currentSite);
             }
 
             tempReviewLinks = GetItemLinks(siteData, "<br />", "<a href=\"articles-pages", "<div class=\"content\">",
@@ -43,10 +48,10 @@ namespace ReviewCrawler.Sites.Sub
             {
                 searchQueue.Enqueue(item);
             }
-            CrawlReviewPages(siteData);
+            CrawlReviewPages(siteData, tempProductType);
         }
 
-        public override void CrawlReviewPages(string siteData)
+        public void CrawlReviewPages(string siteData, string tempProductType)
         {
             string tempLink = "";
 
