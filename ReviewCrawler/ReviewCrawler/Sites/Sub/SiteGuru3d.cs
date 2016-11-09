@@ -48,7 +48,7 @@ namespace ReviewCrawler.Sites.Sub
             {
                 searchQueue.Enqueue(item);
             }
-            CrawlReviewPages(siteData, tempProductType);
+            CrawlReviewPages(siteData, tempProductType); //NEXT OBJECTIVE PRODUCTTYPE
         }
 
         public void CrawlReviewPages(string siteData, string tempProductType)
