@@ -41,27 +41,6 @@ namespace ReviewCrawler
         private void sendDataTest_bt_Click(object sender, RoutedEventArgs e)
         {
 
-            DBConnect newDBConnection = new DBConnect();
-
-            newDBConnection.DbInitialize();
-
-            newDBConnection.connection.Open();
-
-            foreach (var product in Crawler.products)
-            {
-                newDBConnection.InsertProduct(product.Value);
-            }
-            
-            foreach (var review in Crawler.reviews)
-            {
-                newDBConnection.InsertReview(review.Value);
-            }
-
-
-
-
-
-            newDBConnection.connection.Close();
         }
 
         private void test_bt_Click(object sender, RoutedEventArgs e)

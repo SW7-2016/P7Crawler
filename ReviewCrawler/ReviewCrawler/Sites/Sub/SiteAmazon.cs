@@ -38,10 +38,6 @@ namespace ReviewCrawler.Sites.Sub
             return url;
         }
 
-        public override void CrawlReviewPages(string siteData)
-        {
 
-
-        }
     }
 }

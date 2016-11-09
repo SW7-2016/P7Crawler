@@ -59,7 +59,6 @@
     <Compile Include="Crawler.cs" />
     <Compile Include="Products\ProductComponents\Chassis.cs" />
     <Compile Include="Products\ComputerComponents.cs" />
-    <Compile Include="Products\ProductComponents\Cooling.cs" />
     <Compile Include="Products\ProductComponents\CPU.cs" />
     <Compile Include="Products\ProductComponents\GPU.cs" />
     <Compile Include="Products\ProductComponents\HardDrive.cs" />
@@ -68,11 +67,8 @@
     <Compile Include="Products\ProductComponents\PSU.cs" />
     <Compile Include="Products\ProductComponents\RAM.cs" />
     <Compile Include="Products\Retailers\Retailer.cs" />
-    <Compile Include="Products\ProductComponents\SoundCard.cs" />
     <Compile Include="Products\Reviews\Review.cs" />
     <Compile Include="Products\Reviews\ReviewComment.cs" />
-    <Compile Include="Products\Reviews\ReviewReception.cs" />
-    <Compile Include="Sites\DBConnect.cs" />
     <Compile Include="Sites\Host.cs" />
     <Compile Include="Sites\HostInterface.cs" />
     <Compile Include="Sites\ProductSite.cs" />

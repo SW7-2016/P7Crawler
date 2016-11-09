@@ -4,22 +4,26 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
+using ReviewCrawler.Products.Reviews;
 
 namespace ReviewCrawler.Sites
 {
     abstract class ReviewSite : Site
     {
+        public Review review;
+
         public override abstract bool Parse(string siteData);
         public override abstract void CrawlPage(string siteData);
         public override abstract string GetSiteKey(string url);
-        public override abstract void CrawlReviewPages(string siteData);
 
         public string removeTagsFromReview(string siteData)
         {
-
             string tempString = "";
 
-            foreach (Match item in Regex.Matches(siteData, "((<p>|<p style|<p align=\"left\">).*?(<\\/p>))+", RegexOptions.IgnoreCase))
+            foreach (
+                Match item in
+                Regex.Matches(siteData, "((<p>|<p style|<p align=\"left\">).*?(<\\/p>))+", RegexOptions.IgnoreCase))
             {
                 tempString += item + "\n";
             }
@@ -38,5 +42,10 @@ namespace ReviewCrawler.Sites
             return tempString;
         }
 
+        public override void AddItemToDatabase(MySqlConnection connection)
+        {
+            review.connection = connection;
+            review.AddReviewToDB();
+        }
     }
 }

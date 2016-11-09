@@ -14,11 +14,6 @@ namespace ReviewCrawler.Sites.Sub
 
         }
 
-        public override void CrawlReviewPages(string siteData)
-        {
-
-        }
-
         public override bool Parse(string siteData)
         {
             return false;

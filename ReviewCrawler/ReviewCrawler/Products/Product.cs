@@ -2,6 +2,8 @@
 using ReviewCrawler.Products.Reviews;
 using ReviewCrawler.Products.Retailers;
 using System.Text.RegularExpressions;
+using MySql.Data.MySqlClient;
+using System.Diagnostics;
 using System;
 
 namespace ReviewCrawler.Products
@@ -14,6 +16,7 @@ namespace ReviewCrawler.Products
         public string description = "";
         protected byte[][] image;
         public List<Retailer> retailers = new List<Retailer>();
+        public MySqlConnection connection;
 
         protected abstract void AddInformation(Dictionary<string, string> productInformation);
 
@@ -42,7 +45,7 @@ namespace ReviewCrawler.Products
             AddInformation(productInfo);
             //databasethis(this);
         }
-
+        
         public void ParsePrice(string siteData, Dictionary<string, string> regexPatterns)
         {
             //find title of product
@@ -72,5 +75,154 @@ namespace ReviewCrawler.Products
                 }
             }
         }
+        
+
+        //edbpriser match title -> <h1 class=\"product-details-header\" itemprop=\"name\">.*?</h1>
+
+        //edbpriser match alle retailers -> <div class=\"ProductDealerList\">.*?
+        //edbpriser matches pris -> <td><strong>.*? kr</strong></td>
+        //edbpriser matches navn -> <div class=\"vendor-name\">.*?</div>   + html remove (<REMOVE>) + trim() + TEST DET
+
+        //edbpriser matches spec tables -> <td class=\"headline\" colspan=.*?</table>
+        //edbpriser matches specs ->  <tr class=\"sec\">.*?</tr>
+        //edbpriser match spec navn -> <td class=\"spec\">.*?</td>
+        //edbpriser match spec value -> <td>.*?</td>
+
+        #region  Datebase
+
+        public abstract void InsertComponentToDB(int PID);
+
+        public void AddProductToDB()
+        {
+            if (!DoesProductExist())
+            {
+                MySqlCommand command = new MySqlCommand("INSERT INTO Product" +
+              "(description, name)" +
+              "VALUES(@description, @name)", connection);
+                command.Parameters.AddWithValue("@description", description);
+                command.Parameters.AddWithValue("@name", name);
+                command.ExecuteNonQuery();
+
+                int RID;
+
+                int PID = GetProductID();
+
+
+                InsertComponentToDB(PID);
+
+
+                foreach (var retailer in retailers)
+                {
+                    if (!RetailerExists(retailer.name))
+                    {
+                        InsertRetailer(retailer.name);
+                    }
+
+                    RID = GetRetailerID(retailer.name);
+
+                    InsertProductRetailer(retailer, RID, PID);
+                }
+            }
+            else
+            {
+                Debug.WriteLine("product " + name + " does already exist");
+            }
+        }
+
+        public bool DoesProductExist()
+        {
+            MySqlCommand command = new MySqlCommand("SELECT * FROM Product WHERE name=@name", connection);
+            command.Parameters.AddWithValue("@name", name);
+
+            if (command.ExecuteScalar() == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+
+        }
+
+
+        private void InsertProductRetailer(Retailer retailer, int RID, int PID)
+        {
+            MySqlCommand command = new MySqlCommand("INSERT INTO Product_Retailer" +
+          "(productID, retailerID, url, price)" +
+          "VALUES(@productID, @retailerID, @url, @price)", connection);
+            command.Parameters.AddWithValue("@productID", PID);
+            command.Parameters.AddWithValue("@retailerID", RID);
+            command.Parameters.AddWithValue("@url", retailer.url);
+            command.Parameters.AddWithValue("@price", retailer.price);
+
+            command.ExecuteNonQuery();
+        }
+
+        private void InsertRetailer(string retailer)
+        {
+            MySqlCommand command = new MySqlCommand("INSERT INTO Retailer" +
+                      "(name)" +
+                      "VALUES(@name)", connection);
+            command.Parameters.AddWithValue("@name", retailer);
+
+            command.ExecuteNonQuery();
+        }
+
+        private int GetProductID()
+        {
+            MySqlCommand command = new MySqlCommand("SELECT ProductID FROM Product WHERE name=@name", connection);
+            command.Parameters.AddWithValue("@name", name);
+
+            MySqlDataReader reader = command.ExecuteReader();
+
+            reader.Read();
+
+            int result = (int)(reader.GetValue(0));
+
+            reader.Close();
+
+            return result;
+        }
+
+        private int GetRetailerID(string retailer)
+        {
+            MySqlCommand command = new MySqlCommand("SELECT RetailerID FROM Retailer WHERE name=@name", connection);
+            command.Parameters.AddWithValue("@name", retailer);
+            int result = 0;
+            MySqlDataReader reader = command.ExecuteReader();
+
+            if (reader.Read())
+            {
+                result = (int)(reader.GetValue(0));
+            }
+
+
+            reader.Close();
+
+            return result;
+        }
+
+        private bool RetailerExists(string retailer)
+        {
+            MySqlCommand command = new MySqlCommand("SELECT * FROM Retailer WHERE name=@name", connection);
+            command.Parameters.AddWithValue("@name", retailer);
+
+            if (command.ExecuteScalar() == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+
+
+        }
+
+        #endregion
+
     }
+
+
 }

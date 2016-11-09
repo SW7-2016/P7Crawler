@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace ReviewCrawler.Products.ProductComponents
 {
@@ -62,83 +63,73 @@ namespace ReviewCrawler.Products.ProductComponents
 
         public string Type
         {
-            get
-            {
-                return type;
-            }
+            get { return type; }
         }
 
         public string Fans
         {
-            get
-            {
-                return fans;
-            }
+            get { return fans; }
         }
 
         public bool Atx
         {
-            get
-            {
-                return atx;
-            }
+            get { return atx; }
         }
 
         public bool MiniAtx
         {
-            get
-            {
-                return miniAtx;
-            }
+            get { return miniAtx; }
         }
 
         public string Brand
         {
-            get
-            {
-                return brand;
-            }
+            get { return brand; }
         }
 
         public string Weight
         {
-            get
-            {
-                return weight;
-            }
+            get { return weight; }
         }
 
         public string Height
         {
-            get
-            {
-                return height;
-            }
+            get { return height; }
         }
 
         public string Depth
         {
-            get
-            {
-                return depth;
-            }
+            get { return depth; }
         }
 
         public string Width
         {
-            get
-            {
-                return width;
-            }
+            get { return width; }
         }
 
         public bool MiniItx
         {
-            get
-            {
-                return miniItx;
-            }
+            get { return miniItx; }
         }
 
+        public override void InsertComponentToDB(int PID)
+        {
+            MySqlCommand command = new MySqlCommand("INSERT INTO Chassis" +
+                                                    "(ProductID,type,atx,miniAtx,miniItx,fans,brand,height,width,depth,weight)" +
+                                                    "VALUES(@ProductID, @type, @atx, @miniAtx, @miniItx, @fans, @brand, @height, @width, @depth, @weight)",
+                connection);
+            command.Parameters.AddWithValue("@ProductID", PID);
+            command.Parameters.AddWithValue("@type", Type);
+            command.Parameters.AddWithValue("@atx", Atx);
+            command.Parameters.AddWithValue("@miniAtx", MiniAtx);
+            command.Parameters.AddWithValue("@miniItx", MiniItx);
+            command.Parameters.AddWithValue("@fans", Fans);
+            command.Parameters.AddWithValue("@brand", Brand);
+            command.Parameters.AddWithValue("@height", Height);
+            command.Parameters.AddWithValue("@width", Width);
+            command.Parameters.AddWithValue("@depth", Depth);
+            command.Parameters.AddWithValue("@weight", Weight);
+
+            command.ExecuteNonQuery();
+        }
     }
 }

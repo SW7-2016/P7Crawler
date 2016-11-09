@@ -104,11 +104,6 @@ namespace ReviewCrawler.Sites.Sub
                 //product is a "CPU"
                 currentProduct = new CPU();
             }
-            else if (currentSite.Contains("/lydkort/"))
-            {
-                //product is a "SoundCard"
-                currentProduct = new SoundCard();
-            }
             else if (currentSite.Contains("/bundkort/"))
             {
                 //product is a "Motherboard"
