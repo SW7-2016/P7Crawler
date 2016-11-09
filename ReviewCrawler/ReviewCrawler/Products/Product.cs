@@ -2,6 +2,7 @@
 using ReviewCrawler.Products.Reviews;
 using ReviewCrawler.Products.Retailers;
 using System.Text.RegularExpressions;
+using System;
 
 namespace ReviewCrawler.Products
 {
@@ -16,87 +17,60 @@ namespace ReviewCrawler.Products
 
         protected abstract void AddInformation(Dictionary<string, string> productInformation);
 
-        public void ParseProductSpecifications(string siteData)
+        public void ParseProductSpecifications(string siteData, Dictionary<string, string> regexPatterns)
         {
             Dictionary<string, string> productInfo = new Dictionary<string, string>();
 
-            string rawProductInformation = (Regex.Match(siteData, "<div class=\"product-specs\">\\s*<table>.*?</table>", RegexOptions.Singleline)).Value;
+            MatchCollection rawProductInformation = (Regex.Matches(siteData, regexPatterns["table"], RegexOptions.Singleline));
 
-            foreach (Match rawInformationRow in Regex.Matches(rawProductInformation, "(<tr\\s*>|<tr\\s+class=\"lastRow\">).*?</tr>", RegexOptions.Singleline))
+            foreach (Match informationTable in rawProductInformation)
             {
-                // - find type of row - 
-                //Used to pass sentence so that only the information is saved.(and not multible spaces and tags)
-                Regex removeLongSpaces = new Regex("(\\s){2,20}");
-                //Returns from "<th scope=\"row\">" to end of line
-                string tempType = Regex.Match(rawInformationRow.Value, "<th scope=\"row\">.*").Value;
-                tempType = tempType.Replace("<th scope=\"row\">", "");
-                tempType = tempType.Replace("</th>", "");
-                tempType = removeLongSpaces.Replace(tempType, "");
+                foreach (Match rawInformationRow in Regex.Matches(informationTable.Value, regexPatterns["spec"], RegexOptions.Singleline))
+                {
+                    Regex removeTags = new Regex("(<.*?>)+", RegexOptions.Singleline);
 
-                // - find data of row - 
-                string tempValue = Regex.Match(rawInformationRow.Value, "<td>.*?</td>").Value;
-                tempValue = tempValue.Replace("<td>", "");
-                tempValue = tempValue.Replace("</td>", "");
+                    // - find type of row - 
+                    string tempType = removeTags.Replace(Regex.Match(rawInformationRow.Value, regexPatterns["spec name"]).Value, "").Trim();
 
-                productInfo.Add(tempType, tempValue);
+                    // - find data of row - 
+                    string tempValue = removeTags.Replace(Regex.Match(rawInformationRow.Value, regexPatterns["spec value"]).Value, "").Trim();
+
+                    productInfo.Add(tempType, tempValue);
+                }
             }
 
             AddInformation(productInfo);
             //databasethis(this);
         }
 
-        public void ParsePrice(string siteData)
+        public void ParsePrice(string siteData, Dictionary<string, string> regexPatterns)
         {
             //find title of product
-            name = Regex.Match(siteData, "<title>.*? - Sammenlign priser", RegexOptions.Singleline).Value.Replace("<title>", "").Replace("- Sammenlign priser", "").Trim();
+            name = Regex.Match(siteData, regexPatterns["title"], RegexOptions.Singleline).Value.Replace("<title>", "").Replace("- Sammenlign priser", "").Trim();
 
             // Find retailers and add to product
-            string retailerTag = "<a rel=\"nofollow\" title=\"\" target=\"_blank\" class=\"google-analytic-retailer-data pricelink\" retailer-data=\"";
-
-            MatchCollection retailerCode = Regex.Matches(siteData, "(" + retailerTag + "(.*?(\n)*)*<\\/a>)+");
-
-            foreach (Match oneRetailerCode in retailerCode)//""("
+            foreach (Match oneRetailerCode in Regex.Matches(siteData, regexPatterns["all retailers"]))
             {
-                if (oneRetailerCode.Value == "")
-                {
-                    break;
-                }
                 Retailer tempRetailer = new Retailer();
 
-                // looking for name of retailer
-                for (int i = retailerTag.Length + 1; i < 20 + retailerTag.Length; i++)
-                {
-                    if (oneRetailerCode.Value[i] == '(' || oneRetailerCode.Value[i] == '"')
-                    {
-                        tempRetailer.name = oneRetailerCode.Value.Substring(retailerTag.Length, i - retailerTag.Length);
-                        break;
-                    }
-                }
-
-                // looking for price of product
-                string tempPrice = Regex.Match(oneRetailerCode.Value, "((<strong>).*?(<\\/strong>))+").Value;
-                if (tempPrice != "") {
-                    Regex regexHtml = new Regex("(<.*?>)+", RegexOptions.Singleline);
-                    tempPrice = regexHtml.Replace(tempPrice, "").Replace(".", "");
-                    tempPrice = tempPrice.Remove(0, 3).Replace(",", ".");
-                    tempRetailer.price = decimal.Parse(tempPrice);
-                }
-
-                // looking for URL of retailer
-                //Eneste link på siden, er et redirect link der går gennem pricerunner. 
+                // Finding retailer name.
+                Regex split = new Regex("\\.\\*\\?");
+                string[] tags = split.Split(regexPatterns["retailer name"]);
+                tempRetailer.name = Regex.Match(oneRetailerCode.Value, regexPatterns["retailer name"]).Value.Replace(tags[0], "").Replace(tags[1], "");
 
                 if (tempRetailer.name != "")
                 {
+                    // Finding retailer price
+                    Regex removeTags = new Regex("(<.*?>)+", RegexOptions.Singleline);
+                    string tempPrice = Regex.Match(oneRetailerCode.Value, regexPatterns["retailer price"]).Value;
+
+                    tempPrice = removeTags.Replace(tempPrice, "").Replace(".", "");
+                    tempPrice = tempPrice.Replace("kr", "").Trim().Replace(",", ".");
+                    tempRetailer.price = decimal.Parse(tempPrice);
+
                     retailers.Add(tempRetailer);
                 }
-                
             }
         }
-
-        //edbpriser match title -> <h1 class=\"product-details-header\" itemprop=\"name\">.*?</h1>        //edbpriser match alle retailers -> <div class=\"ProductDealerList\">.*?        //edbpriser matches pris -> <td><strong>.*? kr</strong></td>
-        //edbpriser matches navn -> <div class=\"vendor-name\">.*?</div>   + html remove (<REMOVE>) + trim() + TEST DET
-
-        //edbpriser matches spec tables -> <td class=\"headline\" colspan=.*?</table>        //edbpriser matches specs ->  <tr class=\"sec\">.*?</tr>        //edbpriser match spec navn -> <td class=\"spec\">.*?</td>
-        //edbpriser match spec value -> <td>.*?</td>
     }
 }

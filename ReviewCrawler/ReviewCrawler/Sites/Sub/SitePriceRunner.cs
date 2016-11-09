@@ -24,10 +24,6 @@ namespace ReviewCrawler.Sites.Sub
             //searchQueue.Enqueue("http://www.pricerunner.dk/cl/640/Stroemforsyninger");
         }
 
-        public override void CrawlReviewPages(string siteData)
-        {
-        }
-
         public override void CrawlPage(string siteData)
         {
             string tempLink = "";
@@ -35,8 +31,8 @@ namespace ReviewCrawler.Sites.Sub
             string paginatorData = FindPaginator(siteData);
             int pageNumber = FindPageNumber();
 
-            tempLink = GetSearchLinks(paginatorData, "<span>" + pageNumber + "</span>", "href", false);
-            //tempLink = domainUrl;
+            //tempLink = GetSearchLinks(paginatorData, "<span>" + pageNumber + "</span>", "href", false);
+            tempLink = domainUrl;
             if (tempLink != domainUrl)
             {
                 searchQueue.Enqueue(tempLink);
@@ -140,13 +136,32 @@ namespace ReviewCrawler.Sites.Sub
 
             if (currentSite.Contains("/pl/"))
             {
+                string retailerTag = "<a rel=\"nofollow\" title=\"\" target=\"_blank\" class=\"google-analytic-retailer-data pricelink\" retailer-data=\"";
+
+                Dictionary<string, string> regexPatternsPP = new Dictionary<string, string>()
+                {
+                    { "title", "<title>.*? - Sammenlign priser"},
+                    { "all retailers", retailerTag + "(.*?(\n)*)*<\\/a>"},
+                    { "retailer price", "<strong>kr .*?</strong>"},
+                    { "retailer name", "retailer-data=\".*?\""}
+                };
+
                 //This means that the side contains prices
-                currentProduct.ParsePrice(siteData);
+                currentProduct.ParsePrice(siteData, regexPatternsPP);
             }
             else if (currentSite.Contains("/pi/"))
             {
+
+                Dictionary<string, string> regexPatternsPPS = new Dictionary<string, string>()
+                {
+                    { "table", "<div class=\"product-specs\">.*?</tbody>"},
+                    { "spec", "(<tr\\s*>|<tr\\s+class=\"lastRow\">).*?</tr>"},
+                    { "spec name", "<th scope=\"row\">.*?(</th>|\\\n)"},
+                    { "spec value", "<td>.*?</td>"}
+                };
+
                 //this means that te side contains product information
-                currentProduct.ParseProductSpecifications(siteData);
+                currentProduct.ParseProductSpecifications(siteData, regexPatternsPPS);
                 isDone = true;
             }
             else
