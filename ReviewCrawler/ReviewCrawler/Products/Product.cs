@@ -38,7 +38,7 @@ namespace ReviewCrawler.Products
                     // - find data of row - 
                     string tempValue = removeTags.Replace(Regex.Match(rawInformationRow.Value, regexPatterns["spec value"]).Value, "").Trim();
 
-                    if (tempType != "" && tempValue != "")
+                    if (tempType != "" && tempValue != "" && !productInfo.ContainsKey(tempType))
                     {
                         productInfo.Add(tempType, tempValue);
                     }
