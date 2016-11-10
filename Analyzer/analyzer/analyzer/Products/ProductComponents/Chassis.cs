@@ -19,5 +19,9 @@ namespace analyzer.Products.ProductComponents
         public bool atx;
         public bool miniAtx;
         public bool miniItx;
+
+        Chassis(int id, string category) : base(id, category)
+        {
+        }
     }
 }

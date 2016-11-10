@@ -18,5 +18,9 @@ namespace analyzer.Products.ProductComponents
         public string weight = "";
         public bool modular;
 
+        PSU(int id, string category) : base(id, category)
+        {
+        }
+
     }
 }

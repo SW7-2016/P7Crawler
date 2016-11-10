@@ -8,6 +8,9 @@ namespace analyzer.Products
 {
     abstract class ComputerComponents : Product
     {
+        protected ComputerComponents(int id, string category) : base(id, category)
+        {
+        }
 
     }
 }

@@ -20,5 +20,9 @@ namespace analyzer.Products.ProductComponents
         public string height = "";
         public string depth = "";
         public string width = "";
+
+        HardDrive(int id, string category) : base(id, category)
+        {
+        }
     }
 }

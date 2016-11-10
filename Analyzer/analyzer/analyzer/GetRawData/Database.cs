@@ -31,45 +31,7 @@ namespace analyzer.GetRawData
             else
                 Connection = new MySqlConnection(connectionString2);
         }
-        public void GetReviewInfo()
-        {
-            public void InsertReview(Review review)
-        {
-            if (!DoesReviewExist(review))
-            {
-                MySqlCommand command = new MySqlCommand("INSERT INTO Review" +
-                          "(reviewDate, crawlDate, content,productRating,reviewRating,author,positiveCount,negativeCount,verifiedPurchase,isCriticReview,productType,url,title,maxRating)"
-                          + "VALUES(@reviewDate, @crawlDate, @content, @productRating, @reviewRating, @author, @positiveCount,"
-                          + "@negativeCount, @verifiedPurchase, @isCriticReview, @productType, @url, @title, @maxRating)", connection);
-                command.Parameters.AddWithValue("@reviewDate", DateToString(review.reviewDate));
-                command.Parameters.AddWithValue("@crawlDate", DateToString(review.crawlDate));
-                command.Parameters.AddWithValue("@content", review.content);
-                command.Parameters.AddWithValue("@productRating", review.productRating);
-                command.Parameters.AddWithValue("@reviewRating", review.reviewRating);
-                command.Parameters.AddWithValue("@author", review.author);
-                command.Parameters.AddWithValue("@positiveCount", review.reception.positive);
-                command.Parameters.AddWithValue("@negativeCount", review.reception.negative);
-                command.Parameters.AddWithValue("@verifiedPurchase", review.verifiedPurchase);
-                command.Parameters.AddWithValue("@isCriticReview", review.isCriticReview);
-                command.Parameters.AddWithValue("@productType", review.productType);
-                command.Parameters.AddWithValue("@url", review.url);
-                command.Parameters.AddWithValue("@title", review.title);
-                command.Parameters.AddWithValue("@maxRating", review.maxRating);
-
-                command.ExecuteNonQuery();
-
-                int ID = GetReviewID(review.url);
-
-                foreach (ReviewComment comment in review.comments)
-                {
-                    InsertReviewComment(comment, ID);
-                }
-            }
-
-        public void GetProductInfo()
-        {
-            
-        }
+        
 
     }
 }

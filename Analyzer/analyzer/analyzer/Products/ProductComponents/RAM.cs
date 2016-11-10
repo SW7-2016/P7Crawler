@@ -14,5 +14,9 @@ namespace analyzer.Products.ProductComponents
         public string technology = "";
         public string formFactor = "";
         public string casLatency = "";
+
+        RAM(int id, string category) : base(id, category)
+        {
+        }
     }
 }

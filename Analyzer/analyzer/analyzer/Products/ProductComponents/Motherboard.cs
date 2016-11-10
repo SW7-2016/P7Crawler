@@ -23,5 +23,9 @@ namespace analyzer.Products.ProductComponents
         public int cpuCount = 0;
         public int maxMem = 0;
         public int memSlots = 0;
+
+        Motherboard(int id, string category) : base(id, category)
+        {
+        }
     }
 }

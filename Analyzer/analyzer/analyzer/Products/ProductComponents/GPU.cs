@@ -16,5 +16,9 @@ namespace analyzer.Products.ProductComponents
         public string memSize = "";
         public string manufacturer = "";
         public int pciSlots = 0;
+
+        GPU(int id, string category) : base(id, category)
+        {
+        }
     }
 }

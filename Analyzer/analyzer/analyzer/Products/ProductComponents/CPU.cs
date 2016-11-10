@@ -19,5 +19,9 @@ namespace analyzer.Products.ProductComponents
         public bool stockCooler;
         public int physicalCores = 0;
         public int logicalCores = 0;
+
+        CPU(int id, string category) : base(id, category)
+        {
+        }
     }
 }
