@@ -48,7 +48,7 @@ namespace ReviewCrawler.Sites.Sub
             Dictionary<string, string> regexPatternsPPS = new Dictionary<string, string>()
             {
                 { "table", "<td class=\"headline\" colspan=.*?</table>"},
-                { "spec", "<tr class=\"sec\">.*?</tr>"},
+                { "spec", "<tr.*?</tr>"},
                 { "spec name", "<td class=\"spec\">.*?</td>"},
                 { "spec value", "<td>.*?</td>"},
             };
