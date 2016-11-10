@@ -13,6 +13,8 @@ namespace ReviewCrawler.Sites.Sub
     class SiteGuru3d : ReviewSite
     {
         private const double maxRating = 5;
+        //Used to get the productype transfered to the parse method
+        private Dictionary<string, string> productTypes = new Dictionary<string, string>();
 
         public SiteGuru3d()
         {
@@ -20,9 +22,9 @@ namespace ReviewCrawler.Sites.Sub
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/videocards.html");
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/processors.html");
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/mainboards.html");
-            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd).html");
-            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/pc-cases-and-modding.html");
-            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/psu-power-supply-units.html");
+            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd).html");
+            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/pc-cases-and-modding.html");
+            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/psu-power-supply-units.html");
         }
 
         public override void CrawlPage(string siteData)
@@ -47,11 +49,12 @@ namespace ReviewCrawler.Sites.Sub
             foreach (var item in tempReviewLinks)
             {
                 searchQueue.Enqueue(item);
+                productTypes.Add(item, tempProductType);
             }
-            CrawlReviewPages(siteData, tempProductType); //NEXT OBJECTIVE PRODUCTTYPE
+            CrawlReviewPages(siteData);
         }
 
-        public void CrawlReviewPages(string siteData, string tempProductType)
+        public void CrawlReviewPages(string siteData)
         {
             string tempLink = "";
 
@@ -131,12 +134,23 @@ namespace ReviewCrawler.Sites.Sub
         public override bool Parse(string siteData)
         {
             string siteContentParsed = removeTagsFromReview(siteData);
+            string tempProductType = "";
 
             if (!currentSite.Contains("articles-summary"))
             {
                 if (currentSite.Contains(",1.html"))
                 {
-                    review = new Review(currentSite, GetProductType(currentSite), true);
+                    if (productTypes.ContainsKey(currentSite))
+                    {
+                        tempProductType = productTypes[currentSite];
+                        productTypes.Remove(currentSite);
+                    }
+                    else
+                    {
+                        tempProductType = "unknown";
+                    }
+                    
+                    review = new Review(currentSite, tempProductType, true);
                     review.title = GetTitle(siteData);
                     review.productRating = GetRating(siteData);
                     review.maxRating = maxRating;

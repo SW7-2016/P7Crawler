@@ -16,12 +16,12 @@ namespace ReviewCrawler.Sites.Sub
         {
             domainUrl = "http://www.pricerunner.dk";
             //searchQueue.Enqueue("http://www.pricerunner.dk/cl/35/Bundkort");
-            searchQueue.Enqueue("http://www.pricerunner.dk/cl/40/CPU");
+            //searchQueue.Enqueue("http://www.pricerunner.dk/cl/40/CPU");
             //searchQueue.Enqueue("http://www.pricerunner.dk/cl/37/Grafikkort");
             //searchQueue.Enqueue("http://www.pricerunner.dk/cl/36/Harddiske"); ///////////////////7
             //searchQueue.Enqueue("http://www.pricerunner.dk/cl/186/Kabinetter");
             //searchQueue.Enqueue("http://www.pricerunner.dk/cl/48/Lydkort");
-            //searchQueue.Enqueue("http://www.pricerunner.dk/cl/640/Stroemforsyninger");
+            searchQueue.Enqueue("http://www.pricerunner.dk/cl/640/Stroemforsyninger");
         }
 
         public override void CrawlPage(string siteData)
@@ -31,8 +31,8 @@ namespace ReviewCrawler.Sites.Sub
             string paginatorData = FindPaginator(siteData);
             int pageNumber = FindPageNumber();
 
-            //tempLink = GetSearchLinks(paginatorData, "<span>" + pageNumber + "</span>", "href", false);
-            tempLink = domainUrl;
+            tempLink = GetSearchLinks(paginatorData, "<span>" + pageNumber + "</span>", "href", false);
+            //tempLink = domainUrl;
             if (tempLink != domainUrl)
             {
                 searchQueue.Enqueue(tempLink);
@@ -87,42 +87,45 @@ namespace ReviewCrawler.Sites.Sub
 
         public override bool Parse(string siteData)
         {
-            Product currentProduct;
             bool isDone = false;
 
-            if (Crawler.products.ContainsKey(GetSiteKey(currentSite)))
+            if (currentSite.Contains("sammenlign-priser"))
             {
-                currentProduct = Crawler.products[GetSiteKey(currentSite)];
+                product = null;
+            }
+
+            if (product != null)
+            {
             }
             else if (currentSite.Contains("/grafikkort/"))
             {
                 //product is a "GPU"
-                currentProduct = new GPU();
+                product = new GPU();
             }
             else if (currentSite.Contains("/cpu/"))
             {
                 //product is a "CPU"
-                currentProduct = new CPU();
+                product = new CPU();
             }
             else if (currentSite.Contains("/bundkort/"))
             {
                 //product is a "Motherboard"
-                currentProduct = new Motherboard();
+                product = new Motherboard();
             }
             else if (currentSite.Contains("/harddiske/"))
             {
                 //product is a "HardDrive"
-                currentProduct = new HardDrive();
+                product = new HardDrive();
             }
             else if (currentSite.Contains("/kabinetter/"))
             {
                 //product is a "Chassis"
-                currentProduct = new Chassis();
+                product = new Chassis();
             }
             else if (currentSite.Contains("/stroemforsyninger/"))
             {
                 //product is a "PSU"
-                currentProduct = new PSU();
+                product = new PSU();
             }
             else
             {
@@ -142,7 +145,7 @@ namespace ReviewCrawler.Sites.Sub
                 };
 
                 //This means that the side contains prices
-                currentProduct.ParsePrice(siteData, regexPatternsPP);
+                product.ParsePrice(siteData, regexPatternsPP);
             }
             else if (currentSite.Contains("/pi/"))
             {
@@ -156,18 +159,15 @@ namespace ReviewCrawler.Sites.Sub
                 };
 
                 //this means that te side contains product information
-                currentProduct.ParseProductSpecifications(siteData, regexPatternsPPS);
+                product.ParseProductSpecifications(siteData, regexPatternsPPS);
                 isDone = true;
+
             }
             else
             {
                 Debug.WriteLine("Pricerunner - couldnt determine product type ");
             }
 
-            if (!Crawler.products.ContainsKey(GetSiteKey(currentSite)))
-            {
-                Crawler.products.Add(GetSiteKey(currentSite), currentProduct);
-            }
             return isDone;
         }
 

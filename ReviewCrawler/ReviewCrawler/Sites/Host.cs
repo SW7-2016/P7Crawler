@@ -34,15 +34,15 @@ namespace ReviewCrawler.Sites
             bool isItemDone = false;
             //bool startParse = false;
 
-            if (searchQueue.Count > 0)
-            {
-                isReview = false;
-                currentSite = searchQueue.Dequeue().ToLower();
-            }
-            else if (itemQueue.Count > 0)
+            if (itemQueue.Count > 0)
             {
                 isReview = true;
                 currentSite = itemQueue.Dequeue().ToLower();
+            }
+            else if (searchQueue.Count > 0)
+            {
+                isReview = false;
+                currentSite = searchQueue.Dequeue().ToLower();
             }
             else
             {
@@ -70,6 +70,7 @@ namespace ReviewCrawler.Sites
             {
                 connection.Open();
                 AddItemToDatabase(connection);
+
                 connection.Close();
             }
 

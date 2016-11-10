@@ -62,7 +62,7 @@ namespace ReviewCrawler.Products
             }
 
             // Find retailers and add to product
-            foreach (Match oneRetailerCode in Regex.Matches(siteData, regexPatterns["all retailers"]))
+            foreach (Match oneRetailerCode in Regex.Matches(siteData, regexPatterns["all retailers"], RegexOptions.Singleline))
             {
                 Retailer tempRetailer = new Retailer();
 

@@ -28,7 +28,7 @@ namespace ReviewCrawler.Sites.Sub
             if (nextPage.Value != "")
             {
                 string tempPage = nextPage.Value.Replace("<li class=\"next\"><a href=\"", "").Replace("\"", "");
-                //searchQueue.Enqueue(domainUrl + tempPage);
+                searchQueue.Enqueue(domainUrl + tempPage);
             }
 
             //Finding the product links from a page.
@@ -43,6 +43,8 @@ namespace ReviewCrawler.Sites.Sub
 
         public override bool Parse(string siteData)
         {
+            product = null;
+
             Dictionary<string, string> regexPatternsPPS = new Dictionary<string, string>()
             {
                 { "table", "<td class=\"headline\" colspan=.*?</table>"},
@@ -56,57 +58,51 @@ namespace ReviewCrawler.Sites.Sub
                 { "title", "<h1 class=\"product-details-header\" itemprop=\"name\">.*?</h1>"},
                 { "all retailers", "<div class=\"ProductDealerList\">.*?</tbody>"},
                 { "retailer price", "<td><strong>.*? kr</strong></td>"},
-                { "reatiler name", "<div class=\"vendor-name\">.*?</div>"},
+                { "retailer name", "<div class=\"vendor-name\">.*?</div>"},
             };
 
-            Product currentProduct;
-
-            if (Crawler.products.ContainsKey(GetSiteKey(currentSite)))
-            {
-                currentProduct = Crawler.products[GetSiteKey(currentSite)];
-            }
-            else if (currentSite.Contains("/grafikkort"))
+            if (currentSite.Contains("/grafikkort"))
             {
                 //product is a "GPU"
-                currentProduct = new GPU();
+                product = new GPU();
             }
             else if (currentSite.Contains("/cpu"))
             {
                 //product is a "CPU"
-                currentProduct = new CPU();
+                product = new CPU();
             }
             else if (currentSite.Contains("/bundkort"))
             {
                 //product is a "Motherboard"
-                currentProduct = new Motherboard();
+                product = new Motherboard();
             }
             else if (currentSite.Contains("/harddiske"))
             {
                 //product is a "HardDrive"
-                currentProduct = new HardDrive();
+                product = new HardDrive();
             }
             else if (currentSite.Contains("/kabinetter"))
             {
                 //product is a "Chassis"
-                currentProduct = new Chassis();
+                product = new Chassis();
             }
             else if (currentSite.Contains("/stroemforsyninger"))
             {
                 //product is a "PSU"
-                currentProduct = new PSU();
+                product = new PSU();
             }
             else if (currentSite.Contains("/ram"))
             {
-                //product is a "PSU"
-                currentProduct = new PSU();
+                //product is a "RAM"
+                product = new RAM();
             }
             else
             {
                 throw new FormatException("Pricerunner - couldnt determine product type", null);
             }
 
-            currentProduct.ParsePrice(siteData, regexPatternsPP);
-            currentProduct.ParseProductSpecifications(siteData, regexPatternsPPS);
+            product.ParsePrice(siteData, regexPatternsPP);
+            product.ParseProductSpecifications(siteData, regexPatternsPPS);
 
             //edbpriser match title -> <h1 class=\"product-details-header\" itemprop=\"name\">.*?</h1>
 
@@ -118,7 +114,7 @@ namespace ReviewCrawler.Sites.Sub
             //edbpriser matches specs ->  <tr class=\"sec\">.*?</tr>
             //edbpriser match spec navn -> <td class=\"spec\">.*?</td>
             //edbpriser match spec value -> <td>.*?</td>
-
+            
             return true;
         }
 
