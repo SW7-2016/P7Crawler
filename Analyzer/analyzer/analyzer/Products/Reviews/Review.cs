@@ -9,8 +9,8 @@ namespace analyzer.Products.Reviews
 {
     internal abstract class Review
     {
-        private List<string> _pros;
-        private List<string> _cons;
+        public List<string> pros;
+        public List<string> cons;
 
         public int PositiveReception;
         public int NegativeReception;
