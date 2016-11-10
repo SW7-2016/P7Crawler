@@ -12,8 +12,8 @@ namespace analyzer.Products.Reviews
         public List<string> pros;
         public List<string> cons;
 
-        public int PositiveReception;
-        public int NegativeReception;
+        public int positiveReception;
+        public int negativeReception;
 
         protected Review(int id, int productId, double rating, double maxRating, DateTime date, string title,  string url, string category)
         {
@@ -26,7 +26,6 @@ namespace analyzer.Products.Reviews
             Rating = rating;
             MaxRating = maxRating;
         }
-
 
         public int Id { get; }
         public int ProductId { get; }

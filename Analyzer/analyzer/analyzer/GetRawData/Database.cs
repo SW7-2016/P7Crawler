@@ -8,6 +8,9 @@ using MySql.Data;
 using MySql.Data.MySqlClient;
 using System.Threading;
 using System.Diagnostics;
+using analyzer.Products.ProductComponents;
+using analyzer.Products.Retailers;
+using analyzer.Products.Reviews;
 
 namespace analyzer.GetRawData
 {

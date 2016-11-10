@@ -8,17 +8,17 @@ namespace analyzer.Products.Retailers
 {
     class Retailer
     {
-        public string name = "";
-        public string url = "";
-        public decimal price = 0;
-
-        public Retailer(int id, int productId)
+        public Retailer(int id, decimal price, string name, string url)
         {
             Id = id;
-            ProductId = productId;
+            Price = price;
+            Name = name;
+            Url = url;
         }
 
-        public int ProductId { get; }
         public int Id { get; }
+        public decimal Price { get; }
+        public string Name { get; }
+        public string Url { get; }
     }
 }

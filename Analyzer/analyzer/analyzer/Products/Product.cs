@@ -7,14 +7,20 @@ namespace analyzer.Products
 {
     abstract class Product
     {
-        public int id = 0;
         public double superScore = 0;
         public double criticScore = 0;
         public double userScore = 0;
-        public string category = "";
         public string name = "";
         public string description = "";
-        protected byte[][] image;
         public List<Retailer> retailers = new List<Retailer>();
+
+        protected Product(int id, string category)
+        {
+            Id = id;
+            Category = category;
+        }
+
+        public string Category { get; }
+        public int Id { get; }
     }
 }
