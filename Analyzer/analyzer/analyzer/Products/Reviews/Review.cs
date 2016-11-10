@@ -14,6 +14,7 @@ namespace analyzer.Products.Reviews
 
         public int positiveReception;
         public int negativeReception;
+        public double timeDecayWeight;
 
         protected Review(int id, int productId, double rating, double maxRating, DateTime date, string title,  string url, string category)
         {

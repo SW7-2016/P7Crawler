@@ -14,24 +14,47 @@ using analyzer.Products.Reviews;
 
 namespace analyzer.GetRawData
 {
-    internal class DBconnect
+    class DBConnect
     {
-        private readonly string connectionString =
-            "server=172.25.23.57;database=crawlerdb;user=analyser;port=3306;password=Analyser23!;";
+        /*
+        MySqlCommand command = new MySqlCommand("SELECT * FROM CPU WHERE url=@url", connection);
+        command.Parameters.AddWithValue("@url", url);
 
-        private readonly string connectionString2 =
-            "server=172.25.23.57;database=analyserdb;user=analyser;port=3306;password=Analyser23!;";
+            MySqlDataReader reader = command.ExecuteReader();
 
-        public MySqlConnection Connection;
+        reader.Read();
 
-        public void DbInitialize(bool isCrawlerDB)
+            int result = (int)reader.GetValue(0);
+
+        reader.Close();*/
+        private readonly string connectionString = "server=172.25.23.57;database=crawlerdb;user=analyser;port=3306;password=Analyser23!;";
+        private readonly string connectionString2 = "server=172.25.23.57;database=analyserdb;user=analyser;port=3306;password=Analyser23!;";
+
+        public MySqlConnection connection;
+
+        public void DbInitialize(bool isCrawlerDb)
         {
-            if (isCrawlerDB)
-                Connection = new MySqlConnection(connectionString);
+            if (isCrawlerDb)
+                connection = new MySqlConnection(connectionString);
             else
-                Connection = new MySqlConnection(connectionString2);
+                connection = new MySqlConnection(connectionString2);
         }
-        
+
+        public void GetCpuData()
+        {
+            MySqlCommand command = new MySqlCommand("SELECT * FROM CPU", connection);
+            command.Parameters.AddWithValue("@url", url);
+
+            MySqlDataReader reader = command.ExecuteReader();
+
+            reader.Read();
+
+            int result = (int)reader.GetValue(0);
+
+            reader.Close();
+
+            return result;
+        }
 
     }
 }
