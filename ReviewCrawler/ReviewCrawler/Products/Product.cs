@@ -38,7 +38,14 @@ namespace ReviewCrawler.Products
                     // - find data of row - 
                     string tempValue = removeTags.Replace(Regex.Match(rawInformationRow.Value, regexPatterns["spec value"]).Value, "").Trim();
 
-                    productInfo.Add(tempType, tempValue);
+                    if (tempType != "")
+                    {
+                        productInfo.Add(tempType, tempValue);
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Product specifications couldnt be read");
+                    }
                 }
             }
 
@@ -48,8 +55,15 @@ namespace ReviewCrawler.Products
         
         public void ParsePrice(string siteData, Dictionary<string, string> regexPatterns)
         {
+            Regex removeTags = new Regex("(<.*?>)+", RegexOptions.Singleline);
+
             //find title of product
-            name = Regex.Match(siteData, regexPatterns["title"], RegexOptions.Singleline).Value.Replace("<title>", "").Replace("- Sammenlign priser", "").Trim();
+            name = removeTags.Replace(Regex.Match(siteData, regexPatterns["title"], RegexOptions.Singleline).Value, "");
+
+            if (name.Contains("- Sammenlign priser"))
+            {
+                name = name.Replace("- Sammenlign priser", "").Trim();
+            }
 
             // Find retailers and add to product
             foreach (Match oneRetailerCode in Regex.Matches(siteData, regexPatterns["all retailers"]))
@@ -64,7 +78,6 @@ namespace ReviewCrawler.Products
                 if (tempRetailer.name != "")
                 {
                     // Finding retailer price
-                    Regex removeTags = new Regex("(<.*?>)+", RegexOptions.Singleline);
                     string tempPrice = Regex.Match(oneRetailerCode.Value, regexPatterns["retailer price"]).Value;
 
                     tempPrice = removeTags.Replace(tempPrice, "").Replace(".", "");
@@ -75,19 +88,6 @@ namespace ReviewCrawler.Products
                 }
             }
         }
-        
-
-        //edbpriser match title -> <h1 class=\"product-details-header\" itemprop=\"name\">.*?</h1>
-
-        //edbpriser match alle retailers -> <div class=\"ProductDealerList\">.*?
-        //edbpriser matches pris -> <td><strong>.*? kr</strong></td>
-        //edbpriser matches navn -> <div class=\"vendor-name\">.*?</div>   + html remove (<REMOVE>) + trim() + TEST DET
-
-        //edbpriser matches spec tables -> <td class=\"headline\" colspan=.*?</table>
-        //edbpriser matches specs ->  <tr class=\"sec\">.*?</tr>
-        //edbpriser match spec navn -> <td class=\"spec\">.*?</td>
-        //edbpriser match spec value -> <td>.*?</td>
-
         #region  Datebase
 
         public abstract void InsertComponentToDB(int PID);
@@ -221,8 +221,5 @@ namespace ReviewCrawler.Products
         }
 
         #endregion
-
     }
-
-
 }

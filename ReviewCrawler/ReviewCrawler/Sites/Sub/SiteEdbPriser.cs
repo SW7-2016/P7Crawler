@@ -28,7 +28,7 @@ namespace ReviewCrawler.Sites.Sub
             if (nextPage.Value != "")
             {
                 string tempPage = nextPage.Value.Replace("<li class=\"next\"><a href=\"", "").Replace("\"", "");
-                searchQueue.Enqueue(domainUrl + tempPage);
+                //searchQueue.Enqueue(domainUrl + tempPage);
             }
 
             //Finding the product links from a page.
@@ -46,8 +46,8 @@ namespace ReviewCrawler.Sites.Sub
             Dictionary<string, string> regexPatternsPPS = new Dictionary<string, string>()
             {
                 { "table", "<td class=\"headline\" colspan=.*?</table>"},
-                { "spec", "<td class=\"headline\" colspan=.*?</table>"},
-                { "spec name", "<tr class=\"sec\">.*?</tr>"},
+                { "spec", "<tr class=\"sec\">.*?</tr>"},
+                { "spec name", "<td class=\"spec\">.*?</td>"},
                 { "spec value", "<td>.*?</td>"},
             };
 
@@ -65,37 +65,37 @@ namespace ReviewCrawler.Sites.Sub
             {
                 currentProduct = Crawler.products[GetSiteKey(currentSite)];
             }
-            else if (currentSite.Contains("/grafikkort/"))
+            else if (currentSite.Contains("/grafikkort"))
             {
                 //product is a "GPU"
                 currentProduct = new GPU();
             }
-            else if (currentSite.Contains("/cpu/"))
+            else if (currentSite.Contains("/cpu"))
             {
                 //product is a "CPU"
                 currentProduct = new CPU();
             }
-            else if (currentSite.Contains("/lydkort/"))
-            {
-                //product is a "SoundCard"
-                currentProduct = new SoundCard();
-            }
-            else if (currentSite.Contains("/bundkort/"))
+            else if (currentSite.Contains("/bundkort"))
             {
                 //product is a "Motherboard"
                 currentProduct = new Motherboard();
             }
-            else if (currentSite.Contains("/harddiske/"))
+            else if (currentSite.Contains("/harddiske"))
             {
                 //product is a "HardDrive"
                 currentProduct = new HardDrive();
             }
-            else if (currentSite.Contains("/kabinetter/"))
+            else if (currentSite.Contains("/kabinetter"))
             {
                 //product is a "Chassis"
                 currentProduct = new Chassis();
             }
-            else if (currentSite.Contains("/stroemforsyninger/"))
+            else if (currentSite.Contains("/stroemforsyninger"))
+            {
+                //product is a "PSU"
+                currentProduct = new PSU();
+            }
+            else if (currentSite.Contains("/ram"))
             {
                 //product is a "PSU"
                 currentProduct = new PSU();
