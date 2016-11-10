@@ -38,13 +38,9 @@ namespace ReviewCrawler.Products
                     // - find data of row - 
                     string tempValue = removeTags.Replace(Regex.Match(rawInformationRow.Value, regexPatterns["spec value"]).Value, "").Trim();
 
-                    if (tempType != "")
+                    if (tempType != "" && tempValue != "")
                     {
                         productInfo.Add(tempType, tempValue);
-                    }
-                    else
-                    {
-                        Debug.WriteLine("Product specifications couldnt be read");
                     }
                 }
             }
