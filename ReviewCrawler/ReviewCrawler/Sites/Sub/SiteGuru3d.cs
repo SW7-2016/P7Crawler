@@ -19,11 +19,11 @@ namespace ReviewCrawler.Sites.Sub
         public SiteGuru3d()
         {
             domainUrl = "http://www.guru3d.com/";
-            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/videocards.html");
-            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/processors.html");
-            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/mainboards.html");
+            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/videocards.html");
+            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/processors.html");
+            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/mainboards.html");
             searchQueue.Enqueue("http://www.guru3d.com/articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd).html");
-            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/pc-cases-and-modding.html");
+            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/pc-cases-and-modding.html");
             searchQueue.Enqueue("http://www.guru3d.com/articles-categories/psu-power-supply-units.html");
         }
 
@@ -149,7 +149,7 @@ namespace ReviewCrawler.Sites.Sub
                     {
                         tempProductType = "unknown";
                     }
-                    
+
                     review = new Review(currentSite, tempProductType, true);
                     review.title = GetTitle(siteData);
                     review.productRating = GetRating(siteData);
@@ -263,6 +263,67 @@ namespace ReviewCrawler.Sites.Sub
             else
             {
                 return -1;
+            }
+        }
+
+        public override void LoadCrawlerState()
+        {
+            string line;
+            using (StreamReader inputFile = new StreamReader(@"C:/CrawlerSave/file.txt"))
+            {
+                while ((line = inputFile.ReadLine()) != null)
+                {
+                    string[] values = line.Split(new string[] {"%%&&##"}, StringSplitOptions.None);
+
+                    if (this.GetType().ToString() == values[0])
+                    {
+                        searchQueue.Clear();
+                        itemQueue.Clear();
+                        string[] newSearchQueue = values[1].Split(new string[] {"#%&/#"}, StringSplitOptions.None);
+                        string[] newItemQueue = values[2].Split(new string[] {"#%&/#"}, StringSplitOptions.None);
+                        string[] pTypes = values[3].Split(new string[] { "#%&/#" }, StringSplitOptions.None);
+
+                        for (int i = 0; i < newSearchQueue.Length - 1; i++)
+                        {
+                            searchQueue.Enqueue(newSearchQueue[i]);
+                        }
+                        for (int i = 0; i < newItemQueue.Length - 1; i++)
+                        {
+                            itemQueue.Enqueue(newItemQueue[i]);
+                        }
+                        for (int i = 0; i < pTypes.Length - 1; i++)
+                        {
+                            string[] tempTypes = pTypes[i].Split(new string[] { "####%%%%####" }, StringSplitOptions.None);
+                            productTypes.Add(tempTypes[0], tempTypes[1]);
+                        }
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        public override void SaveCrawlerState()
+        {
+            using (StreamWriter outputFile = new StreamWriter(@"C:/CrawlerSave/file.txt", true))
+            {
+                outputFile.Write(this.GetType().ToString() + "%%&&##");
+
+                while (searchQueue.Count > 0)
+                {
+                    outputFile.Write(searchQueue.Dequeue() + "#%&/#");
+                }
+                outputFile.Write("%%&&##");
+                while (itemQueue.Count > 0)
+                {
+                    outputFile.Write(itemQueue.Dequeue() + "#%&/#");
+                }
+                outputFile.Write("%%&&##");
+                foreach (var item in productTypes)
+                {
+                    outputFile.Write(item.Key + "####%%%%####" + item.Value + "#%&/#");
+                }
+                outputFile.Write("\n");
             }
         }
     }

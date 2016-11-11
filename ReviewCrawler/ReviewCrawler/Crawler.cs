@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace ReviewCrawler
         public MySqlConnection connection = new MySqlConnection("server=172.25.23.57;database=crawlerdb;user=crawler;port=3306;password=Crawler23!;");
 
         //picks a host and starts crawling it
-        public void StartCrawl()
+        public void StartCrawl(object data)
         {
             bool running = true;
             bool isHostDone = false;
@@ -55,6 +56,7 @@ namespace ReviewCrawler
                 if (hostQueue.Count < 1)
                 {
                     running = false;
+                    Debug.WriteLine("I am done");
                 }
             }
         }
@@ -70,7 +72,7 @@ namespace ReviewCrawler
         //Checks if more than two seconds have passed since 'lastAccessTime' and returns a bool
         public bool PolitenessTimeCheck(DateTime lastAccessTime)
         {
-            if ((DateTime.Now - lastAccessTime).TotalSeconds > 2)
+            if ((DateTime.Now - lastAccessTime).TotalSeconds > 4)
             {
                 return true;
             }

@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using ReviewCrawler.Sites;
 using System.IO;
 using ReviewCrawler.Sites.Sub;
+using System.Threading;
 
 namespace ReviewCrawler
 {
@@ -23,7 +24,7 @@ namespace ReviewCrawler
     /// </summary>
     public partial class MainWindow : Window
     {
-
+        public static bool runFast = true;
         Crawler crawl = new Crawler();
 
         public MainWindow()
@@ -33,9 +34,13 @@ namespace ReviewCrawler
 
         private void crawl_bt_Click(object sender, RoutedEventArgs e)
         {
-
             crawl.AddHosts();
-            crawl.StartCrawl();
+
+
+            Thread crawlerThread = new Thread(crawl.StartCrawl);
+            crawlerThread.Start("hiiii");
+            
+            
         }
 
         private void sendDataTest_bt_Click(object sender, RoutedEventArgs e)
@@ -43,23 +48,15 @@ namespace ReviewCrawler
 
         }
 
-        private void test_bt_Click(object sender, RoutedEventArgs e)
+        private void stopCrawl_bt_Click(object sender, RoutedEventArgs e)
         {
-            string result = "";
-            using (StreamReader inputFile = new StreamReader(@"C:\Users\Malthe\Desktop\Damp.txt"))
+            using (StreamWriter outputFile = new StreamWriter(@"C:/CrawlerSave/file.txt"))
             {
-
-                while (!inputFile.EndOfStream)
-                {
-
-                    result += inputFile.ReadLine();
-
-                }
+                outputFile.Write("");
             }
-
-             SiteGuru3d dub = new SiteGuru3d();
-
-            dub.removeTagsFromReview(result);
+            runFast = false;
         }
+
+
     }
 }

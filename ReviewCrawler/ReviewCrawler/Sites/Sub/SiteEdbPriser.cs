@@ -16,6 +16,7 @@ namespace ReviewCrawler.Sites.Sub
         {
             domainUrl = "http://www.edbpriser.dk";
             searchQueue.Enqueue("http://www.edbpriser.dk/hardware/ram.aspx?count=500&sort=Popularity&rlm=List");
+            //searchQueue.Enqueue("http://www.edbpriser.dk/hardware/harddisk.aspx?count=500&sort=Popularity&rlm=List");
         }
 
 

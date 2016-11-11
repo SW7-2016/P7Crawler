@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.IO;
 using ReviewCrawler.Products;
 using ReviewCrawler.Products.Reviews;
 using ReviewCrawler.Sites.Sub;
@@ -21,6 +22,7 @@ namespace ReviewCrawler.Sites
         protected Queue<string> itemQueue = new Queue<string>(); //itemQueue refers to products/reviews
         protected Queue<string> searchQueue = new Queue<string>();
         protected string currentSite;
+        private bool justStarted = true;
 
         public abstract bool Parse(string siteData);
         public abstract void CrawlPage(string siteData);
@@ -33,6 +35,12 @@ namespace ReviewCrawler.Sites
             bool isReview = false;
             bool isItemDone = false;
             //bool startParse = false;
+
+            if (justStarted)
+            {
+                LoadCrawlerState();
+                justStarted = false;
+            }
 
             if (itemQueue.Count > 0)
             {
@@ -70,11 +78,73 @@ namespace ReviewCrawler.Sites
             {
                 connection.Open();
                 AddItemToDatabase(connection);
-
                 connection.Close();
+                if (!MainWindow.runFast)
+                {
+                    SaveCrawlerState();
+                    return true;
+                }
             }
 
             return false;
+        }
+
+        public virtual void SaveCrawlerState()
+        {
+
+            using (StreamWriter outputFile = new StreamWriter(@"C:/CrawlerSave/file.txt", true))
+            {
+                outputFile.Write(this.GetType().ToString() + "%%&&##");
+                
+                while (searchQueue.Count > 0)
+                {
+                    outputFile.Write(searchQueue.Dequeue() + "#%&/#");
+                }
+                outputFile.Write("%%&&##");
+                while (itemQueue.Count > 0)
+                {
+                    outputFile.Write(itemQueue.Dequeue() + "#%&/#");
+                }
+                outputFile.Write("\n");
+            }
+
+        }
+
+        public virtual void LoadCrawlerState()
+        {
+            string line;
+            using (StreamReader inputFile = new StreamReader(@"C:/CrawlerSave/file.txt"))
+            {
+                while ((line = inputFile.ReadLine()) != null)
+                {
+                    string[] values = line.Split(new string[] { "%%&&##" }, StringSplitOptions.None);
+
+                    if (this.GetType().ToString() == values[0])
+                    {
+                        searchQueue.Clear();
+                        itemQueue.Clear();
+                        string[] newSearchQueue = values[1].Split(new string[] { "#%&/#" }, StringSplitOptions.None);
+                        string[] newItemQueue = values[2].Split(new string[] { "#%&/#" }, StringSplitOptions.None);
+
+                        for (int i = 0; i < newSearchQueue.Length - 1; i++)
+                        {
+                            searchQueue.Enqueue(newSearchQueue[i]);
+                        }
+                        for (int i = 0; i < newItemQueue.Length - 1; i++)
+                        {
+                            itemQueue.Enqueue(newItemQueue[i]);
+                        }
+
+                        break;
+                        
+                    }
+                }
+
+
+            }
+
+            
+
         }
 
         public DateTime GetLastAccessTime()
