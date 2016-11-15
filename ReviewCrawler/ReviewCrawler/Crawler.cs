@@ -66,13 +66,13 @@ namespace ReviewCrawler
         {
             hostQueue.Enqueue(new SiteGuru3d());
             hostQueue.Enqueue(new SitePriceRunner());
-            hostQueue.Enqueue(new SiteEdbPriser());
+           // hostQueue.Enqueue(new SiteEdbPriser());
         }
 
         //Checks if more than two seconds have passed since 'lastAccessTime' and returns a bool
         public bool PolitenessTimeCheck(DateTime lastAccessTime)
         {
-            if ((DateTime.Now - lastAccessTime).TotalSeconds > 4)
+            if ((DateTime.Now - lastAccessTime).TotalSeconds > 2)
             {
                 return true;
             }

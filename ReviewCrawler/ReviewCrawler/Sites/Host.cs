@@ -23,6 +23,7 @@ namespace ReviewCrawler.Sites
         protected Queue<string> searchQueue = new Queue<string>();
         protected string currentSite;
         private bool justStarted = true;
+        protected DateTime lastSave = DateTime.Now;
 
         public abstract bool Parse(string siteData);
         public abstract void CrawlPage(string siteData);
@@ -38,7 +39,7 @@ namespace ReviewCrawler.Sites
 
             if (justStarted)
             {
-                LoadCrawlerState();
+                LoadCrawlerState(connection);
                 justStarted = false;
             }
 
@@ -79,73 +80,106 @@ namespace ReviewCrawler.Sites
                 connection.Open();
                 AddItemToDatabase(connection);
                 connection.Close();
-                if (!MainWindow.runFast)
+                if (!MainWindow.runFast || (DateTime.Now - lastSave).TotalMinutes > 10)
                 {
-                    SaveCrawlerState();
-                    return true;
+                    SaveCrawlerState(connection);
+                    if (!MainWindow.runFast)
+                    {
+                        return true;
+                    }
                 }
             }
 
             return false;
         }
 
-        public virtual void SaveCrawlerState()
+        public void InsertSiteInDB(MySqlConnection connection)
         {
-
-            using (StreamWriter outputFile = new StreamWriter(@"C:/CrawlerSave/file.txt", true))
-            {
-                outputFile.Write(this.GetType().ToString() + "%%&&##");
-                
-                while (searchQueue.Count > 0)
-                {
-                    outputFile.Write(searchQueue.Dequeue() + "#%&/#");
-                }
-                outputFile.Write("%%&&##");
-                while (itemQueue.Count > 0)
-                {
-                    outputFile.Write(itemQueue.Dequeue() + "#%&/#");
-                }
-                outputFile.Write("\n");
-            }
-
+            MySqlCommand command = new MySqlCommand("INSERT INTO CrawlProgress" +
+                                                    "(Site, Queue, date)" +
+                                                    "VALUES(@site, @queue, @date)", connection);
+            command.Parameters.AddWithValue("@site", this.GetType().ToString());
+            command.Parameters.AddWithValue("@queue", "");
+            command.Parameters.AddWithValue("@date", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            command.ExecuteNonQuery();
         }
 
-        public virtual void LoadCrawlerState()
+        public virtual void SaveCrawlerState(MySqlConnection connection)
         {
-            string line;
-            using (StreamReader inputFile = new StreamReader(@"C:/CrawlerSave/file.txt"))
+            connection.Open();
+            if (!DoesSiteExist(connection))
             {
-                while ((line = inputFile.ReadLine()) != null)
-                {
-                    string[] values = line.Split(new string[] { "%%&&##" }, StringSplitOptions.None);
-
-                    if (this.GetType().ToString() == values[0])
-                    {
-                        searchQueue.Clear();
-                        itemQueue.Clear();
-                        string[] newSearchQueue = values[1].Split(new string[] { "#%&/#" }, StringSplitOptions.None);
-                        string[] newItemQueue = values[2].Split(new string[] { "#%&/#" }, StringSplitOptions.None);
-
-                        for (int i = 0; i < newSearchQueue.Length - 1; i++)
-                        {
-                            searchQueue.Enqueue(newSearchQueue[i]);
-                        }
-                        for (int i = 0; i < newItemQueue.Length - 1; i++)
-                        {
-                            itemQueue.Enqueue(newItemQueue[i]);
-                        }
-
-                        break;
-                        
-                    }
-                }
+                InsertSiteInDB(connection);
+            }
 
 
+            string queue = "";
+            while (searchQueue.Count > 0)
+            {
+                queue += (searchQueue.Dequeue() + "#%&/#");
+            }
+            queue += "%%&&##";
+            while (itemQueue.Count > 0)
+            {
+                queue += (itemQueue.Dequeue() + "#%&/#");
             }
 
             
 
+            MySqlCommand command =
+                new MySqlCommand("UPDATE CrawlProgress SET Queue = @queue, date = @date WHERE site=@site", connection);
+            command.Parameters.AddWithValue("@queue", queue);
+            command.Parameters.AddWithValue("@date", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            command.Parameters.AddWithValue("@site", this.GetType().ToString());
+            command.ExecuteNonQuery();
+
+            connection.Close();
         }
+
+        public bool DoesSiteExist(MySqlConnection connection)
+        {
+            MySqlCommand command = new MySqlCommand("SELECT * FROM CrawlProgress WHERE site=@site", connection);
+            command.Parameters.AddWithValue("@site", this.GetType().ToString());
+
+            if (command.ExecuteScalar() == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public virtual void LoadCrawlerState(MySqlConnection connection)
+        {
+            connection.Open();
+
+            MySqlCommand command = new MySqlCommand("SELECT * FROM CrawlProgress WHERE Site=@site", connection);
+            command.Parameters.AddWithValue("@Site", this.GetType().ToString());
+
+            MySqlDataReader reader = command.ExecuteReader();
+
+            
+            if (reader.Read())
+            {
+                string queue = (string)reader.GetValue(1);
+                string[] queueSplit = queue.Split(new string[] { "%%&&##" }, StringSplitOptions.None);
+                string[] sQueue = queueSplit[0].Split(new string[] { "#%&/#" }, StringSplitOptions.None);
+                string[] iQueue = queueSplit[1].Split(new string[] { "#%&/#" }, StringSplitOptions.None);
+
+                for (int i = 0; i < sQueue.Length - 1; i++)
+                {
+                    searchQueue.Enqueue(sQueue[i]);
+                }
+                for (int i = 0; i < iQueue.Length - 1; i++)
+                {
+                    itemQueue.Enqueue(iQueue[i]);
+                }
+            }
+            reader.Close();
+            connection.Close();
+    }
 
         public DateTime GetLastAccessTime()
         {

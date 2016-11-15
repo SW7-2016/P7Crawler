@@ -38,6 +38,8 @@ namespace ReviewCrawler
 
 
             Thread crawlerThread = new Thread(crawl.StartCrawl);
+
+
             crawlerThread.Start("hiiii");
             
             
