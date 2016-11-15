@@ -19,9 +19,8 @@ namespace ReviewCrawler.Sites.Sub
             //searchQueue.Enqueue("http://www.pricerunner.dk/cl/35/Bundkort");
             //searchQueue.Enqueue("http://www.pricerunner.dk/cl/40/CPU");
             //searchQueue.Enqueue("http://www.pricerunner.dk/cl/37/Grafikkort");
-            //searchQueue.Enqueue("http://www.pricerunner.dk/cl/36/Harddiske");
+            //searchQueue.Enqueue("http://www.pricerunner.dk/cl/36/Harddiske"); 
             //searchQueue.Enqueue("http://www.pricerunner.dk/cl/186/Kabinetter");
-            //searchQueue.Enqueue("http://www.pricerunner.dk/cl/48/Lydkort");
             searchQueue.Enqueue("http://www.pricerunner.dk/cl/640/Stroemforsyninger");
         }
 

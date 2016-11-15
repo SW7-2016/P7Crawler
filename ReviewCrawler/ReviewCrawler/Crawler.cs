@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace ReviewCrawler
         public MySqlConnection connection = new MySqlConnection("server=172.25.23.57;database=crawlerdb;user=crawler;port=3306;password=Crawler23!;");
 
         //picks a host and starts crawling it
-        public void StartCrawl()
+        public void StartCrawl(object data)
         {
             bool running = true;
             bool isHostDone = false;
@@ -55,6 +56,7 @@ namespace ReviewCrawler
                 if (hostQueue.Count < 1)
                 {
                     running = false;
+                    Debug.WriteLine("I am done");
                 }
             }
         }
@@ -62,9 +64,9 @@ namespace ReviewCrawler
         //Adds all the hosts to be crawled - do this at startup
         public void AddHosts()
         {
-            //hostQueue.Enqueue(new SiteGuru3d());
-            //hostQueue.Enqueue(new SitePriceRunner());
-            hostQueue.Enqueue(new SiteEdbPriser());
+            hostQueue.Enqueue(new SiteGuru3d());
+            hostQueue.Enqueue(new SitePriceRunner());
+           // hostQueue.Enqueue(new SiteEdbPriser());
         }
 
         //Checks if more than two seconds have passed since 'lastAccessTime' and returns a bool

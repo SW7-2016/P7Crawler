@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ReviewCrawler.Products.Reviews;
 using System.Text.RegularExpressions;
 using System.IO;
+using MySql.Data.MySqlClient;
 
 namespace ReviewCrawler.Sites.Sub
 {
@@ -22,7 +23,7 @@ namespace ReviewCrawler.Sites.Sub
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/videocards.html");
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/processors.html");
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/mainboards.html");
-            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd).html");
+            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd).html");
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/pc-cases-and-modding.html");
             searchQueue.Enqueue("http://www.guru3d.com/articles-categories/psu-power-supply-units.html");
         }
@@ -152,7 +153,7 @@ namespace ReviewCrawler.Sites.Sub
                     {
                         tempProductType = "unknown";
                     }
-                    
+
                     review = new Review(currentSite, tempProductType, true);
                     review.title = GetTitle(siteData);
                     review.productRating = GetRating(siteData);
@@ -267,6 +268,78 @@ namespace ReviewCrawler.Sites.Sub
             {
                 return -1;
             }
+        }
+
+        public override void LoadCrawlerState(MySqlConnection connection)
+        {
+            connection.Open();
+            MySqlCommand command = new MySqlCommand("SELECT * FROM CrawlProgress WHERE Site=@site", connection);
+            command.Parameters.AddWithValue("@Site", this.GetType().ToString());
+
+            MySqlDataReader reader = command.ExecuteReader();
+
+
+            if (reader.Read())
+            {
+                string queue = (string)reader.GetValue(1);
+                string[] queueSplit = queue.Split(new string[] { "%%&&##" }, StringSplitOptions.None);
+                string[] sQueue = queueSplit[0].Split(new string[] { "#%&/#" }, StringSplitOptions.None);
+                string[] iQueue = queueSplit[1].Split(new string[] { "#%&/#" }, StringSplitOptions.None);
+                string[] pTypes = queueSplit[2].Split(new string[] { "#%&/#" }, StringSplitOptions.None);
+
+                for (int i = 0; i < sQueue.Length - 1; i++)
+                {
+                    searchQueue.Enqueue(sQueue[i]);
+                }
+                for (int i = 0; i < iQueue.Length - 1; i++)
+                {
+                    itemQueue.Enqueue(iQueue[i]);
+                }
+                for (int i = 0; i < pTypes.Length - 1; i++)
+                {
+                    string[] tempTypes = pTypes[i].Split(new string[] { "####%%%%####" }, StringSplitOptions.None);
+                    productTypes.Add(tempTypes[0], tempTypes[1]);
+                }
+            }
+            reader.Close();
+            connection.Close();
+        }
+
+        public override void SaveCrawlerState(MySqlConnection connection)
+        {
+            connection.Open();
+            if (DoesSiteExist(connection))
+            {
+                InsertSiteInDB(connection);
+            }
+
+
+            string queue = "";
+            while (searchQueue.Count > 0)
+            {
+                queue += (searchQueue.Dequeue() + "#%&/#");
+            }
+            queue += "%%&&##";
+            while (itemQueue.Count > 0)
+            {
+                queue += (itemQueue.Dequeue() + "#%&/#");
+            }
+            queue += "%%&&##";
+            foreach (var item in productTypes)
+            {
+                queue += (item.Key + "####%%%%####" + item.Value + "#%&/#");
+            }
+
+
+
+            MySqlCommand command =
+                new MySqlCommand("UPDATE CrawlProgress SET Queue = @queue && date = @date WHERE site=@site", connection);
+            command.Parameters.AddWithValue("@queue", queue);
+            command.Parameters.AddWithValue("@date", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            command.Parameters.AddWithValue("@site", this.GetType().ToString());
+            command.ExecuteNonQuery();
+
+            connection.Close();
         }
     }
 }

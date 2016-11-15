@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.IO;
 using ReviewCrawler.Products;
 using ReviewCrawler.Products.Reviews;
 using ReviewCrawler.Sites.Sub;
@@ -21,6 +22,8 @@ namespace ReviewCrawler.Sites
         protected Queue<string> itemQueue = new Queue<string>(); //itemQueue refers to products/reviews
         protected Queue<string> searchQueue = new Queue<string>();
         protected string currentSite;
+        private bool justStarted = true;
+        protected DateTime lastSave = DateTime.Now;
 
         public abstract bool Parse(string siteData);
         public abstract void CrawlPage(string siteData);
@@ -31,6 +34,12 @@ namespace ReviewCrawler.Sites
             bool isReview = false;
             bool isItemDone = false;
             //bool startParse = false;
+
+            if (justStarted)
+            {
+                LoadCrawlerState(connection);
+                justStarted = false;
+            }
 
             if (itemQueue.Count > 0)
             {
@@ -67,13 +76,108 @@ namespace ReviewCrawler.Sites
             if (isItemDone) //If a review or product was just "completed" then add it to DB
             {
                 connection.Open();
-                //AddItemToDatabase(connection);
-
+                AddItemToDatabase(connection);
                 connection.Close();
+                if (!MainWindow.runFast || (DateTime.Now - lastSave).TotalMinutes > 10)
+                {
+                    SaveCrawlerState(connection);
+                    if (!MainWindow.runFast)
+                    {
+                        return true;
+                    }
+                }
             }
 
             return false;
         }
+
+        public void InsertSiteInDB(MySqlConnection connection)
+        {
+            MySqlCommand command = new MySqlCommand("INSERT INTO CrawlProgress" +
+                                                    "(Site, Queue, date)" +
+                                                    "VALUES(@site, @queue, @date)", connection);
+            command.Parameters.AddWithValue("@site", this.GetType().ToString());
+            command.Parameters.AddWithValue("@queue", "");
+            command.Parameters.AddWithValue("@date", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            command.ExecuteNonQuery();
+        }
+
+        public virtual void SaveCrawlerState(MySqlConnection connection)
+        {
+            connection.Open();
+            if (!DoesSiteExist(connection))
+            {
+                InsertSiteInDB(connection);
+            }
+
+
+            string queue = "";
+            while (searchQueue.Count > 0)
+            {
+                queue += (searchQueue.Dequeue() + "#%&/#");
+            }
+            queue += "%%&&##";
+            while (itemQueue.Count > 0)
+            {
+                queue += (itemQueue.Dequeue() + "#%&/#");
+            }
+
+            
+
+            MySqlCommand command =
+                new MySqlCommand("UPDATE CrawlProgress SET Queue = @queue, date = @date WHERE site=@site", connection);
+            command.Parameters.AddWithValue("@queue", queue);
+            command.Parameters.AddWithValue("@date", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            command.Parameters.AddWithValue("@site", this.GetType().ToString());
+            command.ExecuteNonQuery();
+
+            connection.Close();
+        }
+
+        public bool DoesSiteExist(MySqlConnection connection)
+        {
+            MySqlCommand command = new MySqlCommand("SELECT * FROM CrawlProgress WHERE site=@site", connection);
+            command.Parameters.AddWithValue("@site", this.GetType().ToString());
+
+            if (command.ExecuteScalar() == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public virtual void LoadCrawlerState(MySqlConnection connection)
+        {
+            connection.Open();
+
+            MySqlCommand command = new MySqlCommand("SELECT * FROM CrawlProgress WHERE Site=@site", connection);
+            command.Parameters.AddWithValue("@Site", this.GetType().ToString());
+
+            MySqlDataReader reader = command.ExecuteReader();
+
+            
+            if (reader.Read())
+            {
+                string queue = (string)reader.GetValue(1);
+                string[] queueSplit = queue.Split(new string[] { "%%&&##" }, StringSplitOptions.None);
+                string[] sQueue = queueSplit[0].Split(new string[] { "#%&/#" }, StringSplitOptions.None);
+                string[] iQueue = queueSplit[1].Split(new string[] { "#%&/#" }, StringSplitOptions.None);
+
+                for (int i = 0; i < sQueue.Length - 1; i++)
+                {
+                    searchQueue.Enqueue(sQueue[i]);
+                }
+                for (int i = 0; i < iQueue.Length - 1; i++)
+                {
+                    itemQueue.Enqueue(iQueue[i]);
+                }
+            }
+            reader.Close();
+            connection.Close();
+    }
 
         public DateTime GetLastAccessTime()
         {
