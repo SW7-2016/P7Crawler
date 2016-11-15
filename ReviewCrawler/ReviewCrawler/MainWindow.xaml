@@ -1,0 +1,15 @@
+﻿<Window x:Class="ReviewCrawler.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ReviewCrawler"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Button x:Name="crawl_bt" Content="CRAWL" HorizontalAlignment="Left" Height="53" Margin="81,245,0,0" VerticalAlignment="Top" Width="390" FontSize="40" FontWeight="Bold" Click="crawl_bt_Click"/>
+        <Button x:Name="sendDataTest_bt" Content="Button" HorizontalAlignment="Left" Height="138" Margin="105,46,0,0" VerticalAlignment="Top" Width="301" Click="sendDataTest_bt_Click"/>
+        <Button x:Name="stopCrawl_bt" Content="Stop" HorizontalAlignment="Left" Height="161" Margin="10,10,0,0" VerticalAlignment="Top" Width="72" Click="stopCrawl_bt_Click"/>
+
+    </Grid>
+</Window>
