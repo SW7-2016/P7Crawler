@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 
 namespace analyzer.Products.Reviews
 {
-    internal abstract class Review
+    public abstract class Review
     {
         public List<string> pros;
         public List<string> cons;
 
         public int positiveReception;
         public int negativeReception;
+        public double credibility;
         public double timeDecayWeight;
 
         protected Review(int id, int productId, double rating, double maxRating, DateTime date, string title,  string url, string category)

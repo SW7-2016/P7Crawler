@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace analyzer.Products.Reviews
 {
-    class UserReview : Review
+    public class UserReview : Review
     {
-        public double credibility;
-
         public UserReview(int id, int productId, double rating, double maxRating, DateTime date, string title,
             string url, string category, bool verifiedPurchase)
             : base(id, productId, rating, maxRating, date, title, url, category)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace analyzer.Products.Retailers
 {
-    class Retailer
+    public class Retailer
     {
         public Retailer(int id, decimal price, string name, string url)
         {

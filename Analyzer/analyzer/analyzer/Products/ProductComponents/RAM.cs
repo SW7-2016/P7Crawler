@@ -6,25 +6,25 @@ using System.Threading.Tasks;
 
 namespace analyzer.Products.ProductComponents
 {
-    class RAM : ComputerComponents
+    public class RAM : ComputerComponents
     {
-        private string _type = "";
-        private string _capacity = "";
-        private string _speed = "";
-        private string _technology = "";
-        private string _formFactor = "";
-        private string _casLatency = "";
-
         public RAM(int id, string category, string type, string capacity, string speed, 
                     string technology, string formFactor, string casLatency) 
             : base(id, category)
         {
-            _type = type;
-            _capacity = capacity;
-            _speed = speed;
-            _technology = technology;
-            _formFactor = formFactor;
-            _casLatency = casLatency;
+            Type = type;
+            Capacity = capacity;
+            Speed = speed;
+            Technology = technology;
+            FormFactor = formFactor;
+            CasLatency = casLatency;
         }
+
+        public string Type { get; }
+        public string Capacity { get; }
+        public string Speed { get; }
+        public string Technology { get; }
+        public string FormFactor { get; }
+        public string CasLatency { get; }
     }
 }

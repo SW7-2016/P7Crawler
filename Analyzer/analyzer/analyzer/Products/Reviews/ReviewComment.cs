@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace analyzer.Products.Reviews
 {
-    class ReviewComment
+    public class ReviewComment
     {
         public ReviewComment(int id, int reviewId, string content)
         {

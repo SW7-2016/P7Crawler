@@ -43,11 +43,8 @@ namespace analyzer.GetRawData
         public List<Motherboard> GetMotherboardData()
         {
             MySqlCommand command = new MySqlCommand("SELECT * FROM Motherboard", connection);
-            int i = 0;
             List<Motherboard> result = new List<Motherboard>();
-        //command.Parameters.AddWithValue("@url", "");
-
-        MySqlDataReader reader = command.ExecuteReader();
+            MySqlDataReader reader = command.ExecuteReader();
 
             while (reader.Read())
             {
@@ -59,14 +56,7 @@ namespace analyzer.GetRawData
                                                 reader.GetBoolean(7), reader.GetBoolean(8), reader.GetBoolean(9), (int)tempResult[10], 
                                                 (int)tempResult[11], (string)tempResult[12], reader.GetBoolean(13), (string)tempResult[14]);
                                                 
-
                 result.Add(row);
-                
-                    /*new Motherboard(tempResult[0], tempResult[1], tempResult[2], tempResult[3], tempResult[4], 
-                                           tempResult[5], tempResult[6], tempResult[7], tempResult[8], tempResult[9], 
-                                           tempResult[10], tempResult[11], tempResult[12], tempResult[13]));
-                                           */
-                i++;
             }
 
 
@@ -75,5 +65,44 @@ namespace analyzer.GetRawData
             return result;
         }
 
+        public List<HardDrive> GetHardDriveData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<GPU> GetGpuData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<CPU> GetCpuData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Chassis> GetChassisData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<PSU> GetPsuData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<RAM> GetRamData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<CriticReview> GetCriticReviewData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<UserReview> GetUserReviewData()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

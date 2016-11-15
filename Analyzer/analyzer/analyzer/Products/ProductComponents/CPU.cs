@@ -7,32 +7,33 @@ using System.Threading.Tasks;
 
 namespace analyzer.Products.ProductComponents
 {
-    class CPU : ComputerComponents
+    public class CPU : ComputerComponents
     {
-        private string _model = "";
-        private string _clock = "";
-        private string _socket = "";
-        private string _maxTurbo = "";
-        private string _integratedGpu = "";
-        private string _manufacturer = "";
-        private string _cpuSeries = "";
-        private bool _stockCooler;
-        private int _physicalCores = 0;
-        private int _logicalCores = 0;
-
         public CPU(string category, int id, string model, string clock, string maxTurbo, string integratedGpu,
-                    bool stockCooler, string manufacturer, string cpuSeries, int logicalCores, int physicalCores)
+                    bool stockCooler, string manufacturer, string cpuSeries, int logicalCores, int physicalCores, string socket)
             : base(id, category)
         {
-            _model = model;
-            _clock = clock;
-            _maxTurbo = maxTurbo;
-            _integratedGpu = integratedGpu;
-            _stockCooler = stockCooler;
-            _manufacturer = manufacturer;
-            _cpuSeries = cpuSeries;
-            _logicalCores = logicalCores;
-            _physicalCores = physicalCores;
+            Model = model;
+            Clock = clock;
+            MaxTurbo = maxTurbo;
+            IntegratedGpu = integratedGpu;
+            StockCooler = stockCooler;
+            Manufacturer = manufacturer;
+            CpuSeries = cpuSeries;
+            LogicalCores = logicalCores;
+            PhysicalCores = physicalCores;
+            Socket = socket;
         }
+
+        public int PhysicalCores { get; }
+        public int LogicalCores { get; }
+        public bool StockCooler { get; }
+        public string Model { get; }
+        public string Clock { get; }
+        public string Socket { get; }
+        public string MaxTurbo { get; }
+        public string IntegratedGpu { get; }
+        public string Manufacturer { get; }
+        public string CpuSeries { get; }
     }
 }

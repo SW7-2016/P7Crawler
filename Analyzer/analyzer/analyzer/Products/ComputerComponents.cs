@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace analyzer.Products
 {
-    abstract class ComputerComponents : Product
+    public abstract class ComputerComponents : Product
     {
         protected ComputerComponents(int id, string category) : base(id, category)
         {

@@ -6,29 +6,29 @@ using System.Threading.Tasks;
 
 namespace analyzer.Products.ProductComponents
 {
-    class GPU : ComputerComponents
+    public class GPU : ComputerComponents
     {
-        private string _processorManufacturer = "";
-        private string _chipset = "";
-        private string _model = "";
-        private string _architecture = "";
-        private string _cooling = "";
-        private string _memSize = "";
-        private string _manufacturer = "";
-        private int _pciSlots = 0;
-
         public GPU(string category, int id, string processorManufacturer, string chipset, string model, string architecture,
                                     string cooling, string memSize, int pciSlots, string manufacturer) 
             : base(id, category)
         {
-            _processorManufacturer = processorManufacturer;
-            _chipset = chipset;
-            _model = model;
-            _architecture = architecture;
-            _cooling = cooling;
-            _memSize = memSize;
-            _manufacturer = manufacturer;
-            _pciSlots = pciSlots;
+            ProcessorManufacturer = processorManufacturer;
+            Chipset = chipset;
+            Model = model;
+            Architecture = architecture;
+            Cooling = cooling;
+            MemSize = memSize;
+            Manufacturer = manufacturer;
+            PciSlots = pciSlots;
         }
+
+        public int PciSlots { get; }
+        public string ProcessorManufacturer { get; }
+        public string Chipset { get; }
+        public string Model { get; }
+        public string Architecture { get; }
+        public string Cooling { get; }
+        public string MemSize { get; }
+        public string Manufacturer { get; }
     }
 }

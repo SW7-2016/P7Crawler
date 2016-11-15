@@ -25,6 +25,16 @@ namespace analyzer
     /// </summary>
     public partial class MainWindow : Window
     {
+        public List<Chassis> chassisList = new List<Chassis>();
+        public List<CPU> cpuList = new List<CPU>();
+        public List<GPU> gpuList = new List<GPU>();
+        public List<HardDrive> hardDriveList = new List<HardDrive>();
+        public List<Motherboard> motherboardList = new List<Motherboard>();
+        public List<PSU> psuList = new List<PSU>();
+        public List<RAM> ramList = new List<RAM>();
+        public List<CriticReview> criticReviewList = new List<CriticReview>();
+        public List<UserReview> userReviewList = new List<UserReview>();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -38,7 +48,22 @@ namespace analyzer
 
             DBConnection.connection.Open();
 
-            DBConnection.GetMotherboardData();
+            #region Add data from crawlerDB
+
+            chassisList = DBConnection.GetChassisData();
+            cpuList = DBConnection.GetCpuData();
+            gpuList = DBConnection.GetGpuData();
+            hardDriveList = DBConnection.GetHardDriveData();
+            motherboardList = DBConnection.GetMotherboardData();
+            psuList = DBConnection.GetPsuData();
+            ramList = DBConnection.GetRamData();
+            criticReviewList = DBConnection.GetCriticReviewData();
+            userReviewList = DBConnection.GetUserReviewData();
+
+
+            #endregion
+
+
 
 
 

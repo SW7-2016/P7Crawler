@@ -7,42 +7,42 @@ using System.Threading.Tasks;
 
 namespace analyzer.Products.ProductComponents
 {
-    class Motherboard : ComputerComponents
+    public class Motherboard : ComputerComponents
     {
-        private string _formFactor = "";
-        private string _chipset = "";
-        private string _cpuType = "";
-        private string _socket = "";
-        private string _memType = "";
-        private bool _netCard;
-        private bool _soundCard;
-        private bool _supportIntegratedGraphicsCard;
-        private bool _multiGpu;
-        private bool _crossfire;
-        private bool _sli;
-        private int _cpuCount = 0;
-        private int _maxMem = 0;
-        private int _memSlots = 0;
-
         public Motherboard(string category, int id, string formFactor, string cpuType, int cpuCount, string socket, 
-                            bool netCard, bool soundCard, bool multiGPU, bool crossfire, bool sli, int maxMem, 
+                            bool netCard, bool soundCard, bool multiGpu, bool crossfire, bool sli, int maxMem, 
                             int memSlots, string memType, bool supportIntegratedGraphicsCard, string chipset) 
             : base(id, category)
         {
-            _formFactor = formFactor;
-            _cpuType = cpuType;
-            _cpuCount = cpuCount;
-            _socket = socket;
-            _netCard = netCard;
-            _soundCard = soundCard;
-            _multiGpu = multiGPU;
-            _crossfire = crossfire;
-            _sli = sli;
-            _maxMem = maxMem;
-            _memSlots = memSlots;
-            _memType = memType;
-            _supportIntegratedGraphicsCard = supportIntegratedGraphicsCard;
-            _chipset = chipset;
+            FormFactor = formFactor;
+            CpuType = cpuType;
+            CpuCount = cpuCount;
+            Socket = socket;
+            NetCard = netCard;
+            SoundCard = soundCard;
+            MultiGpu = multiGpu;
+            Crossfire = crossfire;
+            Sli = sli;
+            MaxMem = maxMem;
+            MemSlots = memSlots;
+            MemType = memType;
+            SupportIntegratedGraphicsCard = supportIntegratedGraphicsCard;
+            Chipset = chipset;
         }
+
+        public string FormFactor { get; }
+        public string Chipset { get; }
+        public string CpuType { get; }
+        public string Socket { get; }
+        public string MemType { get; }
+        public bool NetCard { get; }
+        public bool SoundCard { get; }
+        public bool MultiGpu { get; }
+        public bool SupportIntegratedGraphicsCard { get; }
+        public bool Sli { get; }
+        public bool Crossfire { get; }
+        public int MemSlots { get; }
+        public int MaxMem { get; }
+        public int CpuCount { get; }
     }
 }

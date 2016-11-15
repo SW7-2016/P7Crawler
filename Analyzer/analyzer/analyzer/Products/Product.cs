@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace analyzer.Products
 {
-    abstract class Product
+    public abstract class Product
     {
         public double superScore = 0;
         public double criticScore = 0;
