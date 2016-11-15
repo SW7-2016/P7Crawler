@@ -9,19 +9,30 @@ namespace analyzer.Products.ProductComponents
 {
     class CPU : ComputerComponents
     {
-        public string model = "";
-        public string clock = "";
-        public string socket = "";
-        public string maxTurbo = "";
-        public string integratedGpu = "";
-        public string manufacturer = "";
-        public string cpuSeries = "";
-        public bool stockCooler;
-        public int physicalCores = 0;
-        public int logicalCores = 0;
+        private string _model = "";
+        private string _clock = "";
+        private string _socket = "";
+        private string _maxTurbo = "";
+        private string _integratedGpu = "";
+        private string _manufacturer = "";
+        private string _cpuSeries = "";
+        private bool _stockCooler;
+        private int _physicalCores = 0;
+        private int _logicalCores = 0;
 
-        CPU(int id, string category) : base(id, category)
+        public CPU(string category, int id, string model, string clock, string maxTurbo, string integratedGpu,
+                    bool stockCooler, string manufacturer, string cpuSeries, int logicalCores, int physicalCores)
+            : base(id, category)
         {
+            _model = model;
+            _clock = clock;
+            _maxTurbo = maxTurbo;
+            _integratedGpu = integratedGpu;
+            _stockCooler = stockCooler;
+            _manufacturer = manufacturer;
+            _cpuSeries = cpuSeries;
+            _logicalCores = logicalCores;
+            _physicalCores = physicalCores;
         }
     }
 }

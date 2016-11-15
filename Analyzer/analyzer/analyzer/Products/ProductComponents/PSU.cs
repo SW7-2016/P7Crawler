@@ -9,17 +9,27 @@ namespace analyzer.Products.ProductComponents
 {
     class PSU : ComputerComponents
     {
-        public string power = "";
-        public string formFactor = "";
-        public string brand = "";
-        public string height = "";
-        public string depth = "";
-        public string width = "";
-        public string weight = "";
-        public bool modular;
+        private string _power = "";
+        private string _formFactor = "";
+        private string _brand = "";
+        private string _height = "";
+        private string _depth = "";
+        private string _width = "";
+        private string _weight = "";
+        private bool _modular;
 
-        PSU(int id, string category) : base(id, category)
+        public PSU(int id, string category, string power, string formFactor, bool modular, string width, 
+                    string depth, string height, string weight, string brand) 
+            : base(id, category)
         {
+            _power = power;
+            _formFactor = formFactor;
+            _modular = modular;
+            _width = width;
+            _depth = depth;
+            _height = height;
+            _weight = weight;
+            _brand = brand;
         }
 
     }

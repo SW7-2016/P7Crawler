@@ -8,15 +8,23 @@ namespace analyzer.Products.ProductComponents
 {
     class RAM : ComputerComponents
     {
-        public string type = "";
-        public string capacity = "";
-        public string speed = "";
-        public string technology = "";
-        public string formFactor = "";
-        public string casLatency = "";
+        private string _type = "";
+        private string _capacity = "";
+        private string _speed = "";
+        private string _technology = "";
+        private string _formFactor = "";
+        private string _casLatency = "";
 
-        RAM(int id, string category) : base(id, category)
+        public RAM(int id, string category, string type, string capacity, string speed, 
+                    string technology, string formFactor, string casLatency) 
+            : base(id, category)
         {
+            _type = type;
+            _capacity = capacity;
+            _speed = speed;
+            _technology = technology;
+            _formFactor = formFactor;
+            _casLatency = casLatency;
         }
     }
 }

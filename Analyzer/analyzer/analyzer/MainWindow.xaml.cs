@@ -38,7 +38,7 @@ namespace analyzer
 
             DBConnection.connection.Open();
 
-            DBConnection.GetCpuData();
+            DBConnection.GetMotherboardData();
 
 
 

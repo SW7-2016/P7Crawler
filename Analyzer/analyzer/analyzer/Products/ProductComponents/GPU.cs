@@ -8,17 +8,27 @@ namespace analyzer.Products.ProductComponents
 {
     class GPU : ComputerComponents
     {
-        public string processorManufacturer = "";
-        public string chipset = "";
-        public string model = "";
-        public string architecture = "";
-        public string cooling = "";
-        public string memSize = "";
-        public string manufacturer = "";
-        public int pciSlots = 0;
+        private string _processorManufacturer = "";
+        private string _chipset = "";
+        private string _model = "";
+        private string _architecture = "";
+        private string _cooling = "";
+        private string _memSize = "";
+        private string _manufacturer = "";
+        private int _pciSlots = 0;
 
-        GPU(int id, string category) : base(id, category)
+        public GPU(string category, int id, string processorManufacturer, string chipset, string model, string architecture,
+                                    string cooling, string memSize, int pciSlots, string manufacturer) 
+            : base(id, category)
         {
+            _processorManufacturer = processorManufacturer;
+            _chipset = chipset;
+            _model = model;
+            _architecture = architecture;
+            _cooling = cooling;
+            _memSize = memSize;
+            _manufacturer = manufacturer;
+            _pciSlots = pciSlots;
         }
     }
 }

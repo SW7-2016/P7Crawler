@@ -40,16 +40,35 @@ namespace analyzer.GetRawData
                 connection = new MySqlConnection(connectionString2);
         }
 
-        public void GetCpuData()
+        public List<Motherboard> GetMotherboardData()
         {
-            MySqlCommand command = new MySqlCommand("SELECT * FROM CPU", connection);
-            command.Parameters.AddWithValue("@url", url);
+            MySqlCommand command = new MySqlCommand("SELECT * FROM Motherboard", connection);
+            int i = 0;
+            List<Motherboard> result = new List<Motherboard>();
+        //command.Parameters.AddWithValue("@url", "");
 
-            MySqlDataReader reader = command.ExecuteReader();
+        MySqlDataReader reader = command.ExecuteReader();
 
-            reader.Read();
+            while (reader.Read())
+            {
+                object[] tempResult = new object[reader.FieldCount];
+                reader.GetValues(tempResult);
 
-            int result = (int)reader.GetValue(0);
+                Motherboard row = new Motherboard("Motherboard", (int)tempResult[0], (string)tempResult[1], (string)tempResult[2], 
+                                                (int)tempResult[3], (string)tempResult[4], reader.GetBoolean(5), reader.GetBoolean(6),
+                                                reader.GetBoolean(7), reader.GetBoolean(8), reader.GetBoolean(9), (int)tempResult[10], 
+                                                (int)tempResult[11], (string)tempResult[12], reader.GetBoolean(13), (string)tempResult[14]);
+                                                
+
+                result.Add(row);
+                
+                    /*new Motherboard(tempResult[0], tempResult[1], tempResult[2], tempResult[3], tempResult[4], 
+                                           tempResult[5], tempResult[6], tempResult[7], tempResult[8], tempResult[9], 
+                                           tempResult[10], tempResult[11], tempResult[12], tempResult[13]));
+                                           */
+                i++;
+            }
+
 
             reader.Close();
 

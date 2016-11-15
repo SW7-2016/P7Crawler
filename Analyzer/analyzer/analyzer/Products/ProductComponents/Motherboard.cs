@@ -9,23 +9,40 @@ namespace analyzer.Products.ProductComponents
 {
     class Motherboard : ComputerComponents
     {
-        public string formFactor = "";
-        public string chipset = "";
-        public string cpuType = "";
-        public string socket = "";
-        public string memType = "";
-        public bool netCard;
-        public bool soundCard;
-        public bool supportIntegratedGraphicsCard;
-        public bool multiGpu;
-        public bool crossfire;
-        public bool sli;
-        public int cpuCount = 0;
-        public int maxMem = 0;
-        public int memSlots = 0;
+        private string _formFactor = "";
+        private string _chipset = "";
+        private string _cpuType = "";
+        private string _socket = "";
+        private string _memType = "";
+        private bool _netCard;
+        private bool _soundCard;
+        private bool _supportIntegratedGraphicsCard;
+        private bool _multiGpu;
+        private bool _crossfire;
+        private bool _sli;
+        private int _cpuCount = 0;
+        private int _maxMem = 0;
+        private int _memSlots = 0;
 
-        Motherboard(int id, string category) : base(id, category)
+        public Motherboard(string category, int id, string formFactor, string cpuType, int cpuCount, string socket, 
+                            bool netCard, bool soundCard, bool multiGPU, bool crossfire, bool sli, int maxMem, 
+                            int memSlots, string memType, bool supportIntegratedGraphicsCard, string chipset) 
+            : base(id, category)
         {
+            _formFactor = formFactor;
+            _cpuType = cpuType;
+            _cpuCount = cpuCount;
+            _socket = socket;
+            _netCard = netCard;
+            _soundCard = soundCard;
+            _multiGpu = multiGPU;
+            _crossfire = crossfire;
+            _sli = sli;
+            _maxMem = maxMem;
+            _memSlots = memSlots;
+            _memType = memType;
+            _supportIntegratedGraphicsCard = supportIntegratedGraphicsCard;
+            _chipset = chipset;
         }
     }
 }
