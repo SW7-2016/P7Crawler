@@ -9,14 +9,14 @@ namespace ReviewCrawler.Sites.Sub
     class SitePcAdvisor : ReviewSite
     {
 
-        public override void CrawlPage(string siteData)
+        public override void CrawlPage(string siteData, string sQueueData)
         {
 
         }
 
 
 
-        public override bool Parse(string siteData)
+        public override bool Parse(string siteData, string sQueueData)
         {
             return false;
         }

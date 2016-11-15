@@ -118,9 +118,9 @@ namespace ReviewCrawler.Products.ProductComponents
         {
             MySqlCommand command = new MySqlCommand("INSERT INTO CPU" +
                                                     "(ProductID, model, clock, maxTurbo, integratedGpu," +
-                                                    " stockCooler, manufacturer, cpuSeries, logicalCores, physicalCores)" +
+                                                    " stockCooler, manufacturer, cpuSeries, logicalCores, physicalCores, socket)" +
                                                     "VALUES(@ProductID, @model, @clock, @maxTurbo, @integratedGpu," +
-                                                    " @stockcooler, @manufacturer, @cpuSeries, @logicalCores, @physicalCores)",
+                                                    " @stockcooler, @manufacturer, @cpuSeries, @logicalCores, @physicalCores, @socket)",
                 connection);
             command.Parameters.AddWithValue("@ProductID", PID);
             command.Parameters.AddWithValue("@model", Model);
@@ -132,6 +132,7 @@ namespace ReviewCrawler.Products.ProductComponents
             command.Parameters.AddWithValue("@cpuSeries", CpuSeries);
             command.Parameters.AddWithValue("@logicalCores", LogicalCores);
             command.Parameters.AddWithValue("@physicalCores", PhysicalCores);
+            command.Parameters.AddWithValue("@socket", socket);
 
             command.ExecuteNonQuery();
         }

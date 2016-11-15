@@ -8,14 +8,13 @@ using ReviewCrawler.Products.Reviews;
 using System.Text.RegularExpressions;
 using System.IO;
 using MySql.Data.MySqlClient;
+using ReviewCrawler.Helpers;
 
 namespace ReviewCrawler.Sites.Sub
 {
     class SiteGuru3d : ReviewSite
     {
         private const double maxRating = 5;
-        //Used to get the productype transfered to the parse method
-        private Dictionary<string, string> productTypes = new Dictionary<string, string>();
 
         public SiteGuru3d()
         {
@@ -24,11 +23,11 @@ namespace ReviewCrawler.Sites.Sub
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/processors.html");
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/mainboards.html");
             //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd).html");
-            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/pc-cases-and-modding.html");
-            searchQueue.Enqueue("http://www.guru3d.com/articles-categories/psu-power-supply-units.html");
+            searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/pc-cases-and-modding.html", ""));
+            //searchQueue.Enqueue("http://www.guru3d.com/articles-categories/psu-power-supply-units.html");
         }
 
-        public override void CrawlPage(string siteData)
+        public override void CrawlPage(string siteData, string sQueueData)
         {
             string nextPageLink = "";
             string[] articleLinks;
@@ -37,28 +36,30 @@ namespace ReviewCrawler.Sites.Sub
             if (currentSite.Contains("articles-categories"))
             {
                 //Gets match, without identifiers.
-                nextPageLink = regexMatch(siteData, "\"pagelink\"><a href=\"", "\">&gt;");
+                nextPageLink = regexMatch(siteData, "<span class = \"pagelinkselected\">", "</a></span>");
+                nextPageLink = regexMatch(nextPageLink, "<span class = \"pagelink\"><a href=\"", "\">");
+
+                tempProductType = GetProductType(currentSite);
 
                 if (nextPageLink != "")
                 {
-                    searchQueue.Enqueue(domainUrl + nextPageLink);
+                    searchQueue.Enqueue(new QueueElement(domainUrl + nextPageLink, tempProductType));
                 }
 
-                tempProductType = GetProductType(currentSite);
+                
             }
 
             //Gets matches, without identifiers.
-            articleLinks = regexMatches(siteData, "<a href=\"", "\">Read article</a>");
+             articleLinks = regexMatches(siteData, "<a href=\"", "\">Read article</a>");
 
             foreach (string link in articleLinks)
             {
-                searchQueue.Enqueue(domainUrl + link);
-                productTypes.Add(domainUrl + link, tempProductType);
+                searchQueue.Enqueue(new QueueElement(domainUrl + link, tempProductType));
             }
-            CrawlReviewPages(siteData);
+            CrawlReviewPages(siteData, sQueueData);
         }
 
-        public void CrawlReviewPages(string siteData)
+        public void CrawlReviewPages(string siteData, string productType)
         {
             string tempLink = "";
 
@@ -72,9 +73,9 @@ namespace ReviewCrawler.Sites.Sub
                 for (int i = 1; i <= totalPages; i++)
                 {
                     tempLink = currentSite.Replace("1.html", i + ".html");
-                    itemQueue.Enqueue(tempLink);
+                    itemQueue.Enqueue(new QueueElement(tempLink, productType));
                 }
-                itemQueue.Enqueue(GetSiteKey(currentSite.Replace("articles-pages", "articles-summary")));
+                itemQueue.Enqueue(new QueueElement(GetSiteKey(currentSite.Replace("articles-pages", "articles-summary")), ""));
             }
         }
 
@@ -135,7 +136,7 @@ namespace ReviewCrawler.Sites.Sub
             return "";
         }
 
-        public override bool Parse(string siteData)
+        public override bool Parse(string siteData, string sQueueData)
         {
             string siteContentParsed = removeTagsFromReview(siteData);
             string tempProductType = "";
@@ -144,22 +145,13 @@ namespace ReviewCrawler.Sites.Sub
             {
                 if (currentSite.Contains(",1.html"))
                 {
-                    if (productTypes.ContainsKey(currentSite))
-                    {
-                        tempProductType = productTypes[currentSite];
-                        productTypes.Remove(currentSite);
-                    }
-                    else
-                    {
-                        tempProductType = "unknown";
-                    }
-
                     review = new Review(currentSite, tempProductType, true);
                     review.title = GetTitle(siteData);
                     review.productRating = GetRating(siteData);
                     review.maxRating = maxRating;
                     review.crawlDate = DateTime.Now;
                     review.reviewDate = GetReviewDate(siteData);
+                    review.productType = sQueueData;
                 }
                 review.content += siteContentParsed;
             }
@@ -269,7 +261,7 @@ namespace ReviewCrawler.Sites.Sub
                 return -1;
             }
         }
-
+/*
         public override void LoadCrawlerState(MySqlConnection connection)
         {
             connection.Open();
@@ -308,7 +300,7 @@ namespace ReviewCrawler.Sites.Sub
         public override void SaveCrawlerState(MySqlConnection connection)
         {
             connection.Open();
-            if (DoesSiteExist(connection))
+            if (!DoesSiteExist(connection))
             {
                 InsertSiteInDB(connection);
             }
@@ -333,13 +325,13 @@ namespace ReviewCrawler.Sites.Sub
 
 
             MySqlCommand command =
-                new MySqlCommand("UPDATE CrawlProgress SET Queue = @queue && date = @date WHERE site=@site", connection);
+                new MySqlCommand("UPDATE CrawlProgress SET Queue = @queue, date = @date WHERE site=@site", connection);
             command.Parameters.AddWithValue("@queue", queue);
             command.Parameters.AddWithValue("@date", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
             command.Parameters.AddWithValue("@site", this.GetType().ToString());
             command.ExecuteNonQuery();
 
             connection.Close();
-        }
+        }*/
     }
 }

@@ -66,7 +66,8 @@ namespace ReviewCrawler
         {
             hostQueue.Enqueue(new SiteGuru3d());
             hostQueue.Enqueue(new SitePriceRunner());
-           // hostQueue.Enqueue(new SiteEdbPriser());
+            hostQueue.Enqueue(new SiteEdbPriser());
+            //hostQueue.Enqueue(new SiteAmazon());
         }
 
         //Checks if more than two seconds have passed since 'lastAccessTime' and returns a bool

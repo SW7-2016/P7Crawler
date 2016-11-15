@@ -10,6 +10,7 @@ using ReviewCrawler.Products.Reviews;
 using ReviewCrawler.Sites.Sub;
 using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
+using ReviewCrawler.Helpers;
 
 namespace ReviewCrawler.Sites
 {
@@ -19,21 +20,23 @@ namespace ReviewCrawler.Sites
         protected DateTime robotsTimeStamp;
         protected string domainUrl = "";
         private List<string> disallow = new List<string>();
-        protected Queue<string> itemQueue = new Queue<string>(); //itemQueue refers to products/reviews
-        protected Queue<string> searchQueue = new Queue<string>();
+        protected Queue<QueueElement> itemQueue = new Queue<QueueElement>(); //itemQueue refers to products/reviews
+        protected Queue<QueueElement> searchQueue = new Queue<QueueElement>();
         protected string currentSite;
         private bool justStarted = true;
         protected DateTime lastSave = DateTime.Now;
 
-        public abstract bool Parse(string siteData);
-        public abstract void CrawlPage(string siteData);
+        public abstract bool Parse(string siteData, string queueData);
+        public abstract void CrawlPage(string siteData, string queueData);
         public abstract void AddItemToDatabase(MySqlConnection connection);
 
         public bool StartCycle(MySqlConnection connection)
         {
             bool isReview = false;
             bool isItemDone = false;
+            QueueElement tempElement;
             //bool startParse = false;
+            string queueData = "";
 
             if (justStarted)
             {
@@ -44,12 +47,16 @@ namespace ReviewCrawler.Sites
             if (itemQueue.Count > 0)
             {
                 isReview = true;
-                currentSite = itemQueue.Dequeue().ToLower();
+                tempElement = itemQueue.Dequeue();
+                currentSite = tempElement.url.ToLower();
+                queueData = tempElement.data;
             }
             else if (searchQueue.Count > 0)
             {
                 isReview = false;
-                currentSite = searchQueue.Dequeue().ToLower();
+                tempElement = searchQueue.Dequeue();
+                currentSite = tempElement.url.ToLower();
+                queueData = tempElement.data;
             }
             else
             {
@@ -61,11 +68,11 @@ namespace ReviewCrawler.Sites
                 string siteData = GetSiteData(currentSite);
                 if (isReview)
                 {
-                    isItemDone = Parse(siteData); //Parse information of review/product page.
+                    isItemDone = Parse(siteData, queueData); //Parse information of review/product page.
                 }
                 else
                 {
-                    CrawlPage(siteData); //Crawl for new reviews.
+                    CrawlPage(siteData, queueData); //Crawl for new reviews.
                 }
             }
             else
@@ -112,14 +119,18 @@ namespace ReviewCrawler.Sites
 
 
             string queue = "";
+            QueueElement tempElement;
+            
             while (searchQueue.Count > 0)
             {
-                queue += (searchQueue.Dequeue() + "#%&/#");
+                tempElement = searchQueue.Dequeue();
+                queue +=  (tempElement.url + "%%%##%##" + tempElement.data + "#%&/#");
             }
             queue += "%%&&##";
             while (itemQueue.Count > 0)
             {
-                queue += (itemQueue.Dequeue() + "#%&/#");
+                tempElement = itemQueue.Dequeue();
+                queue += (tempElement.url + "%%%##%##" + tempElement.data + "#%&/#");
             }
 
             
@@ -168,11 +179,13 @@ namespace ReviewCrawler.Sites
 
                 for (int i = 0; i < sQueue.Length - 1; i++)
                 {
-                    searchQueue.Enqueue(sQueue[i]);
+                    string[] sSplitTemp = sQueue[i].Split(new string[] { "%%%##%##" }, StringSplitOptions.None);
+                    searchQueue.Enqueue(new QueueElement(sSplitTemp[0], sSplitTemp[1]));
                 }
                 for (int i = 0; i < iQueue.Length - 1; i++)
                 {
-                    itemQueue.Enqueue(iQueue[i]);
+                    string[] iSplitTemp = iQueue[i].Split(new string[] { "%%%##%##" }, StringSplitOptions.None);
+                    itemQueue.Enqueue(new QueueElement(iSplitTemp[0], iSplitTemp[1]));
                 }
             }
             reader.Close();

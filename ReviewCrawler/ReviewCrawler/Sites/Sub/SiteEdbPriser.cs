@@ -16,17 +16,17 @@ namespace ReviewCrawler.Sites.Sub
         public SiteEdbPriser()
         {
             domainUrl = "http://www.edbpriser.dk";
-            //searchQueue.Enqueue("http://www.edbpriser.dk/hardware/ram.aspx?count=500&sort=Popularity&rlm=List");
+           // searchQueue.Enqueue("http://www.edbpriser.dk/hardware/ram.aspx?count=500&sort=Popularity&rlm=List");
             //searchQueue.Enqueue("http://www.edbpriser.dk/hardware/bundkort.aspx?count=500&sort=Popularity&rlm=List");
             //searchQueue.Enqueue("http://www.edbpriser.dk/hardware/harddisk.aspx?count=500&sort=Popularity&rlm=List");
             //searchQueue.Enqueue("http://www.edbpriser.dk/hardware/processor.aspx?count=500&sort=Popularity&rlm=List");
             //searchQueue.Enqueue("http://www.edbpriser.dk/hardware/grafikkort.aspx?count=500&sort=Popularity&rlm=List");
-            //searchQueue.Enqueue("http://www.edbpriser.dk/hardware/kabinet.aspx?count=500&sort=Popularity&rlm=List");
-            searchQueue.Enqueue("http://www.edbpriser.dk/hardware/stroemforsyning.aspx?count=500&sort=Popularity&rlm=List");
+            searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/kabinet.aspx?count=500&sort=Popularity&rlm=List", ""));
+            //searchQueue.Enqueue("http://www.edbpriser.dk/hardware/stroemforsyning.aspx?count=500&sort=Popularity&rlm=List");
         }
 
 
-        public override void CrawlPage(string siteData)
+        public override void CrawlPage(string siteData, string sQueueData)
         {
 
             //finding next page of the review overview
@@ -35,7 +35,7 @@ namespace ReviewCrawler.Sites.Sub
             if (nextPage.Value != "")
             {
                 string tempPage = nextPage.Value.Replace("<li class=\"next\"><a href=\"", "").Replace("\"", "");
-                searchQueue.Enqueue(domainUrl + tempPage);
+                searchQueue.Enqueue(new QueueElement(domainUrl + tempPage, ""));
             }
 
             //Finding the product links from a page.
@@ -44,11 +44,11 @@ namespace ReviewCrawler.Sites.Sub
             //Adding all the matches of specifik products
             foreach (Match link in newProducts)
             {
-                itemQueue.Enqueue(domainUrl + link.Value.Replace("<a class=\"link-action\" href=\"", "").Replace("\"", ""));
+                itemQueue.Enqueue(new QueueElement(domainUrl + link.Value.Replace("<a class=\"link-action\" href=\"", "").Replace("\"", ""), ""));
             }
         }
 
-        public override bool Parse(string siteData)
+        public override bool Parse(string siteData, string sQueueData)
         {
             product = null;
 

@@ -20,11 +20,11 @@ namespace ReviewCrawler.Sites.Sub
             //searchQueue.Enqueue("http://www.pricerunner.dk/cl/40/CPU");
             //searchQueue.Enqueue("http://www.pricerunner.dk/cl/37/Grafikkort");
             //searchQueue.Enqueue("http://www.pricerunner.dk/cl/36/Harddiske"); 
-            //searchQueue.Enqueue("http://www.pricerunner.dk/cl/186/Kabinetter");
-            searchQueue.Enqueue("http://www.pricerunner.dk/cl/640/Stroemforsyninger");
+            searchQueue.Enqueue(new QueueElement("http://www.pricerunner.dk/cl/186/Kabinetter", ""));
+            //searchQueue.Enqueue("http://www.pricerunner.dk/cl/640/Stroemforsyninger");
         }
 
-        public override void CrawlPage(string siteData)
+        public override void CrawlPage(string siteData, string sQueueData)
         {
             string tempLink = "";
 
@@ -32,7 +32,7 @@ namespace ReviewCrawler.Sites.Sub
 
             if (tempLink != "")
             {
-                searchQueue.Enqueue(domainUrl + tempLink);
+                searchQueue.Enqueue(new QueueElement(domainUrl + tempLink, ""));
             }
 
             //Finding the review links from a page.
@@ -42,13 +42,13 @@ namespace ReviewCrawler.Sites.Sub
             foreach (string link in siteReviewLinks)
             {
                 //enqueue link for price parsing
-                itemQueue.Enqueue(domainUrl + link);
+                itemQueue.Enqueue(new QueueElement(domainUrl + link, ""));
                 //enqueue link for specification parsing 
-                itemQueue.Enqueue(domainUrl + link.Replace("/pl/", "/pi/").Replace("Sammenlign-Priser", "Produkt-Info"));
+                itemQueue.Enqueue(new QueueElement(domainUrl + link.Replace("/pl/", "/pi/").Replace("Sammenlign-Priser", "Produkt-Info"), ""));
             }
         }
 
-        public override bool Parse(string siteData)
+        public override bool Parse(string siteData, string sQueueData)
         {
             bool isDone = false;
 

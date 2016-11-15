@@ -12,8 +12,8 @@ namespace ReviewCrawler.Sites
     {
         public Product product;
 
-        public override abstract bool Parse(string siteData);
-        public override abstract void CrawlPage(string siteData);
+        public override abstract bool Parse(string siteData, string sQueueData);
+        public override abstract void CrawlPage(string siteData, string sQueueData);
 
         public override void AddItemToDatabase(MySqlConnection connection)
         {
