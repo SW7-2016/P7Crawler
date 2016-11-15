@@ -28,17 +28,32 @@ namespace ReviewCrawler.Products.ProductComponents
                     case "effekt":
                         power = info.Value;
                         break;
+                    case "strømforsyning5":
+                        power = info.Value;
+                        break;
                     case "formfaktor":
+                        formFactor = info.Value;
+                        break;
+                    case "specifikationsoverensstemmelse5":
                         formFactor = info.Value;
                         break;
                     case "modularitet":
                         modular = (info.Value.ToLower() == "ja") ? true : false;
                         break;
+                    case "modulær kabel administration5":
+                        modular = (info.Value.ToLower() == "ja") ? true : false;
+                        break;
                     case "mærke":
                         brand = Regex.Replace(info.Value, "(<.*?>)+", "");
                         break;
+                    case "vægt4":
+                        weight = info.Value;
+                        break;
                     case "vægt":
                         weight = info.Value;
+                        break;
+                    case "højde4":
+                        height = info.Value;
                         break;
                     case "højde":
                         height = info.Value;
@@ -46,7 +61,13 @@ namespace ReviewCrawler.Products.ProductComponents
                     case "bredde":
                         depth = info.Value;
                         break;
+                    case "bredde4":
+                        depth = info.Value;
+                        break;
                     case "dybde":
+                        width = info.Value;
+                        break;
+                    case "dybde4":
                         width = info.Value;
                         break;
                 }

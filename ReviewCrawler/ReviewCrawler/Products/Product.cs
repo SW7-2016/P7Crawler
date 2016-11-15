@@ -27,14 +27,19 @@ namespace ReviewCrawler.Products
 
             MatchCollection rawProductInformation = (Regex.Matches(siteData, regexPatterns.specTablePattern, RegexOptions.Singleline));
 
+            int tableNumber = -1;
+
             foreach (Match informationTable in rawProductInformation)
             {
+                tableNumber++;
+
                 foreach (Match rawInformationRow in Regex.Matches(informationTable.Value, regexPatterns.specRowPattern, RegexOptions.Singleline))
                 {
                     Regex removeTags = new Regex("(<.*?>)+", RegexOptions.Singleline);
 
                     // - find type of row - 
-                    string tempType = removeTags.Replace(Regex.Match(rawInformationRow.Value, regexPatterns.rowNamePattern).Value, "").Trim();
+                    string tempType = removeTags.Replace(Regex.Match(rawInformationRow.Value, regexPatterns.rowNamePattern).Value, "").Trim()
+                        + ((tableNumber > 0) ? tableNumber.ToString() : "");
 
                     // - find data of row - 
                     string tempValue = removeTags.Replace(Regex.Match(rawInformationRow.Value, regexPatterns.rowValuePattern).Value, "").Trim();

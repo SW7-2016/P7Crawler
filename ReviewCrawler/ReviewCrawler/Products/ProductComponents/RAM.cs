@@ -24,25 +24,25 @@ namespace ReviewCrawler.Products.ProductComponents
             {
                 switch (info.Key.ToLower())
                 {
-                    case "ram":
+                    case "ram1":
                         type = info.Value;
                         break;
-                    case "lagerkapacitet":
+                    case "lagerkapacitet1":
                         capacity = info.Value;
                         break;
-                    case "hukommelsesfrekvens":
+                    case "hukommelsesfrekvens1":
                         speed = info.Value;
                         break;
-                    case "hukommelsesteknologi":
+                    case "hukommelsesteknologi1":
                         technology = info.Value;
                         break;
-                    case "model":
+                    case "model1":
                         formFactor = info.Value;
                         break;
-                    case "cas latency (rotering)":
+                    case "cas latency (rotering)1":
                         casLatens = info.Value;
                         break;
-                    case "mærke":
+                    case "mærke": // OR "Fabrikant"
                         brand = info.Value;
                         break;
                 }

@@ -80,7 +80,7 @@ namespace ReviewCrawler.Sites
                 Debug.WriteLine("Robot.txt disallow this site: " + currentSite);
             }
 
-            if (isItemDone) //If a review or product was just "completed" then add it to DB
+            if (false) //If a review or product was just "completed" then add it to DB
             {
                 connection.Open();
                 AddItemToDatabase(connection);
