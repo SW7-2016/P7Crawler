@@ -29,27 +29,30 @@ namespace ReviewCrawler.Sites.Sub
 
         public override void CrawlPage(string siteData)
         {
-            string tempLink = "";
-            List<string> tempReviewLinks;
+            string nextPageLink = "";
+            string[] articleLinks;
             string tempProductType = "unknown";
 
             if (currentSite.Contains("articles-categories"))
             {
-                tempLink = GetSearchLinks(siteData, "pagelinkselected", "pagelink", false);
-                //Returns domainUrl if no link is found
-                if (tempLink != domainUrl)
+                //Gets match, without identifiers.
+                nextPageLink = regexMatch(siteData, "\"pagelink\"><a href=\"", "\">&gt;");
+
+                if (nextPageLink != "")
                 {
-                    searchQueue.Enqueue(tempLink);
+                    searchQueue.Enqueue(domainUrl + nextPageLink);
                 }
+
                 tempProductType = GetProductType(currentSite);
             }
 
-            tempReviewLinks = GetItemLinks(siteData, "<br />", "<a href=\"articles-pages", "<div class=\"content\">",
-                true);
-            foreach (var item in tempReviewLinks)
+            //Gets matches, without identifiers.
+            articleLinks = regexMatches(siteData, "<a href=\"", "\">Read article</a>");
+
+            foreach (string link in articleLinks)
             {
-                searchQueue.Enqueue(item);
-                productTypes.Add(item, tempProductType);
+                searchQueue.Enqueue(domainUrl + link);
+                productTypes.Add(domainUrl + link, tempProductType);
             }
             CrawlReviewPages(siteData);
         }

@@ -57,6 +57,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Crawler.cs" />
+    <Compile Include="Helpers\ProductPriceRegexes.cs" />
+    <Compile Include="Helpers\ProductSpecRegexes.cs" />
     <Compile Include="Products\ProductComponents\Chassis.cs" />
     <Compile Include="Products\ComputerComponents.cs" />
     <Compile Include="Products\ProductComponents\CPU.cs" />

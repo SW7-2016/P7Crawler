@@ -15,7 +15,8 @@ namespace ReviewCrawler.Sites
 
         public override abstract bool Parse(string siteData);
         public override abstract void CrawlPage(string siteData);
-        public override abstract string GetSiteKey(string url);
+        public abstract string GetProductType(string tempLink);
+        public abstract string GetSiteKey(string url);
 
         public string removeTagsFromReview(string siteData)
         {

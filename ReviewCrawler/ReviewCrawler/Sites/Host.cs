@@ -24,8 +24,6 @@ namespace ReviewCrawler.Sites
 
         public abstract bool Parse(string siteData);
         public abstract void CrawlPage(string siteData);
-        public abstract string GetSiteKey(string url);
-        public abstract string GetProductType(string tempLink);
         public abstract void AddItemToDatabase(MySqlConnection connection);
 
         public bool StartCycle(MySqlConnection connection)
@@ -69,7 +67,7 @@ namespace ReviewCrawler.Sites
             if (isItemDone) //If a review or product was just "completed" then add it to DB
             {
                 connection.Open();
-                AddItemToDatabase(connection);
+                //AddItemToDatabase(connection);
 
                 connection.Close();
             }

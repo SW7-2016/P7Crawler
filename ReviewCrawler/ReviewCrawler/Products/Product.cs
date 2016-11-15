@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
 using System.Diagnostics;
 using System;
+using ReviewCrawler.Helpers;
 
 namespace ReviewCrawler.Products
 {
@@ -20,23 +21,23 @@ namespace ReviewCrawler.Products
 
         protected abstract void AddInformation(Dictionary<string, string> productInformation);
 
-        public void ParseProductSpecifications(string siteData, Dictionary<string, string> regexPatterns)
+        public void ParseProductSpecifications(string siteData, ProductSpecRegexes regexPatterns)
         {
             Dictionary<string, string> productInfo = new Dictionary<string, string>();
 
-            MatchCollection rawProductInformation = (Regex.Matches(siteData, regexPatterns["table"], RegexOptions.Singleline));
+            MatchCollection rawProductInformation = (Regex.Matches(siteData, regexPatterns.specTablePattern, RegexOptions.Singleline));
 
             foreach (Match informationTable in rawProductInformation)
             {
-                foreach (Match rawInformationRow in Regex.Matches(informationTable.Value, regexPatterns["spec"], RegexOptions.Singleline))
+                foreach (Match rawInformationRow in Regex.Matches(informationTable.Value, regexPatterns.specRowPattern, RegexOptions.Singleline))
                 {
                     Regex removeTags = new Regex("(<.*?>)+", RegexOptions.Singleline);
 
                     // - find type of row - 
-                    string tempType = removeTags.Replace(Regex.Match(rawInformationRow.Value, regexPatterns["spec name"]).Value, "").Trim();
+                    string tempType = removeTags.Replace(Regex.Match(rawInformationRow.Value, regexPatterns.rowNamePattern).Value, "").Trim();
 
                     // - find data of row - 
-                    string tempValue = removeTags.Replace(Regex.Match(rawInformationRow.Value, regexPatterns["spec value"]).Value, "").Trim();
+                    string tempValue = removeTags.Replace(Regex.Match(rawInformationRow.Value, regexPatterns.rowValuePattern).Value, "").Trim();
 
                     if (tempType != "" && tempValue != "" && !productInfo.ContainsKey(tempType))
                     {
@@ -46,35 +47,35 @@ namespace ReviewCrawler.Products
             }
 
             AddInformation(productInfo);
-            //databasethis(this);
         }
         
-        public void ParsePrice(string siteData, Dictionary<string, string> regexPatterns)
+        public void ParsePrice(string siteData, ProductPriceRegexes regexPatterns)
         {
             Regex removeTags = new Regex("(<.*?>)+", RegexOptions.Singleline);
 
-            //find title of product
-            name = removeTags.Replace(Regex.Match(siteData, regexPatterns["title"], RegexOptions.Singleline).Value, "");
+            //Find title of product
+            name = removeTags.Replace(Regex.Match(siteData, regexPatterns.productTitlePattern, RegexOptions.Singleline).Value, "");
 
+            //Remove tags is not enough in this case
             if (name.Contains("- Sammenlign priser"))
             {
                 name = name.Replace("- Sammenlign priser", "").Trim();
             }
 
             // Find retailers and add to product
-            foreach (Match oneRetailerCode in Regex.Matches(siteData, regexPatterns["all retailers"], RegexOptions.Singleline))
+            foreach (Match oneRetailerCode in Regex.Matches(siteData, regexPatterns.allRetailersPattern, RegexOptions.Singleline))
             {
                 Retailer tempRetailer = new Retailer();
 
                 // Finding retailer name.
                 Regex split = new Regex("\\.\\*\\?");
-                string[] tags = split.Split(regexPatterns["retailer name"]);
-                tempRetailer.name = Regex.Match(oneRetailerCode.Value, regexPatterns["retailer name"]).Value.Replace(tags[0], "").Replace(tags[1], "");
+                string[] tags = split.Split(regexPatterns.retailerNamePattern);
+                tempRetailer.name = removeTags.Replace(Regex.Match(oneRetailerCode.Value, regexPatterns.retailerNamePattern, RegexOptions.Singleline).Value.Replace(tags[0], "").Replace(tags[1], ""), "").Trim();
 
                 if (tempRetailer.name != "")
                 {
                     // Finding retailer price
-                    string tempPrice = Regex.Match(oneRetailerCode.Value, regexPatterns["retailer price"]).Value;
+                    string tempPrice = Regex.Match(oneRetailerCode.Value, regexPatterns.retailerPricePattern).Value;
 
                     tempPrice = removeTags.Replace(tempPrice, "").Replace(".", "");
                     tempPrice = tempPrice.Replace("kr", "").Trim().Replace(",", ".");

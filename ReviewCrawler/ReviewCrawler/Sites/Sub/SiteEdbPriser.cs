@@ -1,4 +1,5 @@
-﻿using ReviewCrawler.Products;
+﻿using ReviewCrawler.Helpers;
+using ReviewCrawler.Products;
 using ReviewCrawler.Products.ProductComponents;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,13 @@ namespace ReviewCrawler.Sites.Sub
         public SiteEdbPriser()
         {
             domainUrl = "http://www.edbpriser.dk";
-            searchQueue.Enqueue("http://www.edbpriser.dk/hardware/ram.aspx?count=500&sort=Popularity&rlm=List");
+            //searchQueue.Enqueue("http://www.edbpriser.dk/hardware/ram.aspx?count=500&sort=Popularity&rlm=List");
+            //searchQueue.Enqueue("http://www.edbpriser.dk/hardware/bundkort.aspx?count=500&sort=Popularity&rlm=List");
+            //searchQueue.Enqueue("http://www.edbpriser.dk/hardware/harddisk.aspx?count=500&sort=Popularity&rlm=List");
+            //searchQueue.Enqueue("http://www.edbpriser.dk/hardware/processor.aspx?count=500&sort=Popularity&rlm=List");
+            //searchQueue.Enqueue("http://www.edbpriser.dk/hardware/grafikkort.aspx?count=500&sort=Popularity&rlm=List");
+            //searchQueue.Enqueue("http://www.edbpriser.dk/hardware/kabinet.aspx?count=500&sort=Popularity&rlm=List");
+            searchQueue.Enqueue("http://www.edbpriser.dk/hardware/stroemforsyning.aspx?count=500&sort=Popularity&rlm=List");
         }
 
 
@@ -45,22 +52,6 @@ namespace ReviewCrawler.Sites.Sub
         {
             product = null;
 
-            Dictionary<string, string> regexPatternsPPS = new Dictionary<string, string>()
-            {
-                { "table", "<td class=\"headline\" colspan=.*?</table>"},
-                { "spec", "<tr.*?</tr>"},
-                { "spec name", "<td class=\"spec\">.*?</td>"},
-                { "spec value", "<td>.*?</td>"},
-            };
-
-            Dictionary<string, string> regexPatternsPP = new Dictionary<string, string>()
-            {
-                { "title", "<h1 class=\"product-details-header\" itemprop=\"name\">.*?</h1>"},
-                { "all retailers", "<div class=\"ProductDealerList\">.*?</tbody>"},
-                { "retailer price", "<td><strong>.*? kr</strong></td>"},
-                { "retailer name", "<div class=\"vendor-name\">.*?</div>"},
-            };
-
             if (currentSite.Contains("/grafikkort"))
             {
                 //product is a "GPU"
@@ -76,17 +67,17 @@ namespace ReviewCrawler.Sites.Sub
                 //product is a "Motherboard"
                 product = new Motherboard();
             }
-            else if (currentSite.Contains("/harddiske"))
+            else if (currentSite.Contains("/harddisk"))
             {
                 //product is a "HardDrive"
                 product = new HardDrive();
             }
-            else if (currentSite.Contains("/kabinetter"))
+            else if (currentSite.Contains("/kabinet"))
             {
                 //product is a "Chassis"
                 product = new Chassis();
             }
-            else if (currentSite.Contains("/stroemforsyninger"))
+            else if (currentSite.Contains("/stroemforsyning"))
             {
                 //product is a "PSU"
                 product = new PSU();
@@ -101,40 +92,23 @@ namespace ReviewCrawler.Sites.Sub
                 throw new FormatException("Pricerunner - couldnt determine product type", null);
             }
 
-            product.ParsePrice(siteData, regexPatternsPP);
-            product.ParseProductSpecifications(siteData, regexPatternsPPS);
+            //We have created our product, now we fill the data
+            ProductPriceRegexes edbPriserParsePrice = new ProductPriceRegexes(
+                "<h1 class=\"product-details-header\" itemprop=\"name\">.*?</h1>",
+                "<div class=\"vendor\">.*?</tr>",
+                "<td><strong>.*? kr</strong></td>",
+                "<div class=\"vendor-name\">.*?</div>");
 
-            //edbpriser match title -> <h1 class=\"product-details-header\" itemprop=\"name\">.*?</h1>
+            ProductSpecRegexes edbPriserParseSpecs = new ProductSpecRegexes(
+                "<td class=\"headline\" colspan=.*?</table>",
+                "<tr.*?</tr>",
+                "<td class=\"spec\">.*?</td>",
+                "<td>.*?</td>");
 
-            //edbpriser match alle retailers -> <div class=\"ProductDealerList\">.*?
-            //edbpriser matches pris -> <td><strong>.*? kr</strong></td>
-            //edbpriser matches navn -> <div class=\"vendor-name\">.*?</div>   + html remove (<REMOVE>) + trim() + TEST DET
-
-            //edbpriser matches spec tables -> <td class=\"headline\" colspan=.*?</table>
-            //edbpriser matches specs ->  <tr class=\"sec\">.*?</tr>
-            //edbpriser match spec navn -> <td class=\"spec\">.*?</td>
-            //edbpriser match spec value -> <td>.*?</td>
+            product.ParsePrice(siteData, edbPriserParsePrice);
+            product.ParseProductSpecifications(siteData, edbPriserParseSpecs);
             
             return true;
-        }
-
-        public override string GetProductType(string tempLink)
-        {
-            return "";
-        }
-
-        public override string GetSiteKey(string url)
-        {
-            /*for (int i = url.Length; i > 0; i--)
-            {
-                if (url[i] == ',')
-                {
-                    url = url.Remove(i, url.Length - i);
-
-                }
-            }
-            */
-            return url;
         }
     }
 }
