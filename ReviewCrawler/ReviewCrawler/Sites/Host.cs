@@ -40,7 +40,7 @@ namespace ReviewCrawler.Sites
 
             if (justStarted)
             {
-                LoadCrawlerState(connection);
+               // LoadCrawlerState(connection);
                 justStarted = false;
             }
 
@@ -80,7 +80,7 @@ namespace ReviewCrawler.Sites
                 Debug.WriteLine("Robot.txt disallow this site: " + currentSite);
             }
 
-            if (false) //If a review or product was just "completed" then add it to DB
+            if (false) //isItemDone)//If a review or product was just "completed" then add it to DB
             {
                 connection.Open();
                 AddItemToDatabase(connection);
