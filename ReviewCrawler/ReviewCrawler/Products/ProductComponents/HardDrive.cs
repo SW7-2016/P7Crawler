@@ -23,44 +23,44 @@ namespace ReviewCrawler.Products.ProductComponents
         string width = "";
 
 
-        protected override void AddInformation(Dictionary<string, string> productInformation)
+        protected override void AddInformation(List<string[]> productInformation)
         {
-            foreach (KeyValuePair<string, string> info in productInformation)
+            foreach (string[] info in productInformation)
             {
-                switch (info.Key.ToLower())
+                switch (info[0].ToLower())
                 {
                     case "intern/ ekstern":
-                        isInternal = (info.Value.ToLower() == "intern") ? true : false;
+                        isInternal = (info[1].ToLower() == "intern") ? true : false;
                         break;
                     case "type":
-                        type = info.Value;
+                        type = info[1];
                         break;
                     case "formfaktor":
-                        formFactor = info.Value;
+                        formFactor = info[1];
                         break;
                     case "harddisk størrelse":
-                        capacity = info.Value;
+                        capacity = info[1];
                         break;
                     case "cachehukommelse":
-                        cacheSize = info.Value;
+                        cacheSize = info[1];
                         break;
                     case "transfer rate":
-                        transferRate = info.Value;
+                        transferRate = info[1];
                         break;
                     case "mærke":
-                        brand = Regex.Replace(info.Value, "(<.*?>)+", "");
+                        brand = Regex.Replace(info[1], "(<.*?>)+", "");
                         break;
                     case "sata":
-                        sata = info.Value;
+                        sata = info[1];
                         break;
                     case "højde":
-                        height = info.Value;
+                        height = info[1];
                         break;
                     case "dybde":
-                        depth = info.Value;
+                        depth = info[1];
                         break;
                     case "bredde":
-                        width = info.Value;
+                        width = info[1];
                         break;
                 }
             }

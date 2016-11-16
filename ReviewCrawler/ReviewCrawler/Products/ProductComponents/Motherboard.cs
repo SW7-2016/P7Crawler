@@ -25,62 +25,62 @@ namespace ReviewCrawler.Products.ProductComponents
         int memSlots;
         string memType = "";
 
-        protected override void AddInformation(Dictionary<string, string> productInformation)
+        protected override void AddInformation(List<string[]> productInformation)
         {
-            foreach (KeyValuePair<string, string> info in productInformation)
+            foreach (string[] info in productInformation)
             {
-                switch (info.Key.ToLower())
+                switch (info[0].ToLower())
                 {
                     case "formfaktor":
-                        formFactor = info.Value;
+                        formFactor = info[1];
                         break;
                     case "socket amd":
-                        socket = info.Value;
+                        socket = info[1];
                         break;
                     case "chipset amd":
-                        chipset = info.Value;
+                        chipset = info[1];
                         break;
                     case "cpu support":
-                        cpuCount = int.Parse(info.Value);
+                        cpuCount = int.Parse(info[1]);
                         break;
                     case "sockets intel":
-                        socket = info.Value;
+                        socket = info[1];
                         break;
                     case "netværkskort indbygget":
-                        netCard = (info.Value.ToLower() == "ja") ? true : false;
+                        netCard = (info[1].ToLower() == "ja") ? true : false;
                         break;
                     case "grafikkort indbygget":
-                        graphicsCard = (info.Value.ToLower() == "ja") ? true : false;
+                        graphicsCard = (info[1].ToLower() == "ja") ? true : false;
                         break;
                     case "multiple gpu support":
-                        multiGpu = (info.Value.ToLower() == "ja") ? true : false;
+                        multiGpu = (info[1].ToLower() == "ja") ? true : false;
                         break;
                     case "crossfire support":
-                        crossfire = (info.Value.ToLower() == "ja") ? true : false;
+                        crossfire = (info[1].ToLower() == "ja") ? true : false;
                         break;
                     case "sli support":
-                        sli = (info.Value.ToLower() == "ja") ? true : false;
+                        sli = (info[1].ToLower() == "ja") ? true : false;
                         break;
                     case "max ram mængde":
-                        maxMem = int.Parse(info.Value);
+                        maxMem = int.Parse(info[1]);
                         break;
                     case "antal dimm-pladser":
-                        memSlots = int.Parse(info.Value);
+                        memSlots = int.Parse(info[1]);
                         break;
                     case "ram type":
-                        memType = info.Value;
+                        memType = info[1];
                         break;
                     case "lydkort indbygget":
-                        soundCard = (info.Value.ToLower() == "ja") ? true : false;
+                        soundCard = (info[1].ToLower() == "ja") ? true : false;
                         break;
                     case "chipset others":
-                        chipset = info.Value;
+                        chipset = info[1];
                         break;
                     case "chipset intel":
-                        chipset = info.Value;
+                        chipset = info[1];
                         break;
                     case "cpu type intel":
-                        cpuType = info.Value;
+                        cpuType = info[1];
                         break;
                 }
             }

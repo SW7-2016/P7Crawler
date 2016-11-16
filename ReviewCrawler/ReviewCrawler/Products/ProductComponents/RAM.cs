@@ -18,32 +18,32 @@ namespace ReviewCrawler.Products.ProductComponents
         private string brand = "";
 
 
-        protected override void AddInformation(Dictionary<string, string> productInformation)
+        protected override void AddInformation(List<string[]> productInformation)
         {
-            foreach (KeyValuePair<string, string> info in productInformation)
+            foreach (string[] info in productInformation)
             {
-                switch (info.Key.ToLower())
+                switch (info[0].ToLower())
                 {
-                    case "ram1":
-                        type = info.Value;
+                    case "ram":
+                        type = info[1];
                         break;
-                    case "lagerkapacitet1":
-                        capacity = info.Value;
+                    case "lagerkapacitet":
+                        capacity = info[1];
                         break;
-                    case "hukommelsesfrekvens1":
-                        speed = info.Value;
+                    case "hukommelsesfrekvens":
+                        speed = info[1];
                         break;
-                    case "hukommelsesteknologi1":
-                        technology = info.Value;
+                    case "hukommelsesteknologi":
+                        technology = info[1];
                         break;
-                    case "model1":
-                        formFactor = info.Value;
+                    case "model":
+                        formFactor = info[1];
                         break;
-                    case "cas latency (rotering)1":
-                        casLatens = info.Value;
+                    case "cas latency (rotering)":
+                        casLatens = info[1];
                         break;
                     case "mærke": // OR "Fabrikant"
-                        brand = info.Value;
+                        brand = info[1];
                         break;
                 }
             }

@@ -19,35 +19,35 @@ namespace ReviewCrawler.Products.ProductComponents
         string manufacturer = "";
 
 
-        protected override void AddInformation(Dictionary<string, string> productInformation)
+        protected override void AddInformation(List<string[]> productInformation)
         {
-            foreach (KeyValuePair<string, string> info in productInformation)
+            foreach (string[] info in productInformation)
             {
-                switch (info.Key.ToLower())
+                switch (info[0].ToLower())
                 {
                     case "processor producent":
-                        processorManufacturer = info.Value;
+                        processorManufacturer = info[1];
                         break;
                     case "geforce serie":
-                        model = info.Value;
+                        model = info[1];
                         break;
                     case "chipset":
-                        chipset = info.Value;
+                        chipset = info[1];
                         break;
                     case "gpu architecture":
-                        architecture = info.Value;
+                        architecture = info[1];
                         break;
                     case "kortpladser":
-                        pciSlots = int.Parse(info.Value);
+                        pciSlots = int.Parse(info[1]);
                         break;
                     case "køling":
-                        cooling = info.Value;
+                        cooling = info[1];
                         break;
                     case "hukommelsesstørrelse":
-                        memSize = info.Value;
+                        memSize = info[1];
                         break;
                     case "radeon serie":
-                        model = info.Value;
+                        model = info[1];
                         break;
                 }
             }

@@ -21,44 +21,44 @@ namespace ReviewCrawler.Products.ProductComponents
         string integratedGpu = "";
         string manufacturer = "";
 
-        protected override void AddInformation(Dictionary<string, string> productInformation)
+        protected override void AddInformation(List<string[]> productInformation)
         {
-            foreach (KeyValuePair<string, string> info in productInformation)
+            foreach (string[] info in productInformation)
             {
-                switch (info.Key.ToLower())
+                switch (info[0].ToLower())
                 {
                     case "processor serie":
-                        cpuSeries = info.Value;
+                        cpuSeries = info[1];
                         break;
                     case "processor model":
-                        model = info.Value;
+                        model = info[1];
                         break;
                     case "clockfrekvens":
-                        clock = info.Value;
+                        clock = info[1];
                         break;
                     case "integreret gpu":
-                        integratedGpu = info.Value;
+                        integratedGpu = info[1];
                         break;
                     case "boxed (inkluderer blæser eller køler)":
-                        stockCooler = (info.Value.ToLower() == "ja") ? true : false;
+                        stockCooler = (info[1].ToLower() == "ja") ? true : false;
                         ;
                         break;
                     case "mærke":
-                        manufacturer = Regex.Replace(info.Value, "(<.*?>)+", "");
+                        manufacturer = Regex.Replace(info[1], "(<.*?>)+", "");
                         break;
                     case "processorkerner":
-                        Match noOfCores = Regex.Match(info.Value, "\\d*");
+                        Match noOfCores = Regex.Match(info[1], "\\d*");
                         physicalCores = int.Parse(noOfCores.Value);
                         break;
                     case "processor tråde":
-                        Match noOfThreads = Regex.Match(info.Value, "\\d*");
+                        Match noOfThreads = Regex.Match(info[1], "\\d*");
                         logicalCores = int.Parse(noOfThreads.Value);
                         break;
                     case "max turbo frequency":
-                        maxTurbo = info.Value;
+                        maxTurbo = info[1];
                         break;
                     case "sokkel":
-                        socket = info.Value;
+                        socket = info[1];
                         break;
                 }
             }

@@ -19,56 +19,44 @@ namespace ReviewCrawler.Products.ProductComponents
         string width = "";
         string weight = "";
 
-        protected override void AddInformation(Dictionary<string, string> productInformation)
+        protected override void AddInformation(List<string[]> productInformation)
         {
-            foreach (KeyValuePair<string, string> info in productInformation)
+            foreach (string[] info in productInformation)
             {
-                switch (info.Key.ToLower())
+                switch (info[0].ToLower())
                 {
                     case "effekt":
-                        power = info.Value;
+                        power = info[1];
                         break;
-                    case "strømforsyning5":
-                        power = info.Value;
+                    case "strømforsyning":
+                        power = info[1];
                         break;
                     case "formfaktor":
-                        formFactor = info.Value;
+                        formFactor = info[1];
                         break;
-                    case "specifikationsoverensstemmelse5":
-                        formFactor = info.Value;
+                    case "specifikationsoverensstemmelse":
+                        formFactor = info[1];
                         break;
                     case "modularitet":
-                        modular = (info.Value.ToLower() == "ja") ? true : false;
+                        modular = (info[1].ToLower() == "ja") ? true : false;
                         break;
-                    case "modulær kabel administration5":
-                        modular = (info.Value.ToLower() == "ja") ? true : false;
+                    case "modulær kabel administration":
+                        modular = (info[1].ToLower() == "ja") ? true : false;
                         break;
                     case "mærke":
-                        brand = Regex.Replace(info.Value, "(<.*?>)+", "");
-                        break;
-                    case "vægt4":
-                        weight = info.Value;
+                        brand = Regex.Replace(info[1], "(<.*?>)+", "");
                         break;
                     case "vægt":
-                        weight = info.Value;
-                        break;
-                    case "højde4":
-                        height = info.Value;
+                        weight = info[1];
                         break;
                     case "højde":
-                        height = info.Value;
+                        height = info[1];
                         break;
                     case "bredde":
-                        depth = info.Value;
-                        break;
-                    case "bredde4":
-                        depth = info.Value;
+                        depth = info[1];
                         break;
                     case "dybde":
-                        width = info.Value;
-                        break;
-                    case "dybde4":
-                        width = info.Value;
+                        width = info[1];
                         break;
                 }
             }

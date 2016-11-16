@@ -19,11 +19,11 @@ namespace ReviewCrawler.Products
         public List<Retailer> retailers = new List<Retailer>();
         public MySqlConnection connection;
 
-        protected abstract void AddInformation(Dictionary<string, string> productInformation);
+        protected abstract void AddInformation(List<string[]> productInformation);
 
         public void ParseProductSpecifications(string siteData, ProductSpecRegexes regexPatterns)
         {
-            Dictionary<string, string> productInfo = new Dictionary<string, string>();
+            List<string[]> productInfo = new List<string[]>();
 
             MatchCollection rawProductInformation = (Regex.Matches(siteData, regexPatterns.specTablePattern, RegexOptions.Singleline));
 
@@ -38,15 +38,14 @@ namespace ReviewCrawler.Products
                     Regex removeTags = new Regex("(<.*?>)+", RegexOptions.Singleline);
 
                     // - find type of row - 
-                    string tempType = removeTags.Replace(Regex.Match(rawInformationRow.Value, regexPatterns.rowNamePattern).Value, "").Trim()
-                        + ((tableNumber > 0) ? tableNumber.ToString() : "");
+                    string tempType = removeTags.Replace(Regex.Match(rawInformationRow.Value, regexPatterns.rowNamePattern).Value, "").Trim();
 
                     // - find data of row - 
                     string tempValue = removeTags.Replace(Regex.Match(rawInformationRow.Value, regexPatterns.rowValuePattern).Value, "").Trim();
 
-                    if (tempType != "" && tempValue != "" && !productInfo.ContainsKey(tempType))
+                    if (tempType != "" && tempValue != "")
                     {
-                        productInfo.Add(tempType, tempValue);
+                        productInfo.Add(new string[3] { tempType, tempValue , tableNumber.ToString()});
                     }
                 }
             }
