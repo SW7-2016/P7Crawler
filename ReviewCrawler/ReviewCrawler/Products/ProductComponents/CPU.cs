@@ -41,7 +41,6 @@ namespace ReviewCrawler.Products.ProductComponents
                         break;
                     case "boxed (inkluderer blæser eller køler)":
                         stockCooler = (info[1].ToLower() == "ja") ? true : false;
-                        ;
                         break;
                     case "mærke":
                         manufacturer = Regex.Replace(info[1], "(<.*?>)+", "");

@@ -16,13 +16,15 @@ namespace ReviewCrawler.Sites.Sub
         public SiteEdbPriser()
         {
             domainUrl = "http://www.edbpriser.dk";
-           // searchQueue.Enqueue("http://www.edbpriser.dk/hardware/ram.aspx?count=500&sort=Popularity&rlm=List");
-            //searchQueue.Enqueue("http://www.edbpriser.dk/hardware/bundkort.aspx?count=500&sort=Popularity&rlm=List");
-            //searchQueue.Enqueue("http://www.edbpriser.dk/hardware/harddisk.aspx?count=500&sort=Popularity&rlm=List");
-            //searchQueue.Enqueue("http://www.edbpriser.dk/hardware/processor.aspx?count=500&sort=Popularity&rlm=List");
-            //searchQueue.Enqueue("http://www.edbpriser.dk/hardware/grafikkort.aspx?count=500&sort=Popularity&rlm=List");
-            searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/kabinet.aspx?count=500&sort=Popularity&rlm=List", ""));
-            //searchQueue.Enqueue("http://www.edbpriser.dk/hardware/stroemforsyning.aspx?count=500&sort=Popularity&rlm=List");
+            // searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/ram.aspx?count=5&sort=Popularity&rlm=List", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/bundkort.aspx?count=5&sort=Popularity&rlm=List", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/harddisk.aspx?count=5&sort=Popularity&rlm=List", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/processor.aspx?count=5&sort=Popularity&rlm=List", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/grafikkort.aspx?count=5&sort=Popularity&rlm=List", ""));
+            searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/kabinet.aspx?count=5&sort=Popularity&rlm=List", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/stroemforsyning.aspx?count=5&sort=Popularity&rlm=List", ""));
+            searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/ssd-solid-state-drive.aspx?count=5&sort=Popularity&rlm=List", ""));
+
         }
 
 

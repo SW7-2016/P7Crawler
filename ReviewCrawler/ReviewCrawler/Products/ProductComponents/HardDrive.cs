@@ -33,7 +33,10 @@ namespace ReviewCrawler.Products.ProductComponents
                         isInternal = (info[1].ToLower() == "intern") ? true : false;
                         break;
                     case "type":
-                        type = info[1];
+                        if (!type.Contains("garanti"))
+                        {
+                            type = info[1];
+                        }
                         break;
                     case "formfaktor":
                         formFactor = info[1];

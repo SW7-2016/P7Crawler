@@ -221,7 +221,7 @@ namespace ReviewCrawler.Sites
 
             return true;
         }
-
+        
         public string GetSiteData(string siteUrl)
         {
             System.Net.WebClient wc = new System.Net.WebClient();

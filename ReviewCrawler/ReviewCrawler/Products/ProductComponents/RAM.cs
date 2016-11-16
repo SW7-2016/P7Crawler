@@ -37,7 +37,10 @@ namespace ReviewCrawler.Products.ProductComponents
                         technology = info[1];
                         break;
                     case "model":
-                        formFactor = info[1];
+                        if (info[3] != "0")
+                        {
+                            formFactor = info[1];
+                        }
                         break;
                     case "cas latency (rotering)":
                         casLatens = info[1];
