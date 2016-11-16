@@ -32,8 +32,11 @@ namespace ReviewCrawler.Products.ProductComponents
                     case "intern/ ekstern":
                         isInternal = (info[1].ToLower() == "intern") ? true : false;
                         break;
+                    case "harddisktype":
+                        isInternal = (info[1].Contains("Intern")) ? true : false;
+                        break;
                     case "type":
-                        if (!type.Contains("garanti"))
+                        if (type.Contains("Harddisk") || type.Contains("Solid state drive"))
                         {
                             type = info[1];
                         }
@@ -41,19 +44,40 @@ namespace ReviewCrawler.Products.ProductComponents
                     case "formfaktor":
                         formFactor = info[1];
                         break;
+                    case "form factor (kort)":
+                        formFactor = info[1];
+                        break;
                     case "harddisk størrelse":
+                        capacity = info[1];
+                        break;
+                    case "hd kapacitet":
                         capacity = info[1];
                         break;
                     case "cachehukommelse":
                         cacheSize = info[1];
                         break;
+                    case "buffer størrelse":
+                        cacheSize = info[1];
+                        break;
                     case "transfer rate":
+                        transferRate = info[1];
+                        break;
+                    case "internal data rate":
+                        transferRate = info[1];
+                        break;
+                    case "internal data rate (skriv)":
                         transferRate = info[1];
                         break;
                     case "mærke":
                         brand = Regex.Replace(info[1], "(<.*?>)+", "");
                         break;
                     case "sata":
+                        sata = info[1];
+                        break;
+                    case "lagrings-interface":
+                        sata = info[1];
+                        break;
+                    case "grænseflade":
                         sata = info[1];
                         break;
                     case "højde":

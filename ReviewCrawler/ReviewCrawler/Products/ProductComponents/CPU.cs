@@ -33,11 +33,30 @@ namespace ReviewCrawler.Products.ProductComponents
                     case "processor model":
                         model = info[1];
                         break;
+                    case "fabrikant":
+                        model = info[1];
+                        break;
                     case "clockfrekvens":
+                        clock = info[1];
+                        break;
+                    case "clock-frekvens":
                         clock = info[1];
                         break;
                     case "integreret gpu":
                         integratedGpu = info[1];
+                        break;
+                    case "type":
+                        if (info[2] == "4" || info[2] == "3")
+                        {
+                            if (!info[1].Contains("garanti"))
+                            {
+                                integratedGpu = info[1];
+                            }
+                        }
+                        if (info[2] == "2")
+                        {
+                            cpuSeries = info[1];
+                        }
                         break;
                     case "boxed (inkluderer blæser eller køler)":
                         stockCooler = (info[1].ToLower() == "ja") ? true : false;
@@ -45,10 +64,12 @@ namespace ReviewCrawler.Products.ProductComponents
                     case "mærke":
                         manufacturer = Regex.Replace(info[1], "(<.*?>)+", "");
                         break;
+                    case "multi-core":
                     case "processorkerner":
                         Match noOfCores = Regex.Match(info[1], "\\d*");
                         physicalCores = int.Parse(noOfCores.Value);
                         break;
+                    case "antal tråde":
                     case "processor tråde":
                         Match noOfThreads = Regex.Match(info[1], "\\d*");
                         logicalCores = int.Parse(noOfThreads.Value);
@@ -56,7 +77,13 @@ namespace ReviewCrawler.Products.ProductComponents
                     case "max turbo frequency":
                         maxTurbo = info[1];
                         break;
+                    case "max turbo speed":
+                        maxTurbo = info[1];
+                        break;
                     case "sokkel":
+                        socket = info[1];
+                        break;
+                    case "kombatibel processor tilslutning":
                         socket = info[1];
                         break;
                 }

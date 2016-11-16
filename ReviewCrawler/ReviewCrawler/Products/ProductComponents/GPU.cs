@@ -17,6 +17,8 @@ namespace ReviewCrawler.Products.ProductComponents
         string cooling = "";
         string memSize = "";
         string manufacturer = "";
+        string clockBoosted = "";
+        string clock = "";
 
 
         protected override void AddInformation(List<string[]> productInformation)
@@ -28,7 +30,16 @@ namespace ReviewCrawler.Products.ProductComponents
                     case "processor producent":
                         processorManufacturer = info[1];
                         break;
+                    case "mærke":
+                        if (info[2] == "0")
+                        {
+                            manufacturer = info[1];
+                        }
+                        break;
                     case "geforce serie":
+                        model = info[1];
+                        break;
+                    case "grafikprocessor":
                         model = info[1];
                         break;
                     case "chipset":
@@ -43,11 +54,20 @@ namespace ReviewCrawler.Products.ProductComponents
                     case "køling":
                         cooling = info[1];
                         break;
+                    case "video hukommelse":
+                        memSize = info[1];
+                        break;
                     case "hukommelsesstørrelse":
                         memSize = info[1];
                         break;
                     case "radeon serie":
                         model = info[1];
+                        break;
+                    case "clock":
+                        clock = info[1];
+                        break;
+                    case "boost clockhastighed":
+                        clockBoosted = info[1];
                         break;
                 }
             }
