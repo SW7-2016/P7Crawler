@@ -150,12 +150,13 @@ namespace ReviewCrawler.Products
         private void InsertProductRetailer(Retailer retailer, int RID, int PID)
         {
             MySqlCommand command = new MySqlCommand("INSERT INTO Product_Retailer" +
-          "(productID, retailerID, url, price)" +
-          "VALUES(@productID, @retailerID, @url, @price)", connection);
+          "(productID, retailerID, url, price, priceDate)" +
+          "VALUES(@productID, @retailerID, @url, @price, @priceDate)", connection);
             command.Parameters.AddWithValue("@productID", PID);
             command.Parameters.AddWithValue("@retailerID", RID);
             command.Parameters.AddWithValue("@url", retailer.url);
             command.Parameters.AddWithValue("@price", retailer.price);
+            command.Parameters.AddWithValue("@priceDate", DateTime.Now);
 
             command.ExecuteNonQuery();
         }
