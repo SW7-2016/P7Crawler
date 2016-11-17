@@ -160,7 +160,7 @@ namespace ReviewCrawler.Products.ProductComponents
                                                     "(ProductID, isInternal, type, formFactor, capacity, cacheSize," +
                                                     " transforRate, brand, sata, height, depth, width)" +
                                                     "VALUES(@ProductID, @isInternal, @type, @formFactor, @capacity, " +
-                                                    " @cacheSize, @transforRate, @brand, @sata, @height, @depth, @width)",
+                                                    " @cacheSize, @transferRate, @brand, @sata, @height, @depth, @width)",
                 connection);
             command.Parameters.AddWithValue("@ProductID", PID);
             command.Parameters.AddWithValue("@isInternal", IsInternal);
@@ -168,7 +168,7 @@ namespace ReviewCrawler.Products.ProductComponents
             command.Parameters.AddWithValue("@formFactor", FormFactor);
             command.Parameters.AddWithValue("@capacity", Capacity);
             command.Parameters.AddWithValue("@cacheSize", CacheSize);
-            command.Parameters.AddWithValue("@transforRate", TransferRate);
+            command.Parameters.AddWithValue("@transferRate", TransferRate);
             command.Parameters.AddWithValue("@brand", Brand);
             command.Parameters.AddWithValue("@sata", Sata);
             command.Parameters.AddWithValue("@height", Height);

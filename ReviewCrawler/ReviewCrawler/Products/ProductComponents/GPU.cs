@@ -126,20 +126,23 @@ namespace ReviewCrawler.Products.ProductComponents
         public override void InsertComponentToDB(int PID)
         {
             MySqlCommand command = new MySqlCommand("INSERT INTO GPU" +
-                                                    "(ProductID, processorManufacturer, chipset, model," +
-                                                    " architecture, cooling, memSize, pciSlots, manufacturer)" +
-                                                    "VALUES(@ProductID, @processorManufacturer, @chipset, @model, " +
-                                                    " @architecture, @cooling, @memSize, @pciSlots, @manufacturer)",
+                                                    "(ProductID, processorManufacturer, chipset, graphicsProcessor," +
+                                                    " architecture, cooling, memSize, pciSlots, manufacturer, clock, boostedClock, model)" +
+                                                    "VALUES(@ProductID, @processorManufacturer, @chipset, @graphicsProcessor, " +
+                                                    " @architecture, @cooling, @memSize, @pciSlots, @manufacturer, @clock, @boostedClock, @model)",
                 connection);
             command.Parameters.AddWithValue("@ProductID", PID);
             command.Parameters.AddWithValue("@processorManufacturer", ProcessorManufacturer);
             command.Parameters.AddWithValue("@chipset", Chipset);
-            command.Parameters.AddWithValue("@model", Model);
+            command.Parameters.AddWithValue("@graphicsProcessor", graphicsProcessor);
             command.Parameters.AddWithValue("@architecture", Architecture);
             command.Parameters.AddWithValue("@cooling", Cooling);
             command.Parameters.AddWithValue("@memSize", MemSize);
             command.Parameters.AddWithValue("@pciSlots", PciSlots);
             command.Parameters.AddWithValue("@manufacturer", Manufacturer);
+            command.Parameters.AddWithValue("@clock", clock);
+            command.Parameters.AddWithValue("@boostedClock", clockBoosted);
+            command.Parameters.AddWithValue("@model", Model);
 
             command.ExecuteNonQuery();
         }
