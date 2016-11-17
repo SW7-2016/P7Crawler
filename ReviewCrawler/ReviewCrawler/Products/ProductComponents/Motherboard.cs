@@ -34,6 +34,12 @@ namespace ReviewCrawler.Products.ProductComponents
                     case "formfaktor":
                         formFactor = info[1];
                         break;
+                    case "form faktor":
+                        formFactor = info[1];
+                        break;
+                    case "chipsæt":
+                        chipset = info[1];
+                        break;
                     case "socket amd":
                         socket = info[1];
                         break;
@@ -43,7 +49,13 @@ namespace ReviewCrawler.Products.ProductComponents
                     case "cpu support":
                         cpuCount = int.Parse(info[1]);
                         break;
+                    case "cpuer understøttet":
+                        cpuCount = int.Parse(info[1]);
+                        break;
                     case "sockets intel":
+                        socket = info[1];
+                        break;
+                    case "processor-socket":
                         socket = info[1];
                         break;
                     case "netværkskort indbygget":
@@ -64,10 +76,17 @@ namespace ReviewCrawler.Products.ProductComponents
                     case "max ram mængde":
                         maxMem = int.Parse(info[1]);
                         break;
+                    case "max. memory størrelse":
+                        Match memoryMax = Regex.Match(info[1], "\\d*");
+                        maxMem = int.Parse(memoryMax.Value);
+                        break;
                     case "antal dimm-pladser":
                         memSlots = int.Parse(info[1]);
                         break;
                     case "ram type":
+                        memType = info[1];
+                        break;
+                    case "ram teknologi":
                         memType = info[1];
                         break;
                     case "lydkort indbygget":
@@ -81,6 +100,16 @@ namespace ReviewCrawler.Products.ProductComponents
                         break;
                     case "cpu type intel":
                         cpuType = info[1];
+                        break;
+                    case "processorer":
+                        cpuType = info[1];
+                        break;
+                    default:
+                        if (info[0].Contains("dimm") && info[0].Contains("pin"))
+                        {
+                            Match slots = Regex.Match(info[1], "\\d*");
+                            memSlots = int.Parse(slots.Value);
+                        }
                         break;
                 }
             }

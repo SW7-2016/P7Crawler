@@ -30,16 +30,19 @@ namespace ReviewCrawler.Products.ProductComponents
                 switch (info[0].ToLower())
                 {
                     case "intern/ ekstern":
-                        isInternal = (info[1].ToLower() == "intern") ? true : false;
+                        isInternal = (info[1].ToLower().Contains("intern")) ? true : false;
                         break;
                     case "harddisktype":
-                        isInternal = (info[1].Contains("Intern")) ? true : false;
+                        isInternal = (info[1].ToLower().Contains("intern")) ? true : false;
                         break;
                     case "type":
                         if (type.Contains("Harddisk") || type.Contains("Solid state drive"))
                         {
                             type = info[1];
                         }
+                        break;
+                    case "harddisk teknologi":
+                        type = info[1];
                         break;
                     case "formfaktor":
                         formFactor = info[1];
@@ -60,6 +63,9 @@ namespace ReviewCrawler.Products.ProductComponents
                         cacheSize = info[1];
                         break;
                     case "transfer rate":
+                        transferRate = info[1];
+                        break;
+                    case "overførselshastighed":
                         transferRate = info[1];
                         break;
                     case "internal data rate":

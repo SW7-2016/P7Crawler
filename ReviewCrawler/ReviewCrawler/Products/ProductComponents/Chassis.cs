@@ -28,6 +28,12 @@ namespace ReviewCrawler.Products.ProductComponents
                 switch (info[0].ToLower())
                 {
                     case "type":
+                        if (info[2] == "0")
+                        {
+                            type = info[1];
+                        }
+                        break;
+                    case "kabinet type":
                         type = info[1];
                         break;
                     case "atx":
@@ -43,6 +49,7 @@ namespace ReviewCrawler.Products.ProductComponents
                         fans = info[1];
                         break;
                     case "mærke":
+                        if (info[2] == "0")
                         brand = Regex.Replace(info[1], "(<.*?>)+", "");
                         break;
                     case "vægt":
@@ -56,6 +63,27 @@ namespace ReviewCrawler.Products.ProductComponents
                         break;
                     case "dybde":
                         width = info[1];
+                        break;
+                    case "ventilator":
+                        fans += "     " + info[1];
+                        break;
+                    case "understøttede motherboards":
+                        if (info[1].ToLower().Contains("atx") && atx == false)
+                        {
+                            atx = true;
+                            miniAtx = true;
+                            miniItx = true;
+                        }
+
+                        if (info[1].ToLower().Contains("mini-atx") && atx == false)
+                        {
+                            miniAtx = true;
+                        }
+
+                        if (info[1].ToLower().Contains("mini-itx") && atx == false)
+                        {
+                            miniItx = true;
+                        }
                         break;
                 }
             }

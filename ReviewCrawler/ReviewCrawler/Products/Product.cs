@@ -45,7 +45,7 @@ namespace ReviewCrawler.Products
 
                     if (tempType != "" && tempValue != "")
                     {
-                        productInfo.Add(new string[3] { tempType, tempValue , tableNumber.ToString()});
+                        productInfo.Add(new string[3] { tempType.ToLower(), tempValue , tableNumber.ToString()});
                     }
                 }
             }

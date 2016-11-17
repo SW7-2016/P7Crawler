@@ -12,6 +12,7 @@ namespace ReviewCrawler.Products.ProductComponents
         string processorManufacturer = "";
         string chipset = "";
         string model = "";
+        string graphicsProcessor = "";
         string architecture = "";
         int pciSlots;
         string cooling = "";
@@ -30,6 +31,12 @@ namespace ReviewCrawler.Products.ProductComponents
                     case "processor producent":
                         processorManufacturer = info[1];
                         break;
+                    case "model":
+                        if (info[2] == "0")
+                        {
+                            model = info[1];
+                        }
+                        break;
                     case "mærke":
                         if (info[2] == "0")
                         {
@@ -37,10 +44,10 @@ namespace ReviewCrawler.Products.ProductComponents
                         }
                         break;
                     case "geforce serie":
-                        model = info[1];
+                        graphicsProcessor = info[1];
                         break;
                     case "grafikprocessor":
-                        model = info[1];
+                        graphicsProcessor = info[1];
                         break;
                     case "chipset":
                         chipset = info[1];
@@ -61,7 +68,7 @@ namespace ReviewCrawler.Products.ProductComponents
                         memSize = info[1];
                         break;
                     case "radeon serie":
-                        model = info[1];
+                        graphicsProcessor = info[1];
                         break;
                     case "clock":
                         clock = info[1];
