@@ -19,15 +19,16 @@ namespace ReviewCrawler.Sites.Sub
             domainUrl = "https://www.amazon.com";
             searchQueue.Enqueue(
                 new QueueElement(
-                    "https://www.amazon.com/s/ref=lp_284822_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A284822&ie=UTF8&qid=1479199524&lo=computers",
-                    "state1"));
+                    "https://www.amazon.com/s/ref=lp_284822_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A284822&ie=UTF8&qid=1479384287&lo=computers",
+                    "state1,GPU"));
         }
 
         public override void CrawlPage(string siteData, string queueData)
         {
             string nextPageLink = "";
             string[] articleLinks;
-            string tempProductType = "unknown";
+            string tempProductType = (queueData.Split(','))[1];
+            
 
             if (queueData.Contains("state1"))
             {
@@ -39,11 +40,11 @@ namespace ReviewCrawler.Sites.Sub
                 {
                     if (!nextPageLink.Contains(domainUrl))
                     {
-                        searchQueue.Enqueue(new QueueElement(domainUrl + nextPageLink, "state1"));
+                        searchQueue.Enqueue(new QueueElement(domainUrl + nextPageLink.Replace("&amp;", "&"), "state1," + tempProductType));
                     }
                     else
                     {
-                        searchQueue.Enqueue(new QueueElement(nextPageLink, "state1"));
+                        searchQueue.Enqueue(new QueueElement(nextPageLink.Replace("&amp;", "&"), "state1," + tempProductType));
                     }
                     
                 }
@@ -59,18 +60,18 @@ namespace ReviewCrawler.Sites.Sub
                 }
                 
                 //"><a class="a-link-normal a-text-normal" href=".*?"><img src="
-               /* foreach (string link in articleLinks)
+                foreach (string link in articleLinks)
                 {
-                    searchQueue.Enqueue(new QueueElement(link, "state2"));
-                }*/
+                    searchQueue.Enqueue(new QueueElement(link.Replace("&amp;", "&"), "state2," + tempProductType));
+                }
             }
             else if (queueData.Contains("state2"))
             {
-                nextPageLink = regexMatch(siteData, "href=\"", "\">See all verified purchase reviews</a>");
+                nextPageLink = regexMatch(siteData, "<a class=\"a-link-emphasis a-nowrap\" href=\"", "\">See all verified purchase reviews</a>");
                 if (nextPageLink != "")
                 {
-                    searchQueue.Enqueue(new QueueElement(domainUrl + nextPageLink, "state3"));
-                    itemQueue.Enqueue(new QueueElement(domainUrl + nextPageLink, "state3")); //input is messed up for nextpagelink
+                    searchQueue.Enqueue(new QueueElement(nextPageLink, "state3," + tempProductType));
+                    itemQueue.Enqueue(new QueueElement(nextPageLink, "state3," + tempProductType)); //input is messed up for nextpagelink
                 }
                 
             }
@@ -79,7 +80,7 @@ namespace ReviewCrawler.Sites.Sub
                 if (nextPageLink != "")
                 {
                     nextPageLink = regexMatch(siteData, "<link rel=\"next\" href=\"", "\" />");
-                    searchQueue.Enqueue(new QueueElement(domainUrl + nextPageLink, "state3"));
+                    searchQueue.Enqueue(new QueueElement(domainUrl + nextPageLink, "state3," + tempProductType));
                 }
             }
         }
@@ -94,16 +95,16 @@ namespace ReviewCrawler.Sites.Sub
 
             for (int i = 1; i < reviewSplit.Length - 1; i++)
             {
-                string siteContentParsed = removeTagsFromReview(reviewSplit[i]);
-                string tempProductType = "";
+                string siteContentParsed = regexMatch(reviewSplit[i], "review-text\">", "</span></div>"); //removeTagsFromReview(reviewSplit[i]);
+                siteContentParsed = TagRemoval(siteContentParsed);
 
-                review = new Review(currentSite + i, tempProductType, false);
+                review = new Review(currentSite + i, (queueData.Split(','))[1], false);
                 review.title = tempTitle;
-                review.productRating = double.Parse(regexMatch(reviewSplit[i], "<span class=\"a-icon-alt\">", "out of 5 stars</span>"));
+                string tempRating = regexMatch(reviewSplit[i], "<span class=\"a-icon-alt\">", "out of 5 stars</span>");
+                review.productRating = double.Parse(tempRating[0] + "," + tempRating[2]);
                 review.maxRating = maxRating;
                 review.crawlDate = DateTime.Now;
                 review.reviewDate = GetReviewDate(reviewSplit[i]);
-                //review.productType = sQueueData;
 
                 review.content += siteContentParsed;
 
