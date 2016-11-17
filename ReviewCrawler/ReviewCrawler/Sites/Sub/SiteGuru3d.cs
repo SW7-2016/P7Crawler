@@ -139,19 +139,17 @@ namespace ReviewCrawler.Sites.Sub
         public override bool Parse(string siteData, string sQueueData)
         {
             string siteContentParsed = removeTagsFromReview(siteData);
-            string tempProductType = "";
 
             if (!currentSite.Contains("articles-summary"))
             {
                 if (currentSite.Contains(",1.html"))
                 {
-                    review = new Review(currentSite, tempProductType, true);
+                    review = new Review(currentSite, sQueueData, true);
                     review.title = GetTitle(siteData);
                     review.productRating = GetRating(siteData);
                     review.maxRating = maxRating;
                     review.crawlDate = DateTime.Now;
                     review.reviewDate = GetReviewDate(siteData);
-                    review.productType = sQueueData;
                 }
                 review.content += siteContentParsed;
             }
