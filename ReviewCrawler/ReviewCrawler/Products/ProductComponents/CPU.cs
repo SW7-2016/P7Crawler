@@ -33,7 +33,7 @@ namespace ReviewCrawler.Products.ProductComponents
                     case "processor model":
                         model = info[1];
                         break;
-                    case "fabrikant":
+                    case "processornr.":
                         model = info[1];
                         break;
                     case "clockfrekvens":
@@ -46,14 +46,14 @@ namespace ReviewCrawler.Products.ProductComponents
                         integratedGpu = info[1];
                         break;
                     case "type":
-                        if (info[2] == "4" || info[2] == "3")
+                        if (info[2] == "2" || info[2] == "3" || info[2] == "4")
                         {
                             if (!info[1].Contains("garanti"))
                             {
                                 integratedGpu = info[1];
                             }
                         }
-                        if (info[2] == "2")
+                        if (info[2] == "1")
                         {
                             cpuSeries = info[1];
                         }
@@ -67,12 +67,18 @@ namespace ReviewCrawler.Products.ProductComponents
                     case "multi-core":
                     case "processorkerner":
                         Match noOfCores = Regex.Match(info[1], "\\d*");
-                        physicalCores = int.Parse(noOfCores.Value);
+                        if (noOfCores.Value != "")
+                        {
+                            physicalCores = int.Parse(noOfCores.Value);
+                        }
                         break;
                     case "antal tråde":
                     case "processor tråde":
                         Match noOfThreads = Regex.Match(info[1], "\\d*");
-                        logicalCores = int.Parse(noOfThreads.Value);
+                        if (noOfThreads.Value != "")
+                        {
+                            logicalCores = int.Parse(noOfThreads.Value);
+                        }
                         break;
                     case "max turbo frequency":
                         maxTurbo = info[1];

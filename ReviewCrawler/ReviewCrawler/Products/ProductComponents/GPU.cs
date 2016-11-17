@@ -31,6 +31,9 @@ namespace ReviewCrawler.Products.ProductComponents
                     case "processor producent":
                         processorManufacturer = info[1];
                         break;
+                    case "grafikprocessor producent":
+                        processorManufacturer = info[1];
+                        break;
                     case "model":
                         if (info[2] == "0")
                         {

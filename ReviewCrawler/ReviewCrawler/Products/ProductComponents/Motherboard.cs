@@ -108,7 +108,10 @@ namespace ReviewCrawler.Products.ProductComponents
                         if (info[0].Contains("dimm") && info[0].Contains("pin"))
                         {
                             Match slots = Regex.Match(info[1], "\\d*");
-                            memSlots = int.Parse(slots.Value);
+                            if (slots.Value != "")
+                            {
+                                memSlots = int.Parse(slots.Value);
+                            }
                         }
                         break;
                 }

@@ -36,7 +36,7 @@ namespace ReviewCrawler.Products.ProductComponents
                         isInternal = (info[1].ToLower().Contains("intern")) ? true : false;
                         break;
                     case "type":
-                        if (type.Contains("Harddisk") || type.Contains("Solid state drive"))
+                        if (info[1].ToLower().Contains("harddisk") || info[1].ToLower().Contains("solid state drive"))
                         {
                             type = info[1];
                         }

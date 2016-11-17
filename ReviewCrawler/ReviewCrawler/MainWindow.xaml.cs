@@ -52,10 +52,6 @@ namespace ReviewCrawler
 
         private void stopCrawl_bt_Click(object sender, RoutedEventArgs e)
         {
-            using (StreamWriter outputFile = new StreamWriter(@"C:/CrawlerSave/file.txt"))
-            {
-                outputFile.Write("");
-            }
             runFast = false;
         }
 
