@@ -37,7 +37,7 @@ namespace ReviewCrawler.Products.ProductComponents
                         technology = info[1];
                         break;
                     case "model":
-                        if (info[3] != "0")
+                        if (info[2] != "0")
                         {
                             formFactor = info[1];
                         }
