@@ -40,7 +40,7 @@ namespace ReviewCrawler.Sites
 
             if (justStarted)
             {
-               // LoadCrawlerState(connection);
+                LoadCrawlerState(connection);
                 justStarted = false;
             }
 
@@ -85,7 +85,7 @@ namespace ReviewCrawler.Sites
                 connection.Open();
                 AddItemToDatabase(connection);
                 connection.Close();
-                if (!MainWindow.runFast || (DateTime.Now - lastSave).TotalMinutes > 10)
+                if (!MainWindow.runFast ) //|| (DateTime.Now - lastSave).TotalMinutes > 10)
                 {
                     SaveCrawlerState(connection);
                     if (!MainWindow.runFast)

@@ -48,12 +48,21 @@ namespace ReviewCrawler.Sites.Sub
                     
                 }
                 //Gets matches, without identifiers.
-                articleLinks = regexMatches(siteData, "href=\"", "\"><h2 data-attribute");
-
-                foreach (string link in articleLinks)
+                if (siteData.Contains("<div id=\"atfResults\""))
+                {
+                    string[] data = siteData.Split(new string[] { "<div id=\"atfResults\"" }, StringSplitOptions.None);
+                    articleLinks = regexMatches(data[1], "<a class=\"a-link-normal a-text-normal\" href=\"", "\"><img src=\"");
+                }
+                else
+                {
+                    articleLinks = regexMatches(siteData, "<a class=\"a-link-normal a-text-normal\" href=\"", "\"><img src=\"");
+                }
+                
+                //"><a class="a-link-normal a-text-normal" href=".*?"><img src="
+               /* foreach (string link in articleLinks)
                 {
                     searchQueue.Enqueue(new QueueElement(link, "state2"));
-                }
+                }*/
             }
             else if (queueData.Contains("state2"))
             {

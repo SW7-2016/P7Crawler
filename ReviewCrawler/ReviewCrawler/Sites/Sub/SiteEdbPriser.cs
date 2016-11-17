@@ -16,13 +16,13 @@ namespace ReviewCrawler.Sites.Sub
         public SiteEdbPriser()
         {
             domainUrl = "http://www.edbpriser.dk";
-            // searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/ram.aspx?count=5&sort=Popularity&rlm=List", ""));
-            //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/bundkort.aspx?count=5&sort=Popularity&rlm=List", ""));
-            //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/harddisk.aspx?count=5&sort=Popularity&rlm=List", ""));
-            //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/processor.aspx?count=5&sort=Popularity&rlm=List", ""));
-            //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/grafikkort.aspx?count=5&sort=Popularity&rlm=List", ""));
+            searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/ram.aspx?count=5&sort=Popularity&rlm=List", ""));
+            searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/bundkort.aspx?count=5&sort=Popularity&rlm=List", ""));
+            searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/harddisk.aspx?count=5&sort=Popularity&rlm=List", ""));
+            searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/processor.aspx?count=5&sort=Popularity&rlm=List", ""));
+            searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/grafikkort.aspx?count=5&sort=Popularity&rlm=List", ""));
             searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/kabinet.aspx?count=5&sort=Popularity&rlm=List", ""));
-            //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/stroemforsyning.aspx?count=5&sort=Popularity&rlm=List", ""));
+            searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/stroemforsyning.aspx?count=5&sort=Popularity&rlm=List", ""));
             searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/ssd-solid-state-drive.aspx?count=5&sort=Popularity&rlm=List", ""));
 
         }
@@ -59,7 +59,7 @@ namespace ReviewCrawler.Sites.Sub
                 //product is a "GPU"
                 product = new GPU();
             }
-            else if (currentSite.Contains("/cpu"))
+            else if (currentSite.Contains("/processor"))
             {
                 //product is a "CPU"
                 product = new CPU();
@@ -70,6 +70,11 @@ namespace ReviewCrawler.Sites.Sub
                 product = new Motherboard();
             }
             else if (currentSite.Contains("/harddisk"))
+            {
+                //product is a "HardDrive"
+                product = new HardDrive();
+            }
+            else if (currentSite.Contains("/ssd-solid-state-drive"))
             {
                 //product is a "HardDrive"
                 product = new HardDrive();
@@ -91,7 +96,7 @@ namespace ReviewCrawler.Sites.Sub
             }
             else
             {
-                throw new FormatException("Pricerunner - couldnt determine product type", null);
+                throw new FormatException("edbpriser - couldnt determine product type", null);
             }
 
             //We have created our product, now we fill the data
