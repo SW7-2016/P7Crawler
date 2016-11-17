@@ -158,7 +158,7 @@ namespace ReviewCrawler.Products.ProductComponents
         {
             MySqlCommand command = new MySqlCommand("INSERT INTO HardDrive" +
                                                     "(ProductID, isInternal, type, formFactor, capacity, cacheSize," +
-                                                    " transforRate, brand, sata, height, depth, width)" +
+                                                    " transferRate, brand, sata, height, depth, width)" +
                                                     "VALUES(@ProductID, @isInternal, @type, @formFactor, @capacity, " +
                                                     " @cacheSize, @transferRate, @brand, @sata, @height, @depth, @width)",
                 connection);
