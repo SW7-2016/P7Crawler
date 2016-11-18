@@ -58,7 +58,9 @@ namespace ReviewCrawler.Products.Reviews
                     || value == "Cooling"
                     || value == "HardDrive"
                     || value == "Motherboard"
-                    || value == "RAM/HDD")
+                    || value == "RAM/HDD"
+                    || value == "HDD"
+                    || value == "RAM")
                 {
                     productType = value;
                 }
