@@ -9,8 +9,6 @@ using ReviewCrawler.Helpers;
 
 namespace ReviewCrawler.Products
 {
-
-    //HUSK at ram indeholder 2x model. fix det.
     abstract class Product
     {
         public string name;
@@ -87,7 +85,7 @@ namespace ReviewCrawler.Products
                     tempStrPrice = tempStrPrice.Replace("kr", "").Trim().Replace(",", ".");
                     tempPrice = decimal.Parse(tempStrPrice);
 
-                    if (retailers.ContainsKey(tempName))
+                    if (!retailers.ContainsKey(tempName))
                     {
                         retailers.Add(tempName, tempPrice);
                     }
