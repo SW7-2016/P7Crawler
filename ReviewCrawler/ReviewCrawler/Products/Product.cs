@@ -16,7 +16,7 @@ namespace ReviewCrawler.Products
         public string name;
         public string description = "";
         protected byte[][] image;
-        public List<Retailer> retailers = new List<Retailer>();
+        public Dictionary<string, decimal> retailers = new Dictionary<string, decimal>();
         public MySqlConnection connection;
 
         protected abstract void AddInformation(List<string[]> productInformation);
@@ -69,23 +69,28 @@ namespace ReviewCrawler.Products
             // Find retailers and add to product
             foreach (Match oneRetailerCode in Regex.Matches(siteData, regexPatterns.allRetailersPattern, RegexOptions.Singleline))
             {
-                Retailer tempRetailer = new Retailer();
+                
+                decimal tempPrice = 0;
+                string tempName = "";
 
                 // Finding retailer name.
                 Regex split = new Regex("\\.\\*\\?");
                 string[] tags = split.Split(regexPatterns.retailerNamePattern);
-                tempRetailer.name = removeTags.Replace(Regex.Match(oneRetailerCode.Value, regexPatterns.retailerNamePattern, RegexOptions.Singleline).Value.Replace(tags[0], "").Replace(tags[1], ""), "").Trim();
+                tempName = removeTags.Replace(Regex.Match(oneRetailerCode.Value, regexPatterns.retailerNamePattern, RegexOptions.Singleline).Value.Replace(tags[0], "").Replace(tags[1], ""), "").Trim();
 
-                if (tempRetailer.name != "")
+                if (tempName != "")
                 {
                     // Finding retailer price
-                    string tempPrice = Regex.Match(oneRetailerCode.Value, regexPatterns.retailerPricePattern).Value;
+                    string tempStrPrice = Regex.Match(oneRetailerCode.Value, regexPatterns.retailerPricePattern).Value;
 
-                    tempPrice = removeTags.Replace(tempPrice, "").Replace(".", "");
-                    tempPrice = tempPrice.Replace("kr", "").Trim().Replace(",", ".");
-                    tempRetailer.price = decimal.Parse(tempPrice);
+                    tempStrPrice = removeTags.Replace(tempStrPrice, "").Replace(".", "");
+                    tempStrPrice = tempStrPrice.Replace("kr", "").Trim().Replace(",", ".");
+                    tempPrice = decimal.Parse(tempStrPrice);
 
-                    retailers.Add(tempRetailer);
+                    if (retailers.ContainsKey(tempName))
+                    {
+                        retailers.Add(tempName, tempPrice);
+                    }
                 }
             }
         }
@@ -114,12 +119,12 @@ namespace ReviewCrawler.Products
 
                 foreach (var retailer in retailers)
                 {
-                    if (!RetailerExists(retailer.name))
+                    if (!RetailerExists(retailer.Key))
                     {
-                        InsertRetailer(retailer.name);
+                        InsertRetailer(retailer.Key);
                     }
 
-                    RID = GetRetailerID(retailer.name);
+                    RID = GetRetailerID(retailer.Key);
 
                     InsertProductRetailer(retailer, RID, PID);
                 }
@@ -147,15 +152,15 @@ namespace ReviewCrawler.Products
         }
 
 
-        private void InsertProductRetailer(Retailer retailer, int RID, int PID)
+        private void InsertProductRetailer(KeyValuePair<string, decimal> retailer, int RID, int PID)
         {
             MySqlCommand command = new MySqlCommand("INSERT INTO Product_Retailer" +
           "(productID, retailerID, url, price)" +
           "VALUES(@productID, @retailerID, @url, @price)", connection);
             command.Parameters.AddWithValue("@productID", PID);
             command.Parameters.AddWithValue("@retailerID", RID);
-            command.Parameters.AddWithValue("@url", retailer.url);
-            command.Parameters.AddWithValue("@price", retailer.price);
+            command.Parameters.AddWithValue("@url", retailer.Key);
+            command.Parameters.AddWithValue("@price", retailer.Value);
 
             command.ExecuteNonQuery();
         }
