@@ -17,10 +17,13 @@ namespace ReviewCrawler.Sites.Sub
         public SiteAmazon()
         {
             domainUrl = "https://www.amazon.com";
-            searchQueue.Enqueue(
-                new QueueElement(
-                    "https://www.amazon.com/s/ref=lp_284822_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A284822&ie=UTF8&qid=1479384287&lo=computers",
-                    "state1,GPU"));
+            //searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_284822_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A284822&ie=UTF8&qid=1479384287&lo=computers","state1,GPU"));
+            searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_229189_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A229189&ie=UTF8&qid=1479457498&lo=computers", "state1,CPU"));
+            searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_1048424_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A1048424&ie=UTF8&qid=1479457799&lo=computers", "state1,Motherboard"));
+            searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_2248325011_il_ti_electronics?rh=n%3A172282%2Cn%3A%2113900871%2Cn%3A%212334091011%2Cn%3A%212334122011%2Cn%3A2248325011&ie=UTF8&qid=1479458095&lo=electronics", "state1,HDD"));
+            searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=sr_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A172500&ie=UTF8&qid=1479458749&lo=computers", "state1,RAM"));
+            searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_572238_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A572238&ie=UTF8&qid=1479458873&lo=computers", "state1,Chassis"));
+            searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_1161760_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A1161760&ie=UTF8&qid=1479459093&lo=computers", "state1,PSU"));
         }
 
         public override void CrawlPage(string siteData, string queueData)
@@ -105,6 +108,7 @@ namespace ReviewCrawler.Sites.Sub
                 review.maxRating = maxRating;
                 review.crawlDate = DateTime.Now;
                 review.reviewDate = GetReviewDate(reviewSplit[i]);
+                review.verifiedPurchase = true;
 
                 review.content += siteContentParsed;
 
