@@ -158,6 +158,10 @@ namespace ReviewCrawler.Products.ProductComponents
             command.Parameters.AddWithValue("@weight", Weight);
 
             command.ExecuteNonQuery();
+
+            //Testing purposes only
+            MainWindow.pdCHASSIS++;
+            //
         }
     }
 }

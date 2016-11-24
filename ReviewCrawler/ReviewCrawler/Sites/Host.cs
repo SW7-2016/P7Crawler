@@ -20,7 +20,7 @@ namespace ReviewCrawler.Sites
         protected DateTime robotsTimeStamp;
         protected string domainUrl = "";
         private List<string> disallow = new List<string>();
-        protected Queue<QueueElement> itemQueue = new Queue<QueueElement>(); //itemQueue refers to products/reviews
+        protected Queue<QueueElement> itemQueue = new Queue<QueueElement>(); //itemQueue refers to products/reviews depending on the site
         protected Queue<QueueElement> searchQueue = new Queue<QueueElement>();
         protected string currentSite;
         private bool justStarted = true;
@@ -40,7 +40,7 @@ namespace ReviewCrawler.Sites
 
             if (justStarted)
             {
-                LoadCrawlerState(connection);
+               // LoadCrawlerState(connection);
                 justStarted = false;
             }
 
@@ -48,14 +48,14 @@ namespace ReviewCrawler.Sites
             {
                 isReview = true;
                 tempElement = itemQueue.Dequeue();
-                currentSite = tempElement.url.ToLower();
+                currentSite = tempElement.url;
                 queueData = tempElement.data;
             }
             else if (searchQueue.Count > 0)
             {
                 isReview = false;
                 tempElement = searchQueue.Dequeue();
-                currentSite = tempElement.url.ToLower();
+                currentSite = tempElement.url;
                 queueData = tempElement.data;
             }
             else
@@ -82,17 +82,18 @@ namespace ReviewCrawler.Sites
 
             if (isItemDone)//If a review or product was just "completed" then add it to DB
             {
+                /*
                 connection.Open();
                 AddItemToDatabase(connection);
                 connection.Close();
-                if (!MainWindow.runFast ) //|| (DateTime.Now - lastSave).TotalMinutes > 10)
+                if (!MainWindow.runFast )//|| (DateTime.Now - lastSave).TotalMinutes > 10)
                 {
-                    SaveCrawlerState(connection);
+                    //SaveCrawlerState(connection);
                     if (!MainWindow.runFast)
                     {
                         return true;
                     }
-                }
+                }*/
             }
 
             return false;
@@ -125,12 +126,14 @@ namespace ReviewCrawler.Sites
             {
                 tempElement = searchQueue.Dequeue();
                 queue +=  (tempElement.url + "%%%##%##" + tempElement.data + "#%&/#");
+                searchQueue.Enqueue(tempElement);
             }
             queue += "%%&&##";
             while (itemQueue.Count > 0)
             {
                 tempElement = itemQueue.Dequeue();
                 queue += (tempElement.url + "%%%##%##" + tempElement.data + "#%&/#");
+                itemQueue.Enqueue(tempElement);
             }
 
             

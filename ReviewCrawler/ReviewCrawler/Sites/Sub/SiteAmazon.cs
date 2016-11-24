@@ -12,18 +12,17 @@ namespace ReviewCrawler.Sites.Sub
     class SiteAmazon : ReviewSite
     {
         private double maxRating = 5;
-        List<Review> reviewList = new List<Review>();
 
         public SiteAmazon()
         {
             domainUrl = "https://www.amazon.com";
-            //searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_284822_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A284822&ie=UTF8&qid=1479384287&lo=computers","state1,GPU"));
+            searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_284822_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A284822&ie=UTF8&qid=1479384287&lo=computers","state1,GPU"));
             searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_229189_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A229189&ie=UTF8&qid=1479457498&lo=computers", "state1,CPU"));
-            searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_1048424_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A1048424&ie=UTF8&qid=1479457799&lo=computers", "state1,Motherboard"));
-            searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_2248325011_il_ti_electronics?rh=n%3A172282%2Cn%3A%2113900871%2Cn%3A%212334091011%2Cn%3A%212334122011%2Cn%3A2248325011&ie=UTF8&qid=1479458095&lo=electronics", "state1,HDD"));
-            searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=sr_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A172500&ie=UTF8&qid=1479458749&lo=computers", "state1,RAM"));
-            searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_572238_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A572238&ie=UTF8&qid=1479458873&lo=computers", "state1,Chassis"));
-            searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_1161760_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A1161760&ie=UTF8&qid=1479459093&lo=computers", "state1,PSU"));
+            //searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_1048424_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A1048424&ie=UTF8&qid=1479457799&lo=computers", "state1,Motherboard"));
+            //searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_2248325011_il_ti_electronics?rh=n%3A172282%2Cn%3A%2113900871%2Cn%3A%212334091011%2Cn%3A%212334122011%2Cn%3A2248325011&ie=UTF8&qid=1479458095&lo=electronics", "state1,HDD"));
+            //searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=sr_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A172500&ie=UTF8&qid=1479458749&lo=computers", "state1,RAM"));
+            //searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_572238_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A572238&ie=UTF8&qid=1479458873&lo=computers", "state1,Chassis"));
+            //searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_1161760_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A1161760&ie=UTF8&qid=1479459093&lo=computers", "state1,PSU"));
         }
 
         public override void CrawlPage(string siteData, string queueData)
@@ -36,8 +35,8 @@ namespace ReviewCrawler.Sites.Sub
             if (queueData.Contains("state1"))
             {
                 //Gets match, without identifiers.
-                nextPageLink = regexMatch(siteData, "class=\"pagnNext\"", "<span id=\"pagnNextString\">Next Page</span>");
-                nextPageLink = regexMatch(nextPageLink, "href=\"", "\">");
+                //nextPageLink = regexMatch(siteData, "class=\"pagnNext\"", "<span id=\"pagnNextString\">Next Page</span>");
+                //nextPageLink = regexMatch(nextPageLink, "href=\"", "\">");
 
                 if (nextPageLink != "")
                 {
@@ -70,56 +69,95 @@ namespace ReviewCrawler.Sites.Sub
             }
             else if (queueData.Contains("state2"))
             {
-                nextPageLink = regexMatch(siteData, "<a class=\"a-link-emphasis a-nowrap\" href=\"", "\">See all verified purchase reviews</a>");
+                nextPageLink = regexMatch(siteData, "<a class=\"a-link-emphasis a-nowrap\" href=\"", "\">See all");
                 if (nextPageLink != "")
                 {
                     searchQueue.Enqueue(new QueueElement(nextPageLink, "state3," + tempProductType));
-                    itemQueue.Enqueue(new QueueElement(nextPageLink, "state3," + tempProductType)); //input is messed up for nextpagelink
                 }
                 
             }
             else if (queueData.Contains("state3"))
             {
+
+                nextPageLink = regexMatch(siteData, "<link rel=\"next\" href=\"", "\" />");
                 if (nextPageLink != "")
                 {
-                    nextPageLink = regexMatch(siteData, "<link rel=\"next\" href=\"", "\" />");
-                    searchQueue.Enqueue(new QueueElement(domainUrl + nextPageLink, "state3," + tempProductType));
+                    //searchQueue.Enqueue(new QueueElement(domainUrl + nextPageLink, "state3," + tempProductType));
                 }
+                
+
+                articleLinks = regexMatches(siteData, "class=\"a-size-base a-link-normal review-title a-color-base a-text-bold\" href=\"", "\">");
+                foreach (var review in articleLinks)
+                {
+                    itemQueue.Enqueue(new QueueElement(domainUrl + review, "state4," + tempProductType));
+                }
+                
             }
         }
 
         public override bool Parse(string siteData, string queueData)
         {
-            reviewList.Clear();
-            string[] reviewSplit = siteData.Split(new string[] {"<i data-hook=\"review-star-rating\""},
-                StringSplitOptions.None);
 
-            string tempTitle = regexMatch(reviewSplit[0], "<title>Amazon.com: Customer Reviews:", "</title>");
+            string siteContentParsed = regexMatch(siteData, "<div class=\"reviewText\">", "</div>");
+            siteContentParsed = TagRemoval(siteContentParsed);
 
-            for (int i = 1; i < reviewSplit.Length - 1; i++)
+            review = new Review(currentSite, (queueData.Split(','))[1], false);
+            string tempTitle = regexMatch(siteData, "<div class=\"crDescription\">", "<span class=\"crAvgStars\"");
+            review.title = TagRemoval(tempTitle).Trim();
+            string tempRating = regexMatch(siteData, "title=\"", "out of 5 stars");
+            review.productRating = double.Parse(tempRating[0] + "," + tempRating[2]);
+            review.maxRating = maxRating;
+            review.crawlDate = DateTime.Now;
+            review.reviewDate = GetReviewDate(siteData);
+            review.author = GetAuthor(siteData);
+            GetReviewSentimentCount(siteData);
+
+            review.verifiedPurchase = IsVerified(siteData);
+
+            review.content += siteContentParsed;
+
+            //for testing purposes only
+            if (this.GetType() == typeof(SiteAmazon))
             {
-                string siteContentParsed = regexMatch(reviewSplit[i], "review-text\">", "</span></div>"); //removeTagsFromReview(reviewSplit[i]);
-                siteContentParsed = TagRemoval(siteContentParsed);
-
-                review = new Review(currentSite + i, (queueData.Split(','))[1], false);
-                review.title = tempTitle;
-                string tempRating = regexMatch(reviewSplit[i], "<span class=\"a-icon-alt\">", "out of 5 stars</span>");
-                review.productRating = double.Parse(tempRating[0] + "," + tempRating[2]);
-                review.maxRating = maxRating;
-                review.crawlDate = DateTime.Now;
-                review.reviewDate = GetReviewDate(reviewSplit[i]);
-                review.verifiedPurchase = true;
-
-                review.content += siteContentParsed;
-
-                reviewList.Add(review);
+                MainWindow.amazon++;
             }
+
             return true;
+        }
+        
+        private void GetReviewSentimentCount(string data)
+        {
+            string temp = regexMatch(data, "<div style=\"margin-bottom:0.5em;\">", "people found the following review helpful");
+            if (temp.Contains("of"))
+            {
+                string[] tempSplit = temp.Split(new string[] { "of" }, StringSplitOptions.None);
+
+                review.positiveReception = int.Parse(tempSplit[0].Trim());
+                review.negativeReception = (int.Parse(tempSplit[1].Trim()) - int.Parse(tempSplit[0].Trim()));
+            }
+            else
+            {
+                review.negativeReception = 0;
+                review.positiveReception = 0;
+            }
+        }
+
+        private string GetAuthor(string data)
+        {
+            string result = regexMatch(data, "<span style = \"font-weight: bold;\">", "</span>");
+            if (result != "")
+            {
+                return result;
+            }
+            else
+            {
+                return "Unknown";
+            }
         }
 
         private DateTime GetReviewDate(string data)
         {
-            string[] date = (regexMatch(data, "class=\"a-size-base a-color-secondary review-date\">on ", "</span>")).Split(' ');
+            string[] date = (regexMatch(data, ", <nobr>", "</nobr>")).Split(' ');
 
             if (date[0].ToLower().Contains("january"))
             {
@@ -175,12 +213,15 @@ namespace ReviewCrawler.Sites.Sub
 
         }
 
-        public override void AddItemToDatabase(MySqlConnection connection)
+        public bool IsVerified(string data)
         {
-            foreach (var rw in reviewList)
+            if (data.Contains("\">Verified Purchase</b>"))
             {
-                rw.connection = connection;
-                rw.AddReviewToDB();
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
@@ -189,18 +230,6 @@ namespace ReviewCrawler.Sites.Sub
             return "";
         }
 
-        public override string GetSiteKey(string url)
-        {
-            /*for (int i = url.Length; i > 0; i--)
-            {
-                if (url[i] == ',')
-                {
-                    url = url.Remove(i, url.Length - i);
-
-                }
-            }
-            */
-            return url;
-        }
+        
     }
 }

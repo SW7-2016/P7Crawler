@@ -19,10 +19,10 @@ namespace ReviewCrawler.Sites.Sub
         public SiteGuru3d()
         {
             domainUrl = "http://www.guru3d.com/";
-            searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/videocards.html", ""));
-            searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/processors.html", ""));
-            searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/mainboards.html", ""));
-            searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd).html", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/videocards.html", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/processors.html", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/mainboards.html", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd).html", ""));
             searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/pc-cases-and-modding.html", ""));
             searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/psu-power-supply-units.html", ""));
         }
@@ -59,7 +59,7 @@ namespace ReviewCrawler.Sites.Sub
             CrawlReviewPages(siteData, sQueueData);
         }
 
-        public void CrawlReviewPages(string siteData, string productType)
+        private void CrawlReviewPages(string siteData, string productType)
         {
             string tempLink = "";
 
@@ -80,7 +80,7 @@ namespace ReviewCrawler.Sites.Sub
         }
 
 
-        public override string GetSiteKey(string url) //evt rename, not used as key anymore
+        private string GetSiteKey(string url) //evt rename, not used as key anymore
         {
             for (int i = url.Length - 1; i > 0; i--)
             {
@@ -96,6 +96,7 @@ namespace ReviewCrawler.Sites.Sub
 
         public override string GetProductType(string tempLink)
         {
+            tempLink = tempLink.ToLower();
             if (tempLink.Contains("articles-categories/videocards"))
             {
                 return "GPU";
@@ -150,6 +151,7 @@ namespace ReviewCrawler.Sites.Sub
                     review.maxRating = maxRating;
                     review.crawlDate = DateTime.Now;
                     review.reviewDate = GetReviewDate(siteData);
+                    review.author = "Guru3d";
                 }
                 review.content += siteContentParsed;
             }
@@ -157,12 +159,18 @@ namespace ReviewCrawler.Sites.Sub
             {
                 review.comments = GetReviewComments(siteData);
 
+                //for testing purposes only
+                if (this.GetType() == typeof(SiteGuru3d))
+                {
+                    MainWindow.guru3d++;
+                }
+
                 return true;
             }
             return false;
         }
 
-        public string GetTitle(string data)
+        private string GetTitle(string data)
         {
             string result = "";
 
@@ -176,7 +184,7 @@ namespace ReviewCrawler.Sites.Sub
             return result;
         }
 
-        public List<ReviewComment> GetReviewComments(string siteData) //look into nested quotes
+        private List<ReviewComment> GetReviewComments(string siteData) //look into nested quotes
         {
             List<ReviewComment> commentResults = new List<ReviewComment>();
             Regex regexTags = new Regex("(<.*?>)+", RegexOptions.Singleline);
@@ -211,7 +219,7 @@ namespace ReviewCrawler.Sites.Sub
             return commentResults;
         }
 
-        public DateTime GetReviewDate(string siteData)
+        private DateTime GetReviewDate(string siteData)
         {
             DateTime date;
             string temp = Regex.Match(siteData, "<span itemprop=\"dtreviewed\">.*?</span>").Value;
@@ -238,7 +246,7 @@ namespace ReviewCrawler.Sites.Sub
             return date;
         }
 
-        public double GetRating(string siteData)
+        private double GetRating(string siteData)
         {
             string strValue = "";
             string temp = Regex.Match(siteData, "<meta itemprop=\"value\" content=\".*?\"/>").Value;

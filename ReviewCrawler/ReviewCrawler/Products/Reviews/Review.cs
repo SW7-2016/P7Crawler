@@ -108,11 +108,47 @@ namespace ReviewCrawler.Products.Reviews
                 {
                     InsertReviewComment(comment, ID);
                 }
+
+                ReviewCountAdd();
             }
             else
             {
                 Debug.WriteLine("Review " + url + " does already exist");
             }
+        }
+
+        //For testing purposes only
+        private void ReviewCountAdd()
+        {
+            if (ProductType == "Chassis")
+            {
+                MainWindow.rwCHASSIS++;
+            }
+            else if (ProductType == "CPU")
+            {
+                MainWindow.rwCPU++;
+            }
+            else if (ProductType == "GPU")
+            {
+                MainWindow.rwGPU++;
+            }
+            else if (ProductType == "HDD")
+            {
+                MainWindow.rwHDD++;
+            }
+            else if (ProductType == "Motherboard")
+            {
+                MainWindow.rwMB++;
+            }
+            else if (ProductType == "PSU")
+            {
+                MainWindow.rwPSU++;
+            }
+            else if (ProductType == "RAM")
+            {
+                MainWindow.rwRAM++;
+            }
+
         }
 
         public bool DoesReviewExist()

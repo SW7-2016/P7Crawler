@@ -214,6 +214,10 @@ namespace ReviewCrawler.Products.ProductComponents
             command.Parameters.AddWithValue("@chipset", Chipset);
 
             command.ExecuteNonQuery();
+
+            //Testing purposes only
+            MainWindow.pdMB++;
+            //
         }
     }
 }

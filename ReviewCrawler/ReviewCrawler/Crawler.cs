@@ -64,16 +64,21 @@ namespace ReviewCrawler
         //Adds all the hosts to be crawled - do this at startup
         public void AddHosts()
         {
-            //hostQueue.Enqueue(new SiteGuru3d());
-            //hostQueue.Enqueue(new SitePriceRunner());
-            //hostQueue.Enqueue(new SiteEdbPriser());
+            hostQueue.Enqueue(new SiteGuru3d());
+            hostQueue.Enqueue(new SitePriceRunner());
+            hostQueue.Enqueue(new SiteEdbPriser());
             hostQueue.Enqueue(new SiteAmazon());
         }
 
         //Checks if more than two seconds have passed since 'lastAccessTime' and returns a bool
         public bool PolitenessTimeCheck(DateTime lastAccessTime)
         {
-            if ((DateTime.Now - lastAccessTime).TotalSeconds > 4)
+            //HACK HACK HACK FOR AMAZON
+            Random rand = new Random();
+            
+            //HACK HACK HACK FOR AMAZON
+
+            if ((DateTime.Now - lastAccessTime).TotalSeconds > rand.Next(2, 5))
             {
                 return true;
             }

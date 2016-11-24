@@ -16,12 +16,12 @@ namespace ReviewCrawler.Sites.Sub
         public SiteEdbPriser()
         {
             domainUrl = "http://www.edbpriser.dk";
-            searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/ram.aspx?count=5&sort=Popularity&rlm=List", ""));
-            searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/bundkort.aspx?count=5&sort=Popularity&rlm=List", ""));
-            searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/harddisk.aspx?count=5&sort=Popularity&rlm=List", ""));
-            searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/processor.aspx?count=5&sort=Popularity&rlm=List", ""));
-            searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/grafikkort.aspx?count=5&sort=Popularity&rlm=List", ""));
-            searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/kabinet.aspx?count=5&sort=Popularity&rlm=List", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/ram.aspx?count=5&sort=Popularity&rlm=List", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/bundkort.aspx?count=5&sort=Popularity&rlm=List", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/harddisk.aspx?count=5&sort=Popularity&rlm=List", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/processor.aspx?count=5&sort=Popularity&rlm=List", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/grafikkort.aspx?count=5&sort=Popularity&rlm=List", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/kabinet.aspx?count=5&sort=Popularity&rlm=List", ""));
             searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/stroemforsyning.aspx?count=5&sort=Popularity&rlm=List", ""));
             searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/ssd-solid-state-drive.aspx?count=5&sort=Popularity&rlm=List", ""));
 
@@ -53,43 +53,43 @@ namespace ReviewCrawler.Sites.Sub
         public override bool Parse(string siteData, string sQueueData)
         {
             product = null;
-
-            if (currentSite.Contains("/grafikkort"))
+            string tempSite = currentSite.ToLower();
+            if (tempSite.Contains("/grafikkort"))
             {
                 //product is a "GPU"
                 product = new GPU();
             }
-            else if (currentSite.Contains("/processor"))
+            else if (tempSite.Contains("/processor"))
             {
                 //product is a "CPU"
                 product = new CPU();
             }
-            else if (currentSite.Contains("/bundkort"))
+            else if (tempSite.Contains("/bundkort"))
             {
                 //product is a "Motherboard"
                 product = new Motherboard();
             }
-            else if (currentSite.Contains("/harddisk"))
+            else if (tempSite.Contains("/harddisk"))
             {
                 //product is a "HardDrive"
                 product = new HardDrive();
             }
-            else if (currentSite.Contains("/ssd-solid-state-drive"))
+            else if (tempSite.Contains("/ssd-solid-state-drive"))
             {
                 //product is a "HardDrive"
                 product = new HardDrive();
             }
-            else if (currentSite.Contains("/kabinet"))
+            else if (tempSite.Contains("/kabinet"))
             {
                 //product is a "Chassis"
                 product = new Chassis();
             }
-            else if (currentSite.Contains("/stroemforsyning"))
+            else if (tempSite.Contains("/stroemforsyning"))
             {
                 //product is a "PSU"
                 product = new PSU();
             }
-            else if (currentSite.Contains("/ram"))
+            else if (tempSite.Contains("/ram"))
             {
                 //product is a "RAM"
                 product = new RAM();
@@ -114,7 +114,13 @@ namespace ReviewCrawler.Sites.Sub
 
             product.ParsePrice(siteData, edbPriserParsePrice);
             product.ParseProductSpecifications(siteData, edbPriserParseSpecs);
-            
+
+            //for testing purposes only
+            if (this.GetType() == typeof(SiteEdbPriser))
+            {
+                MainWindow.edbpriser++;
+            }
+
             return true;
         }
     }
