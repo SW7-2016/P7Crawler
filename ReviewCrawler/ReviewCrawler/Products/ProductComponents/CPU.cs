@@ -167,6 +167,10 @@ namespace ReviewCrawler.Products.ProductComponents
             command.Parameters.AddWithValue("@socket", socket);
 
             command.ExecuteNonQuery();
+
+            //Testing purposes only
+            MainWindow.pdCPU++;
+            //
         }
     }
 }

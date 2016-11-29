@@ -145,6 +145,10 @@ namespace ReviewCrawler.Products.ProductComponents
             command.Parameters.AddWithValue("@model", Model);
 
             command.ExecuteNonQuery();
+
+            //Testing purposes only
+            MainWindow.pdGPU++;
+            //
         }
     }
 }

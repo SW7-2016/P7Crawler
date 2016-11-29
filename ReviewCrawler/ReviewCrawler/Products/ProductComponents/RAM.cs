@@ -152,6 +152,10 @@ namespace ReviewCrawler.Products.ProductComponents
             command.Parameters.AddWithValue("@type", Type);
 
             command.ExecuteNonQuery();
+
+            //Testing purposes only
+            MainWindow.pdRAM++;
+            //
         }
     }
 }

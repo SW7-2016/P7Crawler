@@ -16,10 +16,10 @@ namespace ReviewCrawler.Sites.Sub
         public SitePriceRunner()
         {
             domainUrl = "http://www.pricerunner.dk";
-            searchQueue.Enqueue(new QueueElement("http://www.pricerunner.dk/cl/35/Bundkort", ""));
-            searchQueue.Enqueue(new QueueElement("http://www.pricerunner.dk/cl/40/CPU", ""));
-            searchQueue.Enqueue(new QueueElement("http://www.pricerunner.dk/cl/37/Grafikkort", ""));
-            searchQueue.Enqueue(new QueueElement("http://www.pricerunner.dk/cl/36/Harddiske", "")); 
+            //searchQueue.Enqueue(new QueueElement("http://www.pricerunner.dk/cl/35/Bundkort", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.pricerunner.dk/cl/40/CPU", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.pricerunner.dk/cl/37/Grafikkort", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.pricerunner.dk/cl/36/Harddiske", "")); 
             searchQueue.Enqueue(new QueueElement("http://www.pricerunner.dk/cl/186/Kabinetter", ""));
             searchQueue.Enqueue(new QueueElement("http://www.pricerunner.dk/cl/640/Stroemforsyninger", ""));
         }
@@ -52,7 +52,9 @@ namespace ReviewCrawler.Sites.Sub
         {
             bool isDone = false;
 
-            if (currentSite.Contains("sammenlign-priser"))
+            string tempSite = currentSite.ToLower();
+
+            if (tempSite.Contains("sammenlign-priser"))
             {
                 product = null;
             }
@@ -60,32 +62,32 @@ namespace ReviewCrawler.Sites.Sub
             if (product != null)
             {
             }
-            else if (currentSite.Contains("/grafikkort/"))
+            else if (tempSite.Contains("/grafikkort/"))
             {
                 //product is a "GPU"
                 product = new GPU();
             }
-            else if (currentSite.Contains("/cpu/"))
+            else if (tempSite.Contains("/cpu/"))
             {
                 //product is a "CPU"
                 product = new CPU();
             }
-            else if (currentSite.Contains("/bundkort/"))
+            else if (tempSite.Contains("/bundkort/"))
             {
                 //product is a "Motherboard"
                 product = new Motherboard();
             }
-            else if (currentSite.Contains("/harddiske/"))
+            else if (tempSite.Contains("/harddiske/"))
             {
                 //product is a "HardDrive"
                 product = new HardDrive();
             }
-            else if (currentSite.Contains("/kabinetter/"))
+            else if (tempSite.Contains("/kabinetter/"))
             {
                 //product is a "Chassis"
                 product = new Chassis();
             }
-            else if (currentSite.Contains("/stroemforsyninger/"))
+            else if (tempSite.Contains("/stroemforsyninger/"))
             {
                 //product is a "PSU"
                 product = new PSU();
@@ -95,7 +97,7 @@ namespace ReviewCrawler.Sites.Sub
                 throw new FormatException("Pricerunner - couldnt determine product type", null);
             }
 
-            if (currentSite.Contains("/pl/"))
+            if (tempSite.Contains("/pl/"))
             {
                 string retailerTag = "<a rel=\"nofollow\" title=\"\" target=\"_blank\" class=\"google-analytic-retailer-data pricelink\" retailer-data=\"";
 
@@ -108,7 +110,7 @@ namespace ReviewCrawler.Sites.Sub
                 //This means that the side contains prices
                 product.ParsePrice(siteData, pricerunnerParsePrice);
             }
-            else if (currentSite.Contains("/pi/"))
+            else if (tempSite.Contains("/pi/"))
             {
                 ProductSpecRegexes pricerunnerParseSpecs = new ProductSpecRegexes(
                     "<div class=\"product-specs\">.*?</tbody>",
@@ -119,6 +121,12 @@ namespace ReviewCrawler.Sites.Sub
                 //this means that te side contains product information
                 product.ParseProductSpecifications(siteData, pricerunnerParseSpecs);
                 isDone = true;
+
+                //for testing purposes only
+                if (this.GetType() == typeof(SitePriceRunner))
+                {
+                    MainWindow.pricerunner++;
+                }
 
             }
             else

@@ -25,18 +25,6 @@ namespace ReviewCrawler.Sites.Sub
         {
             return "";
         }
-        public override string GetSiteKey(string url)
-        {
-            /*for (int i = url.Length; i > 0; i--)
-            {
-                if (url[i] == ',')
-                {
-                    url = url.Remove(i, url.Length - i);
 
-                }
-            }
-            */
-            return url;
-        }
     }
 }

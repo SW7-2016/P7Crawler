@@ -194,6 +194,10 @@ namespace ReviewCrawler.Products.ProductComponents
             command.Parameters.AddWithValue("@width", Width);
 
             command.ExecuteNonQuery();
+
+            //Testing purposes only
+            MainWindow.pdHDD++;
+            //
         }
     }
 }

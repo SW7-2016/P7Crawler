@@ -167,6 +167,10 @@ namespace ReviewCrawler.Products.ProductComponents
             command.Parameters.AddWithValue("@brand", Brand);
 
             command.ExecuteNonQuery();
+
+            //Testing purposes only
+            MainWindow.pdPSU++;
+            //
         }
     }
 }
