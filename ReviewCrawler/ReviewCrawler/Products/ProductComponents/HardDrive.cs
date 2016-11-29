@@ -11,6 +11,8 @@ namespace ReviewCrawler.Products.ProductComponents
     class HardDrive : ComputerComponents
     {
         bool isInternal;
+        string model = "";
+        string series = "";
         string type = "";
         string formFactor = "";
         string capacity = "";
@@ -46,6 +48,12 @@ namespace ReviewCrawler.Products.ProductComponents
                         break;
                     case "formfaktor":
                         formFactor = info[1];
+                        break;
+                    case "model":
+                        model = info[1];
+                        break;
+                    case "produktlinje":
+                        series = info[1];
                         break;
                     case "form factor (kort)":
                         formFactor = info[1];
@@ -107,6 +115,16 @@ namespace ReviewCrawler.Products.ProductComponents
         public string Type
         {
             get { return type; }
+        }
+
+        public string Model
+        {
+            get { return model; }
+        }
+
+        public string Series
+        {
+            get { return series; }
         }
 
         public string FormFactor

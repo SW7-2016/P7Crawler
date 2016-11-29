@@ -11,6 +11,8 @@ namespace ReviewCrawler.Products.ProductComponents
     class Chassis : ComputerComponents
     {
         string type = "";
+        string series = "";
+        string model = "";
         bool atx;
         bool miniAtx;
         bool miniItx;
@@ -47,6 +49,12 @@ namespace ReviewCrawler.Products.ProductComponents
                         break;
                     case "blæsere":
                         fans = info[1];
+                        break;
+                    case "model":
+                        model = info[1];
+                        break;
+                    case "produktlinje":
+                        series = info[1];
                         break;
                     case "mærke":
                         if (info[2] == "0")
@@ -92,6 +100,16 @@ namespace ReviewCrawler.Products.ProductComponents
         public string Type
         {
             get { return type; }
+        }
+
+        public string Series
+        {
+            get { return series; }
+        }
+
+        public string Model
+        {
+            get { return model; }
         }
 
         public string Fans

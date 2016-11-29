@@ -40,7 +40,7 @@ namespace ReviewCrawler.Sites
 
             if (justStarted)
             {
-                LoadCrawlerState(connection);
+                //LoadCrawlerState(connection);
                 justStarted = false;
             }
 

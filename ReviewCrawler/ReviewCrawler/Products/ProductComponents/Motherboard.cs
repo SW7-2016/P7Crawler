@@ -12,6 +12,8 @@ namespace ReviewCrawler.Products.ProductComponents
     {
         string formFactor = "";
         string chipset = "";
+        string model = "";
+        string series = "";
         bool netCard;
         bool soundCard;
         bool graphicsCard;
@@ -33,6 +35,12 @@ namespace ReviewCrawler.Products.ProductComponents
                 {
                     case "formfaktor":
                         formFactor = info[1];
+                        break;
+                    case "model":
+                        model = info[1];
+                        break;
+                    case "produktlinje":
+                        series = info[1];
                         break;
                     case "form faktor":
                         formFactor = info[1];
@@ -122,6 +130,16 @@ namespace ReviewCrawler.Products.ProductComponents
         public string FormFactor
         {
             get { return formFactor; }
+        }
+
+        public string Model
+        {
+            get { return model; }
+        }
+
+        public string Series
+        {
+            get { return series; }
         }
 
         public string Chipset

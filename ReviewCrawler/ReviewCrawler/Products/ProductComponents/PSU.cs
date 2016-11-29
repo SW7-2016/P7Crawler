@@ -12,6 +12,8 @@ namespace ReviewCrawler.Products.ProductComponents
     {
         string power = "";
         string formFactor = "";
+        string model = "";
+        string series = "";
         bool modular;
         string brand = "";
         string height = "";
@@ -27,6 +29,12 @@ namespace ReviewCrawler.Products.ProductComponents
                 {
                     case "effekt":
                         power = info[1];
+                        break;
+                    case "model":
+                        model = info[1];
+                        break;
+                    case "produktlinje":
+                        series = info[1];
                         break;
                     case "strømforsyning":
                         power = info[1];
@@ -67,6 +75,22 @@ namespace ReviewCrawler.Products.ProductComponents
             get
             {
                 return power;
+            }
+        }
+
+        public string Model
+        {
+            get
+            {
+                return model;
+            }
+        }
+
+        public string Series
+        {
+            get
+            {
+                return series;
             }
         }
 

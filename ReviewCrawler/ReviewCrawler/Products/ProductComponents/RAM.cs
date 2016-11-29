@@ -10,6 +10,9 @@ namespace ReviewCrawler.Products.ProductComponents
     class RAM : ComputerComponents
     {
         private string type = "";
+        private string model = "";
+        private string series = "";
+        private string revision = "";
         private string capacity = "";
         private string speed = "";
         private string technology = "";
@@ -27,6 +30,12 @@ namespace ReviewCrawler.Products.ProductComponents
                     case "ram":
                         type = info[1];
                         break;
+                    case "revision":
+                        revision = info[1];
+                        break;
+                    case "produktlinje":
+                        series = info[1];
+                        break;
                     case "lagerkapacitet":
                         capacity = info[1];
                         break;
@@ -40,6 +49,10 @@ namespace ReviewCrawler.Products.ProductComponents
                         if (info[2] != "0")
                         {
                             formFactor = info[1];
+                        }
+                        else if (info[2] == "0")
+                        {
+                            model = info[1];
                         }
                         break;
                     case "cas latency (rotering)":
@@ -58,6 +71,30 @@ namespace ReviewCrawler.Products.ProductComponents
             get
             {
                 return type;
+            }
+        }
+
+        public string Model
+        {
+            get
+            {
+                return model;
+            }
+        }
+
+        public string Revision
+        {
+            get
+            {
+                return revision;
+            }
+        }
+
+        public string Series
+        {
+            get
+            {
+                return series;
             }
         }
 
