@@ -18,10 +18,9 @@ namespace ReviewCrawler.Sites.Sub
             domainUrl = "http://www.pricerunner.dk";
             //searchQueue.Enqueue(new QueueElement("http://www.pricerunner.dk/cl/35/Bundkort", ""));
             //searchQueue.Enqueue(new QueueElement("http://www.pricerunner.dk/cl/40/CPU", ""));
-            //searchQueue.Enqueue(new QueueElement("http://www.pricerunner.dk/cl/37/Grafikkort", ""));
             //searchQueue.Enqueue(new QueueElement("http://www.pricerunner.dk/cl/36/Harddiske", "")); 
-            searchQueue.Enqueue(new QueueElement("http://www.pricerunner.dk/cl/186/Kabinetter", ""));
-            searchQueue.Enqueue(new QueueElement("http://www.pricerunner.dk/cl/640/Stroemforsyninger", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.pricerunner.dk/cl/186/Kabinetter", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.pricerunner.dk/cl/640/Stroemforsyninger", ""));
         }
 
         public override void CrawlPage(string siteData, string sQueueData)

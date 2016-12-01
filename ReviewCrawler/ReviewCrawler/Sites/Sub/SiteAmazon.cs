@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using MySql.Data.MySqlClient;
 using ReviewCrawler.Helpers;
 using ReviewCrawler.Products.Reviews;
@@ -16,7 +17,7 @@ namespace ReviewCrawler.Sites.Sub
         public SiteAmazon()
         {
             domainUrl = "https://www.amazon.com";
-            searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_284822_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A284822&ie=UTF8&qid=1479384287&lo=computers","state1,GPU"));
+            //searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_284822_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A284822&ie=UTF8&qid=1479384287&lo=computers","state1,GPU"));
             searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_229189_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A229189&ie=UTF8&qid=1479457498&lo=computers", "state1,CPU"));
             //searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_1048424_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A1048424&ie=UTF8&qid=1479457799&lo=computers", "state1,Motherboard"));
             //searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_2248325011_il_ti_electronics?rh=n%3A172282%2Cn%3A%2113900871%2Cn%3A%212334091011%2Cn%3A%212334122011%2Cn%3A2248325011&ie=UTF8&qid=1479458095&lo=electronics", "state1,HDD"));
@@ -35,8 +36,9 @@ namespace ReviewCrawler.Sites.Sub
             if (queueData.Contains("state1"))
             {
                 //Gets match, without identifiers.
-                //nextPageLink = regexMatch(siteData, "class=\"pagnNext\"", "<span id=\"pagnNextString\">Next Page</span>");
-                //nextPageLink = regexMatch(nextPageLink, "href=\"", "\">");
+                
+                nextPageLink = regexMatch(siteData, "class=\"pagnNext\"", "<span id=\"pagnNextString\">Next Page</span>");
+                nextPageLink = regexMatch(nextPageLink, "href=\"", "\">");
 
                 if (nextPageLink != "")
                 {
@@ -91,7 +93,7 @@ namespace ReviewCrawler.Sites.Sub
                 {
                     itemQueue.Enqueue(new QueueElement(domainUrl + review, "state4," + tempProductType));
                 }
-                
+
             }
         }
 
@@ -132,6 +134,8 @@ namespace ReviewCrawler.Sites.Sub
             {
                 string[] tempSplit = temp.Split(new string[] { "of" }, StringSplitOptions.None);
 
+                tempSplit[0] = CheckForAndremoveComma(tempSplit[0]);
+                tempSplit[1] = CheckForAndremoveComma(tempSplit[1]);
                 review.positiveReception = int.Parse(tempSplit[0].Trim());
                 review.negativeReception = (int.Parse(tempSplit[1].Trim()) - int.Parse(tempSplit[0].Trim()));
             }
@@ -139,6 +143,18 @@ namespace ReviewCrawler.Sites.Sub
             {
                 review.negativeReception = 0;
                 review.positiveReception = 0;
+            }
+        }
+
+        private string CheckForAndremoveComma(string str)
+        {
+            if (str.Contains(","))
+            {
+                return str.Replace(",", "");
+            }
+            else
+            {
+                return str;
             }
         }
 

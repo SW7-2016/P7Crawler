@@ -184,6 +184,22 @@
                 </LinearGradientBrush>
             </TextBlock.Background>
         </TextBlock>
+        <TextBlock x:Name="techpowerup_tb" HorizontalAlignment="Left" Height="19" Margin="10,106,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="106">
+            <TextBlock.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF605D5D"/>
+                    <GradientStop Color="#FFC3C3C3" Offset="1"/>
+                </LinearGradientBrush>
+            </TextBlock.Background>
+        </TextBlock>
+        <TextBlock x:Name="computerShopper_tb" HorizontalAlignment="Left" Height="19" Margin="10,130,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="106">
+            <TextBlock.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF605D5D"/>
+                    <GradientStop Color="#FFC3C3C3" Offset="1"/>
+                </LinearGradientBrush>
+            </TextBlock.Background>
+        </TextBlock>
 
     </Grid>
 </Window>

@@ -19,12 +19,12 @@ namespace ReviewCrawler.Sites.Sub
         public SiteGuru3d()
         {
             domainUrl = "http://www.guru3d.com/";
-            //searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/videocards.html", ""));
-            //searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/processors.html", ""));
-            //searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/mainboards.html", ""));
-            //searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd).html", ""));
-            searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/pc-cases-and-modding.html", ""));
-            searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/psu-power-supply-units.html", ""));
+            searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/videocards.html", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/processors.html", "")); //Finished
+            //searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/mainboards.html", "")); //finished
+            //searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd).html", ""));   //Finished
+            //searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/pc-cases-and-modding.html", ""));        //Finished
+            //searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/psu-power-supply-units.html", ""));  //finished
         }
 
         public override void CrawlPage(string siteData, string sQueueData)
@@ -62,13 +62,18 @@ namespace ReviewCrawler.Sites.Sub
         private void CrawlReviewPages(string siteData, string productType)
         {
             string tempLink = "";
+            int totalPages = 0;
 
             if (currentSite.Contains(",1.html"))
             {
                 string siteNumber = Regex.Match(siteData, "<span class=\"pagelink\">.*? pages</span>").Value;
                 siteNumber = siteNumber.Replace("<span class=\"pagelink\">", "");
                 siteNumber = siteNumber.Replace(" pages</span>", "").Trim();
-                int totalPages = int.Parse(siteNumber);
+                if (siteNumber != "")
+                {
+                    totalPages = int.Parse(siteNumber);
+                }
+                
 
                 for (int i = 1; i <= totalPages; i++)
                 {
@@ -105,10 +110,6 @@ namespace ReviewCrawler.Sites.Sub
             {
                 return "CPU";
             }
-            else if (tempLink.Contains("articles-categories/soundcards-and-speakers"))
-            {
-                return "SoundCard";
-            }
             else if (tempLink.Contains("articles-categories/mainboards"))
             {
                 return "Motherboard";
@@ -125,10 +126,6 @@ namespace ReviewCrawler.Sites.Sub
             {
                 return "PSU";
             }
-            else if (tempLink.Contains("articles-categories/cooling"))
-            {
-                return "Cooling";
-            }
             else
             {
                 Debug.WriteLine("couldnt determine product type - GetProductType, guru3d");
@@ -140,7 +137,7 @@ namespace ReviewCrawler.Sites.Sub
         public override bool Parse(string siteData, string sQueueData)
         {
             string siteContentParsed = removeTagsFromReview(siteData);
-
+            
             if (!currentSite.Contains("articles-summary"))
             {
                 if (currentSite.Contains(",1.html"))
@@ -229,19 +226,34 @@ namespace ReviewCrawler.Sites.Sub
             temp = temp.Replace("</span>", "");
 
             string[] tempDate = temp.Split('/');
-
-            tempDate[2] = tempDate[2].Substring(0, 4);
-
-            if ((tempDate[0])[0] == '0')
+            if (tempDate.Length > 1)
             {
-                tempDate[0] = (tempDate[0])[1].ToString();
+                if (tempDate[2].Length > 3)
+                {
+                    tempDate[2] = tempDate[2].Substring(0, 4);
+                }
+                else
+                {
+                    return DateTime.Now;
+                }
+                
+
+                if ((tempDate[0])[0] == '0')
+                {
+                    tempDate[0] = (tempDate[0])[1].ToString();
+                }
+
+                int day = int.Parse(tempDate[1]);
+                int month = int.Parse(tempDate[0]);
+                int year = int.Parse(tempDate[2]);
+
+                date = new DateTime(year, month, day);
             }
-
-            int day = int.Parse(tempDate[1]);
-            int month = int.Parse(tempDate[0]);
-            int year = int.Parse(tempDate[2]);
-
-            date = new DateTime(year, month, day);
+            else
+            {
+                return DateTime.Now;
+            }
+            
 
             return date;
         }

@@ -48,6 +48,8 @@ namespace ReviewCrawler
         public static int edbpriser = 0;
         public static int pricerunner = 0;
         public static int amazon = 0;
+        public static int techpowerup =0;
+        public static int computershopper = 0;
 
 
         //
@@ -83,6 +85,8 @@ namespace ReviewCrawler
             edbpriser_tb.Text = "EdbPriser: " + edbpriser;
             pricerunner_tb.Text = "PriceRunner: " + pricerunner;
             guru3d_tb.Text = "Guru3d: " + guru3d;
+            techpowerup_tb.Text = "TechPU: " + techpowerup;
+            computerShopper_tb.Text = "CompSho: " + computershopper;
 
             rwCPU_tb.Text = "rwCPU: " + rwCPU;
             rwGPU_tb.Text = "rwGPU: " + rwGPU;
@@ -100,7 +104,7 @@ namespace ReviewCrawler
             pdMB_tb.Text = "pdMB: " + pdMB;
             pdChassis_tb.Text = "pdChas: " + pdCHASSIS;
 
-            totA_tb.Text = "Total: " + (amazon + edbpriser + pricerunner + guru3d);
+            totA_tb.Text = "Total: " + (amazon + edbpriser + pricerunner + guru3d + techpowerup + computershopper);
             totPD_tb.Text = "Total pd: " + (pdCHASSIS + pdCPU + pdGPU + pdHDD + pdMB + pdPSU + pdRAM);
             totRW_tb.Text = "Total rw: " + (rwCHASSIS + rwCPU + rwGPU + rwHDD + rwMB + rwPSU + rwRAM);
 
@@ -113,6 +117,7 @@ namespace ReviewCrawler
 
         private void stopCrawl_bt_Click(object sender, RoutedEventArgs e)
         {
+
             runFast = false;
         }
 
