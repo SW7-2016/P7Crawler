@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using ReviewCrawler.Products;
 using ReviewCrawler.Products.Reviews;
 using ReviewCrawler.Sites.Sub;
@@ -16,6 +17,8 @@ namespace ReviewCrawler.Sites
 {
     abstract class Host : HostInterface
     {
+        public List<BenchmarkElement> bList = new List<BenchmarkElement>(); ///REMOVE
+
         protected DateTime visitTimeStamp = DateTime.Now;
         protected DateTime robotsTimeStamp;
         protected string domainUrl = "";
@@ -25,6 +28,7 @@ namespace ReviewCrawler.Sites
         protected string currentSite;
         private bool justStarted = true;
         protected DateTime lastSave = DateTime.Now;
+        
 
         public abstract bool Parse(string siteData, string queueData);
         public abstract void CrawlPage(string siteData, string queueData);
@@ -38,12 +42,34 @@ namespace ReviewCrawler.Sites
             //bool startParse = false;
             string queueData = "";
 
-            if (justStarted )//&& this.GetType() !=typeof(SiteAmazon))// && this.GetType() != typeof(SiteTechPowerUp))
+            if (justStarted && this.GetType() !=typeof(SiteTechPowerUp))// && this.GetType() != typeof(SiteTechPowerUp))
             {
                 
                 LoadCrawlerState(connection);
                 justStarted = false;
             }
+           /* if (itemQueue.Count == 1 && searchQueue.Count == 0)
+            {
+                foreach (var item in bList)
+                {
+                    //benchItem.date == new DateTime(1900, 1, 1) || benchItem.price == -1 || benchItem.score == -1 || benchItem.scoreMoney == -1 || benchItem.title == ""
+                    if (item.date != new DateTime(1900, 1, 1) && item.scoreMoney != -1)
+                    {
+                        Debug.WriteLine(item.date.ToString("yyyy-MM-dd") + " " + item.scoreMoney);
+                    }
+                    
+                }
+                Debug.WriteLine("SPLIT");
+                foreach (var item in bList)
+                {
+                    //benchItem.date == new DateTime(1900, 1, 1) || benchItem.price == -1 || benchItem.score == -1 || benchItem.scoreMoney == -1 || benchItem.title == ""
+                    if (item.date != new DateTime(1900, 1, 1) && item.score != -1)
+                    {
+                        Debug.WriteLine(item.date.ToString("yyyy-MM-dd") + " " + item.score);
+                    }
+
+                }
+            }*/
 
             if (itemQueue.Count > 0)
             {
@@ -66,7 +92,7 @@ namespace ReviewCrawler.Sites
 
             if (AmIAllowed(currentSite))
             {
-                string siteData = GetSiteData(currentSite);
+                string siteData = GetSiteData(currentSite, isReview, queueData);
                 if (isReview)
                 {
                     isItemDone = Parse(siteData, queueData); //Parse information of review/product page.
@@ -236,7 +262,7 @@ namespace ReviewCrawler.Sites
             return true;
         }
         
-        public string GetSiteData(string siteUrl)
+        public string GetSiteData(string siteUrl, bool isReview, string queueData)
         {
             System.Net.WebClient wc = new System.Net.WebClient();
             wc.Proxy = null;
@@ -252,6 +278,15 @@ namespace ReviewCrawler.Sites
             catch (Exception E)
             {
                 Debug.WriteLine("failed to get data from: " + siteUrl);
+                if (isReview)
+                {
+                    itemQueue.Enqueue(new QueueElement(siteUrl, queueData));
+                }
+                else
+                {
+                    searchQueue.Enqueue(new QueueElement(siteUrl, queueData));
+                }
+                
             }
 
             return webData;

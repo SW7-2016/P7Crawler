@@ -19,13 +19,13 @@ namespace ReviewCrawler.Sites.Sub
             domainUrl = "https://www.techpowerup.com";
 
             //searchQueue.Enqueue(new QueueElement("https://www.techpowerup.com/reviews/?category=Power+Supplies&manufacturer=&pp=10000&order=date", "")); //finished
-            //searchQueue.Enqueue(new QueueElement("https://www.techpowerup.com/reviews/?category=Motherboards&manufacturer=&pp=10000&order=date", ""));
-            searchQueue.Enqueue(new QueueElement("https://www.techpowerup.com/reviews/?category=Processors&manufacturer=&pp=10000&order=date", "")); 
+            //searchQueue.Enqueue(new QueueElement("https://www.techpowerup.com/reviews/?category=Motherboards&manufacturer=&pp=10000&order=date", ""));//finished
+            //searchQueue.Enqueue(new QueueElement("https://www.techpowerup.com/reviews/?category=Processors&manufacturer=&pp=10000&order=date", "")); //finished
             //searchQueue.Enqueue(new QueueElement("https://www.techpowerup.com/reviews/?category=SSD&manufacturer=&pp=10000&order=date", "")); //Finished
             //searchQueue.Enqueue(new QueueElement("https://www.techpowerup.com/reviews/?category=External+HDDs&manufacturer=&pp=10000&order=date", "")); //finished
             //searchQueue.Enqueue(new QueueElement("https://www.techpowerup.com/reviews/?category=Memory&manufacturer=&pp=10000&order=date", "")); //finished
             //searchQueue.Enqueue(new QueueElement("https://www.techpowerup.com/reviews/?category=Cases&manufacturer=&pp=10000&order=date", ""));  //finished
-            searchQueue.Enqueue(new QueueElement("https://www.techpowerup.com/reviews/?category=Graphics+Cards&manufacturer=&pp=10000&order=date", ""));
+            //searchQueue.Enqueue(new QueueElement("https://www.techpowerup.com/reviews/?category=Graphics+Cards&manufacturer=&pp=10000&order=date", "")); //finished
         }
 
         public override void CrawlPage(string siteData, string sQueueData)

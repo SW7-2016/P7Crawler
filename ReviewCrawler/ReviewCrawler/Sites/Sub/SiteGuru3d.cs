@@ -19,7 +19,7 @@ namespace ReviewCrawler.Sites.Sub
         public SiteGuru3d()
         {
             domainUrl = "http://www.guru3d.com/";
-            searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/videocards.html", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/videocards.html", "")); //finished
             //searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/processors.html", "")); //Finished
             //searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/mainboards.html", "")); //finished
             //searchQueue.Enqueue(new QueueElement("http://www.guru3d.com/articles-categories/memory-(ddr2%7Cddr3)-and-storage-(hdd%7Cssd).html", ""));   //Finished

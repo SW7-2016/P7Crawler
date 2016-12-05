@@ -57,6 +57,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Crawler.cs" />
+    <Compile Include="Helpers\BenchmarkElement.cs" />
     <Compile Include="Helpers\ProductPriceRegexes.cs" />
     <Compile Include="Helpers\ProductSpecRegexes.cs" />
     <Compile Include="Helpers\QueueElement.cs" />
@@ -77,6 +78,8 @@
     <Compile Include="Sites\ProductSite.cs" />
     <Compile Include="Sites\ReviewSite.cs" />
     <Compile Include="Sites\Site.cs" />
+    <Compile Include="Sites\Sub\CPUBenchmark.cs" />
+    <Compile Include="Sites\Sub\GPUBenchmark.cs" />
     <Compile Include="Sites\Sub\SiteAmazon.cs" />
     <Compile Include="Sites\Sub\SiteComputerShopper.cs" />
     <Compile Include="Sites\Sub\SiteEdbPriser.cs" />

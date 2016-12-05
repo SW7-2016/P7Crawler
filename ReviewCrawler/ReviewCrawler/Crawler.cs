@@ -16,9 +16,12 @@ namespace ReviewCrawler
     class Crawler
     {
         public Queue<HostInterface> hostQueue = new Queue<HostInterface>();
+        public Queue<HostInterface> backHostQueue = new Queue<HostInterface>();
         public static Dictionary<string, Review> reviews = new Dictionary<string, Review>();
         public static Dictionary<string, Product> products = new Dictionary<string, Product>();
-        public MySqlConnection connection = new MySqlConnection("server=172.25.23.57;database=crawlerdb;user=crawler;port=3306;password=Crawler23!;");
+
+        public MySqlConnection connection =
+            new MySqlConnection("server=172.25.23.57;database=crawlerdb;user=crawler;port=3306;password=Crawler23!;");
 
         //picks a host and starts crawling it
         public void StartCrawl(object data)
@@ -34,9 +37,18 @@ namespace ReviewCrawler
 
                 if (PolitenessTimeCheck(currentHost.GetLastAccessTime()))
                 {
-                    //Starts crawling the host and returns a bool determining if the host has any more content to crawl
-                    isHostDone = currentHost.StartCycle(connection);
-                    currentHost.SetLastAccessTime(DateTime.Now);
+                    try
+                    {
+                        //Starts crawling the host and returns a bool determining if the host has any more content to crawl
+                        isHostDone = currentHost.StartCycle(connection);
+                        currentHost.SetLastAccessTime(DateTime.Now);
+                    }
+                    catch (Exception)
+                    {
+                        backHostQueue.Enqueue(currentHost);
+                        Debug.WriteLine("something went wrong with " + currentHost + ", while crawling");
+                    }
+                    
                 }
                 else
                 {
@@ -65,12 +77,15 @@ namespace ReviewCrawler
         public void AddHosts()
         {
 
-            //hostQueue.Enqueue(new SiteAmazon());
+            hostQueue.Enqueue(new SiteAmazon());
             //hostQueue.Enqueue(new SiteComputerShopper());
-            hostQueue.Enqueue(new SiteGuru3d());
+            //hostQueue.Enqueue(new SiteGuru3d());
             //hostQueue.Enqueue(new SitePriceRunner());
-            hostQueue.Enqueue(new SiteEdbPriser());
-            hostQueue.Enqueue(new SiteTechPowerUp());
+            //hostQueue.Enqueue(new SiteEdbPriser());
+            //hostQueue.Enqueue(new SiteTechPowerUp());
+           //hostQueue.Enqueue(new GPUBenchmark());
+            //hostQueue.Enqueue(new CPUBenchmark());
+
 
         }
 
@@ -78,7 +93,7 @@ namespace ReviewCrawler
         public bool PolitenessTimeCheck(DateTime lastAccessTime)
         {
 
-            if ((DateTime.Now - lastAccessTime).TotalSeconds > 3)
+            if ((DateTime.Now - lastAccessTime).TotalSeconds > 2)
             {
                 return true;
             }
