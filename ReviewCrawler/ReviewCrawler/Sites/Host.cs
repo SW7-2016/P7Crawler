@@ -43,7 +43,7 @@ namespace ReviewCrawler.Sites
             //bool startParse = false;
             string queueData = "";
 
-            if (justStarted && this.GetType() !=typeof(SiteTechPowerUp))// && this.GetType() != typeof(SiteTechPowerUp))
+            if (justStarted )//&& this.GetType() !=typeof(SiteEdbPriser) && this.GetType() != typeof(SitePriceRunner))
             {
                 
                 LoadCrawlerState(connection);
@@ -316,7 +316,7 @@ namespace ReviewCrawler.Sites
         {
             robotsTimeStamp = DateTime.Now;
             System.Net.WebClient webClient = new System.Net.WebClient();
-            webClient.Proxy = null;
+            webClient.Proxy = new WebProxy("94.177.240.66:3128");
             try
             {
                 byte[] rawWebData = webClient.DownloadData(domain + "/robots.txt");

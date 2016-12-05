@@ -10,13 +10,14 @@ using ReviewCrawler.Products;
 using ReviewCrawler.Products.Reviews;
 using System.Threading;
 using MySql.Data.MySqlClient;
+using ReviewCrawler.Helpers;
 
 namespace ReviewCrawler
 {
     class Crawler
     {
         public Queue<HostInterface> hostQueue = new Queue<HostInterface>();
-        public Queue<HostInterface> backHostQueue = new Queue<HostInterface>();
+        public List<HostInterface> backHostList = new List<HostInterface>();
         public static Dictionary<string, Review> reviews = new Dictionary<string, Review>();
         public static Dictionary<string, Product> products = new Dictionary<string, Product>();
 
@@ -45,7 +46,7 @@ namespace ReviewCrawler
                     }
                     catch (Exception)
                     {
-                        backHostQueue.Enqueue(currentHost);
+                        backHostList.Add(currentHost);
                         Debug.WriteLine("something went wrong with " + currentHost + ", while crawling");
                     }
                     
@@ -63,6 +64,7 @@ namespace ReviewCrawler
                     hostQueue.Enqueue(currentHost);
                 }
 
+                ReturnToHostQueue(backHostList);
 
                 //Stops if the hostQueue is empty
                 if (hostQueue.Count < 1)
@@ -76,17 +78,26 @@ namespace ReviewCrawler
         //Adds all the hosts to be crawled - do this at startup
         public void AddHosts()
         {
-
             hostQueue.Enqueue(new SiteAmazon());
             //hostQueue.Enqueue(new SiteComputerShopper());
             //hostQueue.Enqueue(new SiteGuru3d());
-            //hostQueue.Enqueue(new SitePriceRunner());
-            //hostQueue.Enqueue(new SiteEdbPriser());
+            hostQueue.Enqueue(new SitePriceRunner());
+            hostQueue.Enqueue(new SiteEdbPriser());
             //hostQueue.Enqueue(new SiteTechPowerUp());
-           //hostQueue.Enqueue(new GPUBenchmark());
+            //hostQueue.Enqueue(new GPUBenchmark());
             //hostQueue.Enqueue(new CPUBenchmark());
+        }
 
-
+        public void ReturnToHostQueue(List<HostInterface> hosts )
+        {
+            foreach (var host in hosts)
+            {
+                if ((DateTime.Now - host.GetLastAccessTime()).TotalMinutes > 10)
+                {
+                    hostQueue.Enqueue(host);
+                    hosts.Remove(host);
+                }
+            }
         }
 
         //Checks if more than two seconds have passed since 'lastAccessTime' and returns a bool

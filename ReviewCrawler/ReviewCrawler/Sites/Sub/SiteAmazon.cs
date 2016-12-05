@@ -84,7 +84,7 @@ namespace ReviewCrawler.Sites.Sub
                 nextPageLink = regexMatch(siteData, "<link rel=\"next\" href=\"", "\" />");
                 if (nextPageLink != "")
                 {
-                    //searchQueue.Enqueue(new QueueElement(domainUrl + nextPageLink, "state3," + tempProductType));
+                    searchQueue.Enqueue(new QueueElement(domainUrl + nextPageLink, "state3," + tempProductType));
                 }
                 
 
