@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -70,11 +71,10 @@ namespace ReviewCrawler
         {
             crawl.AddHosts();
 
-
+            Debug.WriteLine("Starting thread");
             Thread crawlerThread = new Thread(crawl.StartCrawl);
-
-
             crawlerThread.Start("hiiii");
+            Debug.WriteLine("Thread started and crawler is now running.");
 
 
         }

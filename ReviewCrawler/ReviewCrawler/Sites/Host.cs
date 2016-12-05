@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using ReviewCrawler.Products;
@@ -265,7 +266,8 @@ namespace ReviewCrawler.Sites
         public string GetSiteData(string siteUrl, bool isReview, string queueData)
         {
             System.Net.WebClient wc = new System.Net.WebClient();
-            wc.Proxy = null;
+            wc.Proxy = GetRandomProxy();
+            //wc.Proxy = null;
             byte[] raw;
             string webData = siteUrl + '\n';
 
@@ -290,6 +292,24 @@ namespace ReviewCrawler.Sites
             }
 
             return webData;
+        }
+
+        private WebProxy GetRandomProxy()
+        {
+            string filePath = @"Proxy\ProxyList.txt";
+            string[] allLines = File.ReadAllLines(filePath);
+
+            //Get random proxy from file
+            Random rnd1 = new Random();
+            string proxyAddress = allLines[rnd1.Next(allLines.Length)];
+
+            //split into ip and port
+            string[] address = proxyAddress.Split(':');
+            string ip = address[0];
+            int port = int.Parse(address[1]);
+
+            WebProxy proxy = new WebProxy("192.169.179.152", 8080);
+            return proxy;
         }
 
         private void GetRobotsTxt(string domain)
