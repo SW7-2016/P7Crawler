@@ -34,7 +34,15 @@ namespace ReviewCrawler
             while (running)
             {
                 isHostDone = false;
-                currentHost = hostQueue.Dequeue();
+                if (hostQueue.Count > 0)
+                {
+                    currentHost = hostQueue.Dequeue();
+                }
+                else
+                {
+                    break;
+                }
+                
 
                 if (PolitenessTimeCheck(currentHost.GetLastAccessTime()))
                 {
