@@ -48,6 +48,7 @@ namespace ReviewCrawler
                     {
                         backHostList.Add(currentHost);
                         Debug.WriteLine("something went wrong with " + currentHost + ", while crawling");
+                        continue;
                     }
                     
                 }
@@ -81,8 +82,8 @@ namespace ReviewCrawler
             hostQueue.Enqueue(new SiteAmazon());
             //hostQueue.Enqueue(new SiteComputerShopper());
             //hostQueue.Enqueue(new SiteGuru3d());
-            hostQueue.Enqueue(new SitePriceRunner());
-            hostQueue.Enqueue(new SiteEdbPriser());
+            //hostQueue.Enqueue(new SitePriceRunner());
+           // hostQueue.Enqueue(new SiteEdbPriser());
             //hostQueue.Enqueue(new SiteTechPowerUp());
             //hostQueue.Enqueue(new GPUBenchmark());
             //hostQueue.Enqueue(new CPUBenchmark());
