@@ -262,9 +262,7 @@ namespace ReviewCrawler.Sites
             }
 
             System.Net.WebClient wc = new System.Net.WebClient();
-            wc.Proxy = GetRandomProxy();
-            //wc.Proxy = null;
-            wc.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+            wc.Proxy = GetRandomProxy(); // <-------- set to null to disable proxy
             byte[] raw;
             string webData = siteUrl + '\n';
             try
@@ -324,7 +322,7 @@ namespace ReviewCrawler.Sites
         {
             robotsTimeStamp = DateTime.Now;
             System.Net.WebClient webClient = new System.Net.WebClient();
-            webClient.Proxy = GetRandomProxy();
+            webClient.Proxy = GetRandomProxy(); // <-------- set to null to disable proxy
             try
             {
                 byte[] rawWebData = webClient.DownloadData(domain + "/robots.txt");
