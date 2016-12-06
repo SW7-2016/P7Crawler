@@ -18,8 +18,6 @@ namespace ReviewCrawler.Sites
 {
     abstract class Host : HostInterface
     {
-        public List<BenchmarkElement> bList = new List<BenchmarkElement>(); ///REMOVE
-
         protected DateTime visitTimeStamp = DateTime.Now;
         protected DateTime robotsTimeStamp;
         protected string domainUrl = "";
@@ -49,28 +47,6 @@ namespace ReviewCrawler.Sites
                 LoadCrawlerState(connection);
                 justStarted = false;
             }
-           /* if (itemQueue.Count == 1 && searchQueue.Count == 0)
-            {
-                foreach (var item in bList)
-                {
-                    //benchItem.date == new DateTime(1900, 1, 1) || benchItem.price == -1 || benchItem.score == -1 || benchItem.scoreMoney == -1 || benchItem.title == ""
-                    if (item.date != new DateTime(1900, 1, 1) && item.scoreMoney != -1)
-                    {
-                        Debug.WriteLine(item.date.ToString("yyyy-MM-dd") + " " + item.scoreMoney);
-                    }
-                    
-                }
-                Debug.WriteLine("SPLIT");
-                foreach (var item in bList)
-                {
-                    //benchItem.date == new DateTime(1900, 1, 1) || benchItem.price == -1 || benchItem.score == -1 || benchItem.scoreMoney == -1 || benchItem.title == ""
-                    if (item.date != new DateTime(1900, 1, 1) && item.score != -1)
-                    {
-                        Debug.WriteLine(item.date.ToString("yyyy-MM-dd") + " " + item.score);
-                    }
-
-                }
-            }*/
 
             if (itemQueue.Count > 0)
             {
@@ -266,8 +242,8 @@ namespace ReviewCrawler.Sites
         public string GetSiteData(string siteUrl, bool isReview, string queueData)
         {
             System.Net.WebClient wc = new System.Net.WebClient();
-            wc.Proxy = GetRandomProxy();
-            //wc.Proxy = null;
+            //wc.Proxy = GetRandomProxy();
+            wc.Proxy = null;
             byte[] raw;
             string webData = siteUrl + '\n';
 

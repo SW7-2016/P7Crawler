@@ -19,7 +19,7 @@ namespace ReviewCrawler.Sites.Sub
             //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/ram.aspx?count=5&sort=Popularity&rlm=List", ""));
             //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/bundkort.aspx?count=5&sort=Popularity&rlm=List", "")); //Finished
             //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/harddisk.aspx?count=5&sort=Popularity&rlm=List", "")); //finished
-            searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/processor.aspx?count=5&sort=Popularity&rlm=List", ""));
+            //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/processor.aspx?count=5&sort=Popularity&rlm=List", ""));
             searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/grafikkort.aspx?count=5&sort=Popularity&rlm=List", ""));
             //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/kabinet.aspx?count=5&sort=Popularity&rlm=List", "")); //finished
             //searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/stroemforsyning.aspx?count=5&sort=Popularity&rlm=List", ""));
