@@ -238,12 +238,28 @@ namespace ReviewCrawler.Sites
 
             return true;
         }
+
+        private string AmazonFixTest(string link)
+        {
+            if (link.Contains("ref="))
+            {
+                Regex regexHtml = new Regex("ref=.*?", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                link = regexHtml.Replace(link, "");
+            }
+            return link;
+        }
         
         public string GetSiteData(string siteUrl, bool isReview, string queueData)
         {
+            if (this.GetType() == typeof(SiteAmazon))
+            {
+                siteUrl = AmazonFixTest(siteUrl);
+            }
+
             System.Net.WebClient wc = new System.Net.WebClient();
             //wc.Proxy = GetRandomProxy();
             wc.Proxy = null;
+            wc.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
             byte[] raw;
             string webData = siteUrl + '\n';
 
@@ -292,7 +308,7 @@ namespace ReviewCrawler.Sites
         {
             robotsTimeStamp = DateTime.Now;
             System.Net.WebClient webClient = new System.Net.WebClient();
-            webClient.Proxy = new WebProxy("94.177.240.66:3128");
+            webClient.Proxy = null;
             try
             {
                 byte[] rawWebData = webClient.DownloadData(domain + "/robots.txt");

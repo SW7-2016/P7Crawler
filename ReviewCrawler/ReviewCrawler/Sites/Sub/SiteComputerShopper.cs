@@ -17,10 +17,10 @@ namespace ReviewCrawler.Sites.Sub
         public SiteComputerShopper()
         {
             domainUrl = "http://www.computershopper.com";
-            //searchQueue.Enqueue(new QueueElement("http://www.computershopper.com/components/graphics-card/reviews", "GPU")); //finished
-            //searchQueue.Enqueue(new QueueElement("http://www.computershopper.com/components/processor/reviews", "CPU")); //finished
-            //searchQueue.Enqueue(new QueueElement("http://www.computershopper.com/components/motherboard/reviews", "Motherboard")); //finished
-            //searchQueue.Enqueue(new QueueElement("http://www.computershopper.com/components/pc-case/reviews", "Chassis")); //finished
+            searchQueue.Enqueue(new QueueElement("http://www.computershopper.com/components/graphics-card/reviews", "GPU")); //finished
+            searchQueue.Enqueue(new QueueElement("http://www.computershopper.com/components/processor/reviews", "CPU")); //finished
+            searchQueue.Enqueue(new QueueElement("http://www.computershopper.com/components/motherboard/reviews", "Motherboard")); //finished
+            searchQueue.Enqueue(new QueueElement("http://www.computershopper.com/components/pc-case/reviews", "Chassis")); //finished
         }
 
         public override void CrawlPage(string siteData, string sQueueData)
