@@ -241,10 +241,12 @@ namespace ReviewCrawler.Sites
 
         private string AmazonFixTest(string link)
         {
+
             if (link.Contains("ref="))
             {
-                Regex regexHtml = new Regex("ref=.*?", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-                link = regexHtml.Replace(link, "");
+                int index = link.IndexOf("ref=");
+                if (index > 0)
+                    link = link.Substring(0, index);
             }
             return link;
         }
