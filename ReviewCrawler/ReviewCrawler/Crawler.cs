@@ -87,12 +87,12 @@ namespace ReviewCrawler
         //Adds all the hosts to be crawled - do this at startup
         public void AddHosts()
         {
-            //hostQueue.Enqueue(new SiteAmazon());
-            hostQueue.Enqueue(new SiteComputerShopper());
-            hostQueue.Enqueue(new SiteGuru3d());
-            hostQueue.Enqueue(new SitePriceRunner());
-            hostQueue.Enqueue(new SiteEdbPriser());
-            hostQueue.Enqueue(new SiteTechPowerUp());
+            hostQueue.Enqueue(new SiteAmazon());
+            //hostQueue.Enqueue(new SiteComputerShopper());
+            //hostQueue.Enqueue(new SiteGuru3d());
+            //hostQueue.Enqueue(new SitePriceRunner());
+            //hostQueue.Enqueue(new SiteEdbPriser());
+            //hostQueue.Enqueue(new SiteTechPowerUp());
 
         }
 
