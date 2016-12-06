@@ -17,7 +17,6 @@ namespace ReviewCrawler
     class Crawler
     {
         public Queue<HostInterface> hostQueue = new Queue<HostInterface>();
-        public List<HostInterface> backHostList = new List<HostInterface>();
         public static Dictionary<string, Review> reviews = new Dictionary<string, Review>();
         public static Dictionary<string, Product> products = new Dictionary<string, Product>();
 
@@ -52,11 +51,19 @@ namespace ReviewCrawler
                         isHostDone = currentHost.StartCycle(connection);
                         currentHost.SetLastAccessTime(DateTime.Now);
                     }
-                    catch (Exception)
+                    catch (Exception E)
                     {
-                        backHostList.Add(currentHost);
-                        Debug.WriteLine("something went wrong with " + currentHost + ", while crawling");
-                        continue;
+                        Debug.WriteLine("something went wrong with " + currentHost + ", while crawling:" + E);
+                        if (hostQueue.Count > 0)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            Debug.WriteLine("The crawler has stopped");
+                            break;
+                        }
+                        
                     }
                     
                 }
@@ -73,13 +80,11 @@ namespace ReviewCrawler
                     hostQueue.Enqueue(currentHost);
                 }
 
-                ReturnToHostQueue(backHostList);
-
                 //Stops if the hostQueue is empty
                 if (hostQueue.Count < 1)
                 {
                     running = false;
-                    Debug.WriteLine("I am done");
+                    Debug.WriteLine("The crawler is finished");
                 }
             }
         }
@@ -94,18 +99,6 @@ namespace ReviewCrawler
             //hostQueue.Enqueue(new SiteEdbPriser());
             //hostQueue.Enqueue(new SiteTechPowerUp());
 
-        }
-
-        public void ReturnToHostQueue(List<HostInterface> hosts )
-        {
-            foreach (var host in hosts)
-            {
-                if ((DateTime.Now - host.GetLastAccessTime()).TotalMinutes > 10)
-                {
-                    hostQueue.Enqueue(host);
-                    hosts.Remove(host);
-                }
-            }
         }
 
         //Checks if more than two seconds have passed since 'lastAccessTime' and returns a bool
