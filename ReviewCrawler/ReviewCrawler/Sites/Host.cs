@@ -22,12 +22,15 @@ namespace ReviewCrawler.Sites
         protected DateTime robotsTimeStamp;
         protected string domainUrl = "";
         private List<string> disallow = new List<string>();
-        protected Queue<QueueElement> itemQueue = new Queue<QueueElement>(); //itemQueue refers to products/reviews depending on the site
+
+        protected Queue<QueueElement> itemQueue = new Queue<QueueElement>();
+            //itemQueue refers to products/reviews depending on the site
+
         protected Queue<QueueElement> searchQueue = new Queue<QueueElement>();
         protected string currentSite;
         private bool justStarted = true;
         protected DateTime lastSave = DateTime.Now;
-        
+
 
         public abstract bool Parse(string siteData, string queueData);
         public abstract void CrawlPage(string siteData, string queueData);
@@ -41,9 +44,9 @@ namespace ReviewCrawler.Sites
             //bool startParse = false;
             string queueData = "";
 
-            if (justStarted )//&& this.GetType() !=typeof(SiteEdbPriser) && this.GetType() != typeof(SitePriceRunner))
+            if (justStarted) //&& this.GetType() !=typeof(SiteEdbPriser) && this.GetType() != typeof(SitePriceRunner))
             {
-                
+
                 LoadCrawlerState(connection);
                 justStarted = false;
             }
@@ -83,14 +86,14 @@ namespace ReviewCrawler.Sites
             {
                 Debug.WriteLine("Robot.txt disallow this site: " + currentSite);
             }
-            
-            if (isItemDone)//If a review or product was just "completed" then add it to DB
+
+            if (isItemDone) //If a review or product was just "completed" then add it to DB
             {
-                
+
                 connection.Open();
                 AddItemToDatabase(connection);
                 connection.Close();
-                if (!MainWindow.runFast  || (DateTime.Now - lastSave).TotalMinutes > 10)
+                if (!MainWindow.runFast || (DateTime.Now - lastSave).TotalMinutes > 10)
                 {
                     SaveCrawlerState(connection);
                     if (!MainWindow.runFast)
@@ -125,18 +128,18 @@ namespace ReviewCrawler.Sites
 
             string queue = "";
             QueueElement tempElement;
-            
+
             while (searchQueue.Count > 0)
             {
                 tempElement = searchQueue.Dequeue();
-                queue +=  (tempElement.url + "%%%##%##" + tempElement.data + "#%&/#");
+                queue += (tempElement.url + "%%%##%##" + tempElement.data + "#%&/#");
                 tempQueue.Enqueue(tempElement);
             }
             while (tempQueue.Count > 0)
             {
                 searchQueue.Enqueue(tempQueue.Dequeue());
             }
-            
+
             queue += "%%&&##";
             while (itemQueue.Count > 0)
             {
@@ -186,28 +189,28 @@ namespace ReviewCrawler.Sites
             MySqlDataReader reader = command.ExecuteReader();
             searchQueue.Clear();
             itemQueue.Clear();
-            
+
             if (reader.Read())
             {
-                string queue = (string)reader.GetValue(1);
-                string[] queueSplit = queue.Split(new string[] { "%%&&##" }, StringSplitOptions.None);
-                string[] sQueue = queueSplit[0].Split(new string[] { "#%&/#" }, StringSplitOptions.None);
-                string[] iQueue = queueSplit[1].Split(new string[] { "#%&/#" }, StringSplitOptions.None);
+                string queue = (string) reader.GetValue(1);
+                string[] queueSplit = queue.Split(new string[] {"%%&&##"}, StringSplitOptions.None);
+                string[] sQueue = queueSplit[0].Split(new string[] {"#%&/#"}, StringSplitOptions.None);
+                string[] iQueue = queueSplit[1].Split(new string[] {"#%&/#"}, StringSplitOptions.None);
 
                 for (int i = 0; i < sQueue.Length - 1; i++)
                 {
-                    string[] sSplitTemp = sQueue[i].Split(new string[] { "%%%##%##" }, StringSplitOptions.None);
+                    string[] sSplitTemp = sQueue[i].Split(new string[] {"%%%##%##"}, StringSplitOptions.None);
                     searchQueue.Enqueue(new QueueElement(sSplitTemp[0], sSplitTemp[1]));
                 }
                 for (int i = 0; i < iQueue.Length - 1; i++)
                 {
-                    string[] iSplitTemp = iQueue[i].Split(new string[] { "%%%##%##" }, StringSplitOptions.None);
+                    string[] iSplitTemp = iQueue[i].Split(new string[] {"%%%##%##"}, StringSplitOptions.None);
                     itemQueue.Enqueue(new QueueElement(iSplitTemp[0], iSplitTemp[1]));
                 }
             }
             reader.Close();
             connection.Close();
-    }
+        }
 
         public DateTime GetLastAccessTime()
         {
@@ -250,7 +253,7 @@ namespace ReviewCrawler.Sites
             }
             return link;
         }
-        
+
         public string GetSiteData(string siteUrl, bool isReview, string queueData)
         {
             if (this.GetType() == typeof(SiteAmazon))
@@ -259,12 +262,11 @@ namespace ReviewCrawler.Sites
             }
 
             System.Net.WebClient wc = new System.Net.WebClient();
-            //wc.Proxy = GetRandomProxy();
-            wc.Proxy = null;
-            wc.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
+            wc.Proxy = GetRandomProxy();
+            //wc.Proxy = null;
+            wc.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
             byte[] raw;
             string webData = siteUrl + '\n';
-
             try
             {
                 raw = wc.DownloadData(siteUrl);
@@ -282,7 +284,7 @@ namespace ReviewCrawler.Sites
                 {
                     searchQueue.Enqueue(new QueueElement(siteUrl, queueData));
                 }
-                
+
             }
 
             return webData;
@@ -290,27 +292,39 @@ namespace ReviewCrawler.Sites
 
         private WebProxy GetRandomProxy()
         {
-            string filePath = @"Proxy\ProxyList.txt";
-            string[] allLines = File.ReadAllLines(filePath);
+            try
+            {
+                string filePath = @"Proxy\ProxyList.txt";
+                string[] allLines = File.ReadAllLines(filePath);
 
-            //Get random proxy from file
-            Random rnd1 = new Random();
-            string proxyAddress = allLines[rnd1.Next(allLines.Length)];
+                //Get random proxy from file
+                Random rnd1 = new Random();
+                string proxyAddress = allLines[rnd1.Next(allLines.Length)];
 
-            //split into ip and port
-            string[] address = proxyAddress.Split(':');
-            string ip = address[0];
-            int port = int.Parse(address[1]);
+                //split into ip and port
+                string[] address = proxyAddress.Split(':');
+                string ip = address[0];
+                int port = int.Parse(address[1]);
 
-            WebProxy proxy = new WebProxy("192.169.179.152", 8080);
-            return proxy;
+                NetworkCredential cred = new NetworkCredential("US221994", "kyMfbgBPpF");
+                WebProxy proxy = new WebProxy(proxyAddress, false, null, cred);
+                Debug.WriteLine("Using proxy " + proxyAddress);
+                return proxy;
+
+
+            }
+            catch (Exception)
+            {
+                    
+                throw;
+            }
         }
 
         private void GetRobotsTxt(string domain)
         {
             robotsTimeStamp = DateTime.Now;
             System.Net.WebClient webClient = new System.Net.WebClient();
-            webClient.Proxy = null;
+            webClient.Proxy = GetRandomProxy();
             try
             {
                 byte[] rawWebData = webClient.DownloadData(domain + "/robots.txt");
