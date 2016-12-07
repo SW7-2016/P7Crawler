@@ -17,8 +17,6 @@ namespace ReviewCrawler.Products.Reviews
         public DateTime crawlDate;
         public string content;
         public double productRating;
-        public List<string> pros;
-        public List<string> cons;
         public string author;
         public string url;
         public List<ReviewComment> comments = new List<ReviewComment>();

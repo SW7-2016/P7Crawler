@@ -104,7 +104,6 @@ namespace ReviewCrawler.Sites.Sub
 
         public override bool Parse(string siteData, string queueData)
         {
-
             string siteContentParsed = regexMatch(siteData, "<div class=\"reviewText\">", "</div>");
             siteContentParsed = TagRemoval(siteContentParsed);
 

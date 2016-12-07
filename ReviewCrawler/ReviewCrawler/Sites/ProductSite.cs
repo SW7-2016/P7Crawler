@@ -11,7 +11,6 @@ namespace ReviewCrawler.Sites
     abstract class ProductSite : Site
     {
         public Product product;
-
         public override abstract bool Parse(string siteData, string sQueueData);
         public override abstract void Crawl(string siteData, string sQueueData);
 

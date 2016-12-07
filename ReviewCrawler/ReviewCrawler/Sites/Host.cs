@@ -283,7 +283,7 @@ namespace ReviewCrawler.Sites
             }
             catch (Exception E)
             {
-                Debug.WriteLine("failed to get data from: " + siteUrl);
+                Debug.WriteLine("failed to get data from: " + siteUrl + " - " + E);
                 if (isContentSite) //requeues the item since this usually happens because of a connection error
                 {
                     itemQueue.Enqueue(new QueueElement(siteUrl, queueData));

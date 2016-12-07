@@ -16,8 +16,8 @@ namespace ReviewCrawler.Sites
         public override abstract bool Parse(string siteData, string sQueueData);
         public override abstract void Crawl(string siteData, string sQueueData);
         public abstract string GetProductType(string tempLink);
-        //public abstract string GetSiteKey(string url);
 
+        //Removes tags and other html parts from a string + only keeps what is within <p> <\p>
         public string removeTagsFromReview(string siteData)
         {
             string tempString = "";
@@ -33,7 +33,7 @@ namespace ReviewCrawler.Sites
 
             return tempString;
         }
-
+        //Removes tags and other html parts from a string 
         public string TagRemoval(string tempString)
         {
             Regex newlineAdd = new Regex("<br />", RegexOptions.Singleline | RegexOptions.IgnoreCase);

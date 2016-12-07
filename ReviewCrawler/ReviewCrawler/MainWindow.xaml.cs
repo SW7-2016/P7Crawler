@@ -27,10 +27,8 @@ namespace ReviewCrawler
     public partial class MainWindow : Window
     {
         public static bool ContinueCrawling = true;
-        Crawler crawl = new Crawler();
-
-
-        //GUI TEST PURPOSES
+        Crawler crawler = new Crawler();
+        //GUI TEST PURPOSES ONLY
         public static int rwGPU = 0;
         public static int rwCPU = 0;
         public static int rwMB = 0;
@@ -51,32 +49,26 @@ namespace ReviewCrawler
         public static int amazon = 0;
         public static int techpowerup =0;
         public static int computershopper = 0;
-
-
         //
 
         public MainWindow()
         {
-
             DispatcherTimer dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += dispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 500);
             dispatcherTimer.Start();
-
 
             InitializeComponent();
         }
 
         private void crawl_bt_Click(object sender, RoutedEventArgs e)
         {
-            crawl.AddHosts();
+            crawler.AddHosts();
 
             Debug.WriteLine("Starting thread");
-            Thread crawlerThread = new Thread(crawl.StartCrawlCycle);
-            crawlerThread.Start("hiiii");
+            Thread crawlerThread = new Thread(crawler.StartCrawlCycle);
+            crawlerThread.Start("");
             Debug.WriteLine("Thread started and crawler is now running.");
-
-
         }
 
         private void UpdateGUI()
@@ -107,12 +99,6 @@ namespace ReviewCrawler
             totA_tb.Text = "Total: " + (amazon + edbpriser + pricerunner + guru3d + techpowerup + computershopper);
             totPD_tb.Text = "Total pd: " + (pdCHASSIS + pdCPU + pdGPU + pdHDD + pdMB + pdPSU + pdRAM);
             totRW_tb.Text = "Total rw: " + (rwCHASSIS + rwCPU + rwGPU + rwHDD + rwMB + rwPSU + rwRAM);
-
-        }
-
-        private void sendDataTest_bt_Click(object sender, RoutedEventArgs e)
-        {
-            //UpdateGUI();
         }
 
         private void stopCrawl_bt_Click(object sender, RoutedEventArgs e)
@@ -121,12 +107,9 @@ namespace ReviewCrawler
             ContinueCrawling = false;
         }
 
-
-
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
             UpdateGUI();
-
         }
     }
 }

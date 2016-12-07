@@ -30,7 +30,6 @@ namespace ReviewCrawler.Sites.Sub
 
         public override void Crawl(string siteData, string sQueueData)
         {
-            string tempLink = "";
             string link = "";
             int totalPages = 0;
             string score = "";
