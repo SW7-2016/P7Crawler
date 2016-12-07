@@ -28,7 +28,7 @@ namespace ReviewCrawler.Sites.Sub
         }
 
 
-        public override void CrawlPage(string siteData, string sQueueData)
+        public override void Crawl(string siteData, string sQueueData)
         {
 
             //finding next page of the review overview

@@ -16,62 +16,47 @@ namespace ReviewCrawler
 {
     class Crawler
     {
-        public Queue<HostInterface> hostQueue = new Queue<HostInterface>();
-        public static Dictionary<string, Review> reviews = new Dictionary<string, Review>();
-        public static Dictionary<string, Product> products = new Dictionary<string, Product>();
-
-        public MySqlConnection connection =
+        private Queue<HostInterface> hostQueue = new Queue<HostInterface>(); //Contains all the different hosts
+        private MySqlConnection connection =
             new MySqlConnection("server=172.25.23.57;database=crawlerdb;user=crawler;port=3306;password=Crawler23!;");
 
-        //picks a host and starts crawling it
-        public void StartCrawl(object data)
+        //Picks a host and starts crawling it
+        public void StartCrawlCycle(object data)
         {
             bool running = true;
-            bool isHostDone = false;
             HostInterface currentHost;
 
             while (running)
             {
-                isHostDone = false;
-                if (hostQueue.Count > 0)
+                bool isHostDone = false;
+                if (hostQueue.Count > 0) //Makes sure that the crawler only continues if the host queue isn't empty
                 {
-                    currentHost = hostQueue.Dequeue();
+                    currentHost = hostQueue.Dequeue(); //Dequeues the next host
                 }
                 else
                 {
+                    Debug.WriteLine("The crawler has stopped");
                     break;
                 }
-                
-
+                //Checks if enough time has passed since last visit to this host
                 if (PolitenessTimeCheck(currentHost.GetLastAccessTime()))
                 {
                     try
                     {
                         //Starts crawling the host and returns a bool determining if the host has any more content to crawl
-                        isHostDone = currentHost.StartCycle(connection);
-                        currentHost.SetLastAccessTime(DateTime.Now);
+                        isHostDone = currentHost.CrawlParseCycle(connection);
+                        currentHost.SetLastAccessTime(DateTime.Now); //updates last access time
                     }
                     catch (Exception E)
                     {
                         Debug.WriteLine("something went wrong with " + currentHost + ", while crawling:" + E);
-                        if (hostQueue.Count > 0)
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            Debug.WriteLine("The crawler has stopped");
-                            break;
-                        }
-                        
+                        continue;
                     }
-                    
                 }
-                else
+                else //if politeness is not satisfied
                 {
                     hostQueue.Enqueue(currentHost);
-                    isHostDone = true; // to avoid enqueing twice
-                    Thread.Sleep(50);
+                    isHostDone = true; //to avoid enqueing the host again in the if statement below
                 }
 
                 //Requeues the host if it has more pages to be crawled
@@ -89,7 +74,7 @@ namespace ReviewCrawler
             }
         }
 
-        //Adds all the hosts to be crawled - do this at startup
+        //Adds all the hosts to be crawled
         public void AddHosts()
         {
             hostQueue.Enqueue(new SiteAmazon());
@@ -98,13 +83,11 @@ namespace ReviewCrawler
             //hostQueue.Enqueue(new SitePriceRunner());
             //hostQueue.Enqueue(new SiteEdbPriser());
             //hostQueue.Enqueue(new SiteTechPowerUp());
-
         }
 
         //Checks if more than two seconds have passed since 'lastAccessTime' and returns a bool
         public bool PolitenessTimeCheck(DateTime lastAccessTime)
         {
-
             if ((DateTime.Now - lastAccessTime).TotalSeconds > 2)
             {
                 return true;

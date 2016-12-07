@@ -26,7 +26,7 @@ namespace ReviewCrawler
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static bool runFast = true;
+        public static bool ContinueCrawling = true;
         Crawler crawl = new Crawler();
 
 
@@ -72,7 +72,7 @@ namespace ReviewCrawler
             crawl.AddHosts();
 
             Debug.WriteLine("Starting thread");
-            Thread crawlerThread = new Thread(crawl.StartCrawl);
+            Thread crawlerThread = new Thread(crawl.StartCrawlCycle);
             crawlerThread.Start("hiiii");
             Debug.WriteLine("Thread started and crawler is now running.");
 
@@ -118,7 +118,7 @@ namespace ReviewCrawler
         private void stopCrawl_bt_Click(object sender, RoutedEventArgs e)
         {
 
-            runFast = false;
+            ContinueCrawling = false;
         }
 
 

@@ -9,7 +9,7 @@ namespace ReviewCrawler.Sites
 {
     interface HostInterface
     {
-        bool StartCycle(MySqlConnection connection);
+        bool CrawlParseCycle(MySqlConnection connection);
         DateTime GetLastAccessTime();
         void SetLastAccessTime(DateTime newTime);
     }

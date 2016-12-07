@@ -11,6 +11,7 @@ using ReviewCrawler.Products;
 using ReviewCrawler.Products.Reviews;
 using ReviewCrawler.Sites.Sub;
 using System.Text.RegularExpressions;
+using System.Windows.Media.Animation;
 using MySql.Data.MySqlClient;
 using ReviewCrawler.Helpers;
 
@@ -18,68 +19,59 @@ namespace ReviewCrawler.Sites
 {
     abstract class Host : HostInterface
     {
-        protected DateTime visitTimeStamp = DateTime.Now;
-        protected DateTime robotsTimeStamp;
+        private DateTime visitTimeStamp = DateTime.Now; //Last visit to this host
+        private DateTime robotsTimeStamp; //Last time robots.txt was checked
         protected string domainUrl = "";
         private List<string> disallow = new List<string>();
-
-        protected Queue<QueueElement> itemQueue = new Queue<QueueElement>();
-            //itemQueue refers to products/reviews depending on the site
-
-        protected Queue<QueueElement> searchQueue = new Queue<QueueElement>();
-        protected string currentSite;
-        private bool justStarted = true;
-        protected DateTime lastSave = DateTime.Now;
-
-
+        protected Queue<QueueElement> itemQueue = new Queue<QueueElement>();//itemQueue refers to products/reviews depending on the site
+        protected Queue<QueueElement> searchQueue = new Queue<QueueElement>();//Contains intermediate links between reviews/products
+        protected string currentSite; //url of the currently selected site
+        private bool justStarted = true; //Used to check if this is first runthrough of  
+        protected DateTime lastSave = DateTime.Now; //last time this hosts state was saved
+        
         public abstract bool Parse(string siteData, string queueData);
-        public abstract void CrawlPage(string siteData, string queueData);
+        public abstract void Crawl(string siteData, string queueData);
         public abstract void AddItemToDatabase(MySqlConnection connection);
 
-        public bool StartCycle(MySqlConnection connection)
+        //Called from crawler.cs, represents one crawl/parse cycle
+        public bool CrawlParseCycle(MySqlConnection connection)
         {
-            bool isReview = false;
+            bool isContentSite; //Does the current subSite need to be parsed? else crawl
             bool isItemDone = false;
-            QueueElement tempElement;
-            //bool startParse = false;
-            string queueData = "";
+            QueueElement subSite; //Represents an item from searchqueue or itemqueue (url + extra data field)
+            string currentSiteData;
 
-            if (justStarted) //&& this.GetType() !=typeof(SiteEdbPriser) && this.GetType() != typeof(SitePriceRunner))
+            if (justStarted) //is this the first crawlparse cycle this session for the current host
             {
-
-                LoadCrawlerState(connection);
+                LoadCrawlerState(connection); //Loads last saved state of this host from db
                 justStarted = false;
             }
 
-            if (itemQueue.Count > 0)
+            subSite = GetNextSubSite(out isContentSite); //this method also sets "isContentSite" to true or false
+            if (subSite != null)
             {
-                isReview = true;
-                tempElement = itemQueue.Dequeue();
-                currentSite = tempElement.url;
-                queueData = tempElement.data;
-            }
-            else if (searchQueue.Count > 0)
-            {
-                isReview = false;
-                tempElement = searchQueue.Dequeue();
-                currentSite = tempElement.url;
-                queueData = tempElement.data;
+                currentSite = subSite.url;
+                currentSiteData = subSite.data;
             }
             else
             {
-                return true;
+                return true; //if no more items are left in itemqueue and searchqueue 
             }
-
-            if (AmIAllowed(currentSite))
+            
+            if (AmIAllowed(currentSite)) //checks the list extracted from robot.txt if the current link is dissallowed by the host
             {
-                string siteData = GetSiteData(currentSite, isReview, queueData);
-                if (isReview)
+                string siteData = GetSiteData(currentSite, isContentSite, currentSiteData); //Gets data from site
+                if (siteData.Length < 50)  ///REEEEEEEEEMOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOVEEEEE
                 {
-                    isItemDone = Parse(siteData, queueData); //Parse information of review/product page.
+                    return false;
+                }                          ///REEEEEEEEEMOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOVEEEEE
+                if (isContentSite) //Does sitedata need to be parsed?
+                {
+                    isItemDone = Parse(siteData, currentSiteData); //Parse information of review/product page. Returns true if the current product/review has been completed
                 }
-                else
+                else //sitedata needs to be crawled
                 {
-                    CrawlPage(siteData, queueData); //Crawl for new reviews.
+                    Crawl(siteData, currentSiteData); //Crawl for new reviews.
                 }
             }
             else
@@ -89,24 +81,43 @@ namespace ReviewCrawler.Sites
 
             if (isItemDone) //If a review or product was just "completed" then add it to DB
             {
-
                 connection.Open();
                 AddItemToDatabase(connection);
                 connection.Close();
-                if (!MainWindow.runFast || (DateTime.Now - lastSave).TotalMinutes > 10)
+                //if stop button has been pressed or the host state have not been saved for more than 10 minutes
+                if (!MainWindow.ContinueCrawling || (DateTime.Now - lastSave).TotalMinutes > 10)
                 {
                     SaveCrawlerState(connection);
-                    if (!MainWindow.runFast)
+                    //Stop crawler from requeuing host if stop button has been pressed
+                    if (!MainWindow.ContinueCrawling)
                     {
-                        return true;
+                        return true; //Returned to isHostDone in host.cs
                     }
                 }
             }
-
-            return false;
+            return false; //Host still has more work to do
         }
 
-        public void InsertSiteInDB(MySqlConnection connection)
+        //Gets next subSite to crawl/parse
+        private QueueElement GetNextSubSite(out bool isContentSite)
+        {
+            if (itemQueue.Count > 0)
+            {
+                isContentSite = true;
+                return itemQueue.Dequeue();
+            }
+            if (searchQueue.Count > 0)
+            {
+                isContentSite = false;
+                return searchQueue.Dequeue();
+            }
+
+            isContentSite = false;
+            return null;
+        }
+
+        //Used when saving the host state into db
+        private void InsertSiteInDB(MySqlConnection connection)
         {
             MySqlCommand command = new MySqlCommand("INSERT INTO CrawlProgress" +
                                                     "(Site, Queue, date)" +
@@ -117,12 +128,13 @@ namespace ReviewCrawler.Sites
             command.ExecuteNonQuery();
         }
 
-        public virtual void SaveCrawlerState(MySqlConnection connection)
+        //Used when saving the host state into db
+        private void SaveCrawlerState(MySqlConnection connection)
         {
             connection.Open();
-            if (!DoesSiteExist(connection))
+            if (!DoesSiteExist(connection)) //if previous site save does not exist in db 
             {
-                InsertSiteInDB(connection);
+                InsertSiteInDB(connection); //add new row for current site
             }
             Queue<QueueElement> tempQueue = new Queue<QueueElement>();
 
@@ -152,8 +164,7 @@ namespace ReviewCrawler.Sites
                 itemQueue.Enqueue(tempQueue.Dequeue());
             }
 
-
-
+            //Updates save in db
             MySqlCommand command =
                 new MySqlCommand("UPDATE CrawlProgress SET Queue = @queue, date = @date WHERE site=@site", connection);
             command.Parameters.AddWithValue("@queue", queue);
@@ -164,7 +175,8 @@ namespace ReviewCrawler.Sites
             connection.Close();
         }
 
-        public bool DoesSiteExist(MySqlConnection connection)
+        //checks if a site already exists in CrawlProgress table of db
+        private bool DoesSiteExist(MySqlConnection connection)
         {
             MySqlCommand command = new MySqlCommand("SELECT * FROM CrawlProgress WHERE site=@site", connection);
             command.Parameters.AddWithValue("@site", this.GetType().ToString());
@@ -178,8 +190,8 @@ namespace ReviewCrawler.Sites
                 return true;
             }
         }
-
-        public virtual void LoadCrawlerState(MySqlConnection connection)
+        //used to load host state from db
+        private void LoadCrawlerState(MySqlConnection connection)
         {
             connection.Open();
 
@@ -212,19 +224,21 @@ namespace ReviewCrawler.Sites
             connection.Close();
         }
 
+        //Gets last access time of current host
         public DateTime GetLastAccessTime()
         {
             return visitTimeStamp;
         }
-
+        //sets a new access time for current host
         public void SetLastAccessTime(DateTime newTime)
         {
             visitTimeStamp = newTime;
         }
 
+        //Checks an url against robot.txt's dissallow list and returns whether it the url is part of the list
         private bool AmIAllowed(string URL)
         {
-            if (robotsTimeStamp.AddDays(1) <= DateTime.Now)
+            if (robotsTimeStamp.AddDays(1) <= DateTime.Now) //if more than a day has passed since last robot.txt check
             {
                 GetRobotsTxt(domainUrl);
             }
@@ -242,25 +256,9 @@ namespace ReviewCrawler.Sites
             return true;
         }
 
-        private string AmazonFixTest(string link)
+        //Gets content of a website and returns it as a string
+        public string GetSiteData(string siteUrl, bool isContentSite, string queueData)
         {
-
-            if (link.Contains("ref="))
-            {
-                int index = link.IndexOf("ref=");
-                if (index > 0)
-                    link = link.Substring(0, index);
-            }
-            return link;
-        }
-
-        public string GetSiteData(string siteUrl, bool isReview, string queueData)
-        {
-            if (this.GetType() == typeof(SiteAmazon))
-            {
-                siteUrl = AmazonFixTest(siteUrl);
-            }
-
             System.Net.WebClient wc = new System.Net.WebClient();
             wc.Proxy = GetRandomProxy(); // <-------- set to null to disable proxy
             byte[] raw;
@@ -270,11 +268,23 @@ namespace ReviewCrawler.Sites
                 raw = wc.DownloadData(siteUrl);
 
                 webData += Encoding.UTF8.GetString(raw);
+                if (webData.Contains("<title dir=\"ltr\">Robot Check</title>")) ///REEEEEEEEEMOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOVEEEEE
+                {
+                    webData = "";
+                    if (isContentSite)
+                    {
+                        itemQueue.Enqueue(new QueueElement(siteUrl, queueData));
+                    }
+                    else
+                    {
+                        searchQueue.Enqueue(new QueueElement(siteUrl, queueData));
+                    }
+                }                                                               ///REEEEEEEEEMOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOVEEEEE
             }
             catch (Exception E)
             {
                 Debug.WriteLine("failed to get data from: " + siteUrl);
-                if (isReview)
+                if (isContentSite) //requeues the item since this usually happens because of a connection error
                 {
                     itemQueue.Enqueue(new QueueElement(siteUrl, queueData));
                 }
@@ -282,9 +292,7 @@ namespace ReviewCrawler.Sites
                 {
                     searchQueue.Enqueue(new QueueElement(siteUrl, queueData));
                 }
-
             }
-
             return webData;
         }
 
@@ -308,16 +316,13 @@ namespace ReviewCrawler.Sites
                 WebProxy proxy = new WebProxy(proxyAddress, false, null, cred);
                 Debug.WriteLine("Using proxy " + proxyAddress);
                 return proxy;
-
-
             }
             catch (Exception)
             {
-                    
                 throw;
             }
         }
-
+        //updates dissallow list from robot.txt
         private void GetRobotsTxt(string domain)
         {
             robotsTimeStamp = DateTime.Now;
@@ -332,6 +337,7 @@ namespace ReviewCrawler.Sites
                 string[] webDataLines = webData.Split('\n');
 
                 Boolean concernsMe = false;
+                disallow.Clear();
 
                 for (int i = 0; i < webDataLines.Count(); i++)
                 {
@@ -358,7 +364,7 @@ namespace ReviewCrawler.Sites
             }
             catch
             {
-                Debug.WriteLine(domain + "does not contain /robots.txt!");
+                Debug.WriteLine(domain + " does not contain /robots.txt!");
             }
         }
     }

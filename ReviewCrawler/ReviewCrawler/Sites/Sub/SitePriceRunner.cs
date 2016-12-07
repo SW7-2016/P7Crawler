@@ -23,7 +23,7 @@ namespace ReviewCrawler.Sites.Sub
             //searchQueue.Enqueue(new QueueElement("http://www.pricerunner.dk/cl/640/Stroemforsyninger", ""));
         }
 
-        public override void CrawlPage(string siteData, string sQueueData)
+        public override void Crawl(string siteData, string sQueueData)
         {
             string tempLink = "";
 

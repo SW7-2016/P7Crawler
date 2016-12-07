@@ -28,7 +28,7 @@ namespace ReviewCrawler.Sites.Sub
             searchQueue.Enqueue(new QueueElement("https://www.techpowerup.com/reviews/?category=Graphics+Cards&manufacturer=&pp=10000&order=date", "")); //finished
         }
 
-        public override void CrawlPage(string siteData, string sQueueData)
+        public override void Crawl(string siteData, string sQueueData)
         {
             string tempLink = "";
             string link = "";

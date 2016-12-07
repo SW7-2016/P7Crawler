@@ -10,7 +10,7 @@ namespace ReviewCrawler.Sites
     abstract class Site : Host
     {
         public override abstract bool Parse(string siteData, string sQueueData);
-        public override abstract void CrawlPage(string siteData, string sQueueData);
+        public override abstract void Crawl(string siteData, string sQueueData);
 
         //Looks in a string for a regex match, and returns the match, witout the string identifiers
         public string regexMatch(string data, string start, string end)

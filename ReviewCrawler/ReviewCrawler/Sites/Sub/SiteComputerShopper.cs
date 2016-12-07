@@ -23,7 +23,7 @@ namespace ReviewCrawler.Sites.Sub
             searchQueue.Enqueue(new QueueElement("http://www.computershopper.com/components/pc-case/reviews", "Chassis")); //finished
         }
 
-        public override void CrawlPage(string siteData, string sQueueData)
+        public override void Crawl(string siteData, string sQueueData)
         {
             string[] articlelinks;
             if (!currentSite.Contains("/components/reviews/"))

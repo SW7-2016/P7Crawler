@@ -17,7 +17,7 @@ namespace ReviewCrawler.Sites.Sub
         public SiteAmazon()
         {
             domainUrl = "https://www.amazon.com";
-            //searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_284822_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A284822&ie=UTF8&qid=1479384287&lo=computers","state1,GPU"));
+            searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_284822_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A284822&ie=UTF8&qid=1479384287&lo=computers","state1,GPU"));
             searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_229189_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A229189&ie=UTF8&qid=1479457498&lo=computers", "state1,CPU"));
             //searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_1048424_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A1048424&ie=UTF8&qid=1479457799&lo=computers", "state1,Motherboard"));
             //searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_2248325011_il_ti_electronics?rh=n%3A172282%2Cn%3A%2113900871%2Cn%3A%212334091011%2Cn%3A%212334122011%2Cn%3A2248325011&ie=UTF8&qid=1479458095&lo=electronics", "state1,HDD"));
@@ -26,7 +26,7 @@ namespace ReviewCrawler.Sites.Sub
             //searchQueue.Enqueue(new QueueElement("https://www.amazon.com/s/ref=lp_1161760_il_ti_computers?rh=n%3A172282%2Cn%3A%21493964%2Cn%3A541966%2Cn%3A193870011%2Cn%3A1161760&ie=UTF8&qid=1479459093&lo=computers", "state1,PSU"));
         }
 
-        public override void CrawlPage(string siteData, string queueData)
+        public override void Crawl(string siteData, string queueData)
         {
             string nextPageLink = "";
             string[] articleLinks;
@@ -86,6 +86,11 @@ namespace ReviewCrawler.Sites.Sub
                 {
                     searchQueue.Enqueue(new QueueElement(nextPageLink, "state3," + tempProductType));
                 }
+                else if (!nextPageLink.Contains(domainUrl))
+                {
+                    searchQueue.Enqueue(new QueueElement(domainUrl + nextPageLink, "state3," + tempProductType));
+                }
+
                 
 
                 articleLinks = regexMatches(siteData, "class=\"a-size-base a-link-normal review-title a-color-base a-text-bold\" href=\"", "\">");
