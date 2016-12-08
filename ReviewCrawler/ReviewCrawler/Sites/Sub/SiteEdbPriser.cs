@@ -24,13 +24,10 @@ namespace ReviewCrawler.Sites.Sub
             searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/kabinet.aspx?count=5&sort=Popularity&rlm=List", "")); 
             searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/stroemforsyning.aspx?count=5&sort=Popularity&rlm=List", ""));
             searchQueue.Enqueue(new QueueElement("http://www.edbpriser.dk/hardware/ssd-solid-state-drive.aspx?count=5&sort=Popularity&rlm=List", "")); 
-
         }
-
 
         public override void Crawl(string siteData, string sQueueData)
         {
-
             //finding next page of the review overview
             Match nextPage = Regex.Match(siteData, "<li class=\"next\"><a href=\".*?\"");
             //If there is found a next page, then add it to the queue.

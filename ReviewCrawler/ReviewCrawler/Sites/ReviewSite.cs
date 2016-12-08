@@ -15,7 +15,6 @@ namespace ReviewCrawler.Sites
 
         public override abstract bool Parse(string siteData, string sQueueData);
         public override abstract void Crawl(string siteData, string sQueueData);
-        public abstract string GetProductType(string tempLink);
 
         //Removes tags and other html parts from a string + only keeps what is within <p> <\p>
         public string removeTagsFromReview(string siteData)
@@ -48,6 +47,64 @@ namespace ReviewCrawler.Sites
             tempString += "\n";
 
             return tempString;
+        }
+
+        protected int GetReviewDateParseMonth(string month)
+        {
+            if (month.ToLower().Contains("january"))
+            {
+                month = "1";
+            }
+            else if (month.ToLower().Contains("february"))
+            {
+                month = "2";
+            }
+            else if (month.ToLower().Contains("march"))
+            {
+                month = "3";
+            }
+            else if (month.ToLower().Contains("april"))
+            {
+                month = "4";
+            }
+            else if (month.ToLower().Contains("may"))
+            {
+                month = "5";
+            }
+            else if (month.ToLower().Contains("june"))
+            {
+                month = "6";
+            }
+            else if (month.ToLower().Contains("july"))
+            {
+                month = "7";
+            }
+            else if (month.ToLower().Contains("august"))
+            {
+                month = "8";
+            }
+            else if (month.ToLower().Contains("september"))
+            {
+                month = "9";
+            }
+            else if (month.ToLower().Contains("october"))
+            {
+                month = "10";
+            }
+            else if (month.ToLower().Contains("november"))
+            {
+                month = "11";
+            }
+            else if (month.ToLower().Contains("december"))
+            {
+                month = "12";
+            }
+            else
+            {
+                month = "1";
+            }
+
+            return int.Parse(month);
         }
 
         public override void AddItemToDatabase(MySqlConnection connection)

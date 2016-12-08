@@ -34,7 +34,7 @@ namespace ReviewCrawler.Sites.Sub
             int totalPages = 0;
             string score = "";
 
-            if (currentSite.Contains("?category"))
+            if (currentSite.Contains("?category")) // on category list page
             {
                 string[] dataSplit = siteData.Split(new string[] {"<div class=\"title\">"}, StringSplitOptions.None);
 
@@ -43,12 +43,12 @@ namespace ReviewCrawler.Sites.Sub
                     if (dataSplit[i].Contains("<div class=\"score\">"))
                     {
                         link = regexMatch(dataSplit[i], "<a  href=\"", "\">");
-                        score = regexMatch(dataSplit[i], "<div class=\"score\"><span>Score:</span>", "</div>");
+                        score = regexMatch(dataSplit[i], "<div class=\"score\"><span>Score:</span>", "</div>"); // gets review score
                         searchQueue.Enqueue(new QueueElement(domainUrl + link, score));
                     }
                 }
             }
-            else
+            else // on first page of review - adds all review pages to itemqueue
             {
                 string tempTotPages = regexMatch(siteData, "<select id=\"pagesel\">", "</select>");
                 string[] tempPagesSplit = tempTotPages.Split(new string[] {"</option>"}, StringSplitOptions.None);
@@ -63,15 +63,14 @@ namespace ReviewCrawler.Sites.Sub
             }
         }
 
+        //parses content and saves it to review
         public override bool Parse(string siteData, string sQueueData)
         {
             string siteContentParsed = regexMatch(siteData, "<div class=\"text p\" >", "<footer class=\"clearfix\">");
-            //Regex tableRemover = new Regex("<div class=\"table-wrapper\">.*?</table>", RegexOptions.Singleline);
             Regex divRemover = new Regex("<table class=.*?/table>", RegexOptions.Singleline);
             siteContentParsed = TagRemoval(divRemover.Replace(siteContentParsed, ""));
-            
 
-            if (currentSite.Contains("/1.html"))
+            if (currentSite.Contains("/1.html")) // on first page of review
             {
                 review = new Review(currentSite, GetProductType(siteData), true);
                 review.title = regexMatch(siteData, "<title>", "Review | techPowerUp</title>");
@@ -86,20 +85,20 @@ namespace ReviewCrawler.Sites.Sub
             if (regexMatch(siteData, "<a class=\"button nextpage-bottom\"", "User comments\\)</small>") != "")
             {
                 MainWindow.techpowerup++;
-                return true;
+                return true; //review is done
             }
-            return false;
+            return false; //review is not done yet
         }
 
-
+        //Gets the review date
         private DateTime GetReviewDate(string data)
         {
             string[] tempDate = regexMatch(data, "<span>on <time datetime=\"", "T").Split('-');
-
             return new DateTime(int.Parse(tempDate[0]), int.Parse(tempDate[1]), int.Parse(tempDate[2]));
         }
 
-        public override string GetProductType(string data)
+        //Gets the product type
+        public string GetProductType(string data)
         {
             string temp = regexMatch(data, "<span>in <a href=\"/reviews/", "</a>.</span>").ToLower();
 
@@ -136,10 +135,9 @@ namespace ReviewCrawler.Sites.Sub
                 Debug.WriteLine("couldnt determine product type - GetProductType, guru3d");
             }
 
-
             return "unknown";
         }
-
+        //gets the review
         public double GetReviewRating(string scoreStr)
         {
             double result = 0;

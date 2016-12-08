@@ -96,7 +96,7 @@ namespace ReviewCrawler.Sites.Sub
                 throw new FormatException("Pricerunner - couldnt determine product type", null);
             }
 
-            if (tempSite.Contains("/pl/"))
+            if (tempSite.Contains("/pl/")) //on retailer page
             {
                 string retailerTag = "<a rel=\"nofollow\" title=\"\" target=\"_blank\" class=\"google-analytic-retailer-data pricelink\" retailer-data=\"";
 
@@ -109,7 +109,7 @@ namespace ReviewCrawler.Sites.Sub
                 //This means that the side contains prices
                 product.ParsePrice(siteData, pricerunnerParsePrice);
             }
-            else if (tempSite.Contains("/pi/"))
+            else if (tempSite.Contains("/pi/")) // on specification page
             {
                 ProductSpecRegexes pricerunnerParseSpecs = new ProductSpecRegexes(
                     "<div class=\"product-specs\">.*?</tbody>",
@@ -126,7 +126,6 @@ namespace ReviewCrawler.Sites.Sub
                 {
                     MainWindow.pricerunner++;
                 }
-
             }
             else
             {

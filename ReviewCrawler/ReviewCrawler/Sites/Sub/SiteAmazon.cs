@@ -32,17 +32,14 @@ namespace ReviewCrawler.Sites.Sub
             string[] articleLinks;
             string tempProductType = (queueData.Split(','))[1];
             
-
-            if (queueData.Contains("state1"))
+            if (queueData.Contains("state1"))  //ProductGroup page
             {
-                //Gets match, without identifiers.
-                
-                nextPageLink = regexMatch(siteData, "class=\"pagnNext\"", "<span id=\"pagnNextString\">Next Page</span>");
-                nextPageLink = regexMatch(nextPageLink, "href=\"", "\">");
+                nextPageLink = GetNextProductGroupPage(siteData);
 
                 if (nextPageLink != "")
                 {
-                    if (!nextPageLink.Contains(domainUrl))
+                    //In some instances nextpagelink will already contain the domainURL while in others it will not
+                    if (!nextPageLink.Contains(domainUrl))  
                     {
                         searchQueue.Enqueue(new QueueElement(domainUrl + nextPageLink.Replace("&amp;", "&"), "state1," + tempProductType));
                     }
@@ -50,37 +47,27 @@ namespace ReviewCrawler.Sites.Sub
                     {
                         searchQueue.Enqueue(new QueueElement(nextPageLink.Replace("&amp;", "&"), "state1," + tempProductType));
                     }
-                    
                 }
-                //Gets matches, without identifiers.
-                if (siteData.Contains("<div id=\"atfResults\""))
-                {
-                    string[] data = siteData.Split(new string[] { "<div id=\"atfResults\"" }, StringSplitOptions.None);
-                    articleLinks = regexMatches(data[1], "<a class=\"a-link-normal a-text-normal\" href=\"", "\"><img src=\"");
-                }
-                else
-                {
-                    articleLinks = regexMatches(siteData, "<a class=\"a-link-normal a-text-normal\" href=\"", "\"><img src=\"");
-                }
-                
-                //"><a class="a-link-normal a-text-normal" href=".*?"><img src="
+
+                articleLinks = GetProductPageLinks(siteData); //gets the url for all products on current productGroupPage
+
                 foreach (string link in articleLinks)
                 {
                     searchQueue.Enqueue(new QueueElement(link.Replace("&amp;", "&"), "state2," + tempProductType));
                 }
             }
-            else if (queueData.Contains("state2"))
+            else if (queueData.Contains("state2")) //if on a productPage
             {
+                //Gets url to reviewListPage for product
                 nextPageLink = regexMatch(siteData, "<a class=\"a-link-emphasis a-nowrap\" href=\"", "\">See all");
                 if (nextPageLink != "")
                 {
                     searchQueue.Enqueue(new QueueElement(nextPageLink, "state3," + tempProductType));
                 }
-                
             }
-            else if (queueData.Contains("state3"))
+            else if (queueData.Contains("state3")) //if on reviewListPage
             {
-
+                //gets next page reviewListPage for same product
                 nextPageLink = regexMatch(siteData, "<link rel=\"next\" href=\"", "\" />");
                 if (nextPageLink != "" && nextPageLink.Contains(domainUrl))
                 {
@@ -90,18 +77,37 @@ namespace ReviewCrawler.Sites.Sub
                 {
                     searchQueue.Enqueue(new QueueElement(domainUrl + nextPageLink, "state3," + tempProductType));
                 }
-
-                
-
+                //Gets url for individual reviews on reviewListPage
                 articleLinks = regexMatches(siteData, "class=\"a-size-base a-link-normal review-title a-color-base a-text-bold\" href=\"", "\">");
                 foreach (var review in articleLinks)
                 {
                     itemQueue.Enqueue(new QueueElement(domainUrl + review, "state4," + tempProductType));
                 }
-
             }
         }
 
+        //Gets nextpage link for a productGroupPage
+        private string GetNextProductGroupPage(string siteData)
+        {
+            string nextPageLink = regexMatch(siteData, "class=\"pagnNext\"", "<span id=\"pagnNextString\">Next Page</span>");
+            return regexMatch(nextPageLink, "href=\"", "\">");
+        }
+
+        //Gets links to each individual product, on a productGroupPage
+        private string[] GetProductPageLinks(string siteData)
+        {
+            if (siteData.Contains("<div id=\"atfResults\"")) //if it is not the first productGroupPage
+            {
+                string[] data = siteData.Split(new string[] { "<div id=\"atfResults\"" }, StringSplitOptions.None);
+                return regexMatches(data[1], "<a class=\"a-link-normal a-text-normal\" href=\"", "\"><img src=\"");
+            }
+            else // if on first productGroupPage
+            {
+                return regexMatches(siteData, "<a class=\"a-link-normal a-text-normal\" href=\"", "\"><img src=\"");
+            }
+        }
+
+        //Parses the data from a review and saves it in review
         public override bool Parse(string siteData, string queueData)
         {
             string siteContentParsed = regexMatch(siteData, "<div class=\"reviewText\">", "</div>");
@@ -117,9 +123,7 @@ namespace ReviewCrawler.Sites.Sub
             review.reviewDate = GetReviewDate(siteData);
             review.author = GetAuthor(siteData);
             GetReviewSentimentCount(siteData);
-
             review.verifiedPurchase = IsVerified(siteData);
-
             review.content += siteContentParsed;
 
             //for testing purposes only
@@ -128,9 +132,10 @@ namespace ReviewCrawler.Sites.Sub
                 MainWindow.amazon++;
             }
 
-            return true;
+            return true; //review is done
         }
         
+        //gets and updates review helpfull/unhelpfull count
         private void GetReviewSentimentCount(string data)
         {
             string temp = regexMatch(data, "<div style=\"margin-bottom:0.5em;\">", "people found the following review helpful");
@@ -138,8 +143,8 @@ namespace ReviewCrawler.Sites.Sub
             {
                 string[] tempSplit = temp.Split(new string[] { "of" }, StringSplitOptions.None);
 
-                tempSplit[0] = CheckForAndremoveComma(tempSplit[0]);
-                tempSplit[1] = CheckForAndremoveComma(tempSplit[1]);
+                tempSplit[0] = tempSplit[0].Replace(",", "");
+                tempSplit[1] = tempSplit[1].Replace(",", "");
                 review.positiveReception = int.Parse(tempSplit[0].Trim());
                 review.negativeReception = (int.Parse(tempSplit[1].Trim()) - int.Parse(tempSplit[0].Trim()));
             }
@@ -150,18 +155,7 @@ namespace ReviewCrawler.Sites.Sub
             }
         }
 
-        private string CheckForAndremoveComma(string str)
-        {
-            if (str.Contains(","))
-            {
-                return str.Replace(",", "");
-            }
-            else
-            {
-                return str;
-            }
-        }
-
+        //Gets the author from review
         private string GetAuthor(string data)
         {
             string result = regexMatch(data, "<span style = \"font-weight: bold;\">", "</span>");
@@ -175,64 +169,16 @@ namespace ReviewCrawler.Sites.Sub
             }
         }
 
+        //Gets the time of review creation
         private DateTime GetReviewDate(string data)
         {
             string[] date = (regexMatch(data, ", <nobr>", "</nobr>")).Split(' ');
-
-            if (date[0].ToLower().Contains("january"))
-            {
-                date[0] = "1";
-            } else if (date[0].ToLower().Contains("february"))
-            {
-                date[0] = "2";
-            }
-            else if (date[0].ToLower().Contains("march"))
-            {
-                date[0] = "3";
-            }
-            else if (date[0].ToLower().Contains("april"))
-            {
-                date[0] = "4";
-            }
-            else if (date[0].ToLower().Contains("may"))
-            {
-                date[0] = "5";
-            }
-            else if (date[0].ToLower().Contains("june"))
-            {
-                date[0] = "6";
-            }
-            else if (date[0].ToLower().Contains("july"))
-            {
-                date[0] = "7";
-            }
-            else if (date[0].ToLower().Contains("august"))
-            {
-                date[0] = "8";
-            }
-            else if (date[0].ToLower().Contains("september"))
-            {
-                date[0] = "9";
-            }
-            else if (date[0].ToLower().Contains("october"))
-            {
-                date[0] = "10";
-            }
-            else if (date[0].ToLower().Contains("november"))
-            {
-                date[0] = "11";
-            }
-            else if (date[0].ToLower().Contains("december"))
-            {
-                date[0] = "12";
-            }
-
             date[1] = date[1].Replace(",", "");
             
-            return new DateTime(int.Parse(date[2]), int.Parse(date[0]), int.Parse(date[1]));
-
+            return new DateTime(int.Parse(date[2]), GetReviewDateParseMonth(date[0]), int.Parse(date[1]));
         }
 
+        //does the review have a verified purchase
         public bool IsVerified(string data)
         {
             if (data.Contains("\">Verified Purchase</b>"))
@@ -244,12 +190,5 @@ namespace ReviewCrawler.Sites.Sub
                 return false;
             }
         }
-
-        public override string GetProductType(string tempLink)
-        {
-            return "";
-        }
-
-        
     }
 }

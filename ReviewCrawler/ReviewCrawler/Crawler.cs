@@ -17,7 +17,7 @@ namespace ReviewCrawler
     class Crawler
     {
         private Queue<HostInterface> hostQueue = new Queue<HostInterface>(); //Contains all the different hosts
-        private MySqlConnection connection =
+        private readonly MySqlConnection connection =
             new MySqlConnection("server=172.25.23.57;database=crawlerdb;user=crawler;port=3306;password=Crawler23!;");
 
         //Picks a host and starts crawling it

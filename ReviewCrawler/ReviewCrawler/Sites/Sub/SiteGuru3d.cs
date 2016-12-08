@@ -34,9 +34,9 @@ namespace ReviewCrawler.Sites.Sub
             string[] articleLinks;
             string tempProductType = "unknown";
 
-            if (currentSite.Contains("articles-categories"))
+            if (currentSite.Contains("articles-categories")) // if on category page
             {
-                //Gets match, without identifiers.
+                //Gets link to next category page
                 nextPageLink = regexMatch(siteData, "<span class = \"pagelinkselected\">", "</a></span>");
                 nextPageLink = regexMatch(nextPageLink, "<span class = \"pagelink\"><a href=\"", "\">");
 
@@ -48,43 +48,54 @@ namespace ReviewCrawler.Sites.Sub
                 }
             }
 
-            //Gets matches, without identifiers.
-             articleLinks = regexMatches(siteData, "<a href=\"", "\">Read article</a>");
+            //Gets review links from category page
+            articleLinks = regexMatches(siteData, "<a href=\"", "\">Read article</a>");
 
             foreach (string link in articleLinks)
             {
                 searchQueue.Enqueue(new QueueElement(domainUrl + link, tempProductType));
             }
+            //Adds all pages of review to itemQueue
             CrawlReviewPages(siteData, sQueueData);
         }
 
+        //Adds all pages of review to itemQueue
         private void CrawlReviewPages(string siteData, string productType)
         {
             string tempLink = "";
             int totalPages = 0;
 
-            if (currentSite.Contains(",1.html"))
+            if (currentSite.Contains(",1.html")) //Is this page 1 of a review?
             {
-                string siteNumber = Regex.Match(siteData, "<span class=\"pagelink\">.*? pages</span>").Value;
-                siteNumber = siteNumber.Replace("<span class=\"pagelink\">", "");
-                siteNumber = siteNumber.Replace(" pages</span>", "").Trim();
-                if (siteNumber != "")
-                {
-                    totalPages = int.Parse(siteNumber);
-                }
-                
+                totalPages = GetReviewTotalPages(siteData);
 
                 for (int i = 1; i <= totalPages; i++)
                 {
                     tempLink = currentSite.Replace("1.html", i + ".html");
                     itemQueue.Enqueue(new QueueElement(tempLink, productType));
                 }
-                itemQueue.Enqueue(new QueueElement(GetSiteKey(currentSite.Replace("articles-pages", "articles-summary")), ""));
+                itemQueue.Enqueue(new QueueElement(ReformatUrl(currentSite.Replace("articles-pages", "articles-summary")), ""));
             }
         }
 
+        //Gets total amount of pages for a review
+        private int GetReviewTotalPages(string siteData)
+        {
+            string siteNumber = Regex.Match(siteData, "<span class=\"pagelink\">.*? pages</span>").Value;
+            siteNumber = siteNumber.Replace("<span class=\"pagelink\">", "");
+            siteNumber = siteNumber.Replace(" pages</span>", "").Trim();
+            if (siteNumber != "")
+            {
+                return int.Parse(siteNumber);
+            }
+            else
+            {
+                return 0;
+            }
+        }
 
-        private string GetSiteKey(string url) //evt rename, not used as key anymore
+        //removes ending of url
+        private string ReformatUrl(string url) 
         {
             for (int i = url.Length - 1; i > 0; i--)
             {
@@ -94,11 +105,11 @@ namespace ReviewCrawler.Sites.Sub
                     break;
                 }
             }
-
             return url;
         }
 
-        public override string GetProductType(string tempLink)
+        //Gets product type
+        public string GetProductType(string tempLink)
         {
             tempLink = tempLink.ToLower();
             if (tempLink.Contains("articles-categories/videocards"))
@@ -133,13 +144,14 @@ namespace ReviewCrawler.Sites.Sub
             return "";
         }
 
+        //parses review content and saves in review
         public override bool Parse(string siteData, string sQueueData)
         {
             string siteContentParsed = removeTagsFromReview(siteData);
             
-            if (!currentSite.Contains("articles-summary"))
+            if (!currentSite.Contains("articles-summary")) // if not comment page of review
             {
-                if (currentSite.Contains(",1.html"))
+                if (currentSite.Contains(",1.html")) // first page of review
                 {
                     review = new Review(currentSite, sQueueData, true);
                     review.title = GetTitle(siteData);
@@ -151,7 +163,7 @@ namespace ReviewCrawler.Sites.Sub
                 }
                 review.content += siteContentParsed;
             }
-            else
+            else // if comment page of review
             {
                 review.comments = GetReviewComments(siteData);
 
@@ -161,11 +173,12 @@ namespace ReviewCrawler.Sites.Sub
                     MainWindow.guru3d++;
                 }
 
-                return true;
+                return true; //review is done
             }
-            return false;
+            return false; // review is not done yet
         }
 
+        // gets title of review
         private string GetTitle(string data)
         {
             string result = "";
@@ -180,6 +193,7 @@ namespace ReviewCrawler.Sites.Sub
             return result;
         }
 
+        //Gets comments for review
         private List<ReviewComment> GetReviewComments(string siteData) //look into nested quotes
         {
             List<ReviewComment> commentResults = new List<ReviewComment>();
@@ -201,7 +215,6 @@ namespace ReviewCrawler.Sites.Sub
                     tempComment += '>';
                 }
 
-
                 tempComment = regexDateRemove.Replace(tempComment, "");
                 tempComment = regexTags.Replace(tempComment, "");
                 tempComment = regexQuote.Replace(tempComment, "");
@@ -215,11 +228,11 @@ namespace ReviewCrawler.Sites.Sub
             return commentResults;
         }
 
+        //Gets review date
         private DateTime GetReviewDate(string siteData)
         {
             DateTime date;
             string temp = Regex.Match(siteData, "<span itemprop=\"dtreviewed\">.*?</span>").Value;
-
 
             temp = temp.Replace("<span itemprop=\"dtreviewed\">", "");
             temp = temp.Replace("</span>", "");
@@ -233,45 +246,33 @@ namespace ReviewCrawler.Sites.Sub
                 }
                 else
                 {
-                    return DateTime.Now;
+                    Debug.WriteLine("Date format error");
+                    return DateTime.Now; 
                 }
                 
-
                 if ((tempDate[0])[0] == '0')
                 {
                     tempDate[0] = (tempDate[0])[1].ToString();
                 }
 
-                int day = int.Parse(tempDate[1]);
-                int month = int.Parse(tempDate[0]);
-                int year = int.Parse(tempDate[2]);
-
-                date = new DateTime(year, month, day);
+                date = new DateTime(int.Parse(tempDate[2]), int.Parse(tempDate[0]), int.Parse(tempDate[1]));
             }
             else
             {
                 return DateTime.Now;
             }
-            
 
             return date;
         }
 
+        //Gets review rating
         private double GetRating(string siteData)
         {
-            string strValue = "";
             string temp = Regex.Match(siteData, "<meta itemprop=\"value\" content=\".*?\"/>").Value;
 
-            for (int i = 0; i < temp.Length - 1; i++)
+            if (temp != "")
             {
-                if (char.IsNumber(temp[i]))
-                {
-                    strValue += temp[i];
-                }
-            }
-            if (strValue != "")
-            {
-                return double.Parse(strValue);
+                return double.Parse(temp);
             }
             else
             {
