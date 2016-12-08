@@ -8,7 +8,7 @@ using MySql.Data.MySqlClient;
 
 namespace ReviewCrawler.Products.ProductComponents
 {
-    class Chassis : ComputerComponents
+    class Chassis : Product
     {
         string type = "";
         string series = "";
@@ -22,7 +22,7 @@ namespace ReviewCrawler.Products.ProductComponents
         string height = "";
         string depth = "";
         string width = "";
-
+        //adds specifications
         protected override void AddInformation(List<string[]> productInformation)
         {
             foreach (string[] info in productInformation)
@@ -156,7 +156,7 @@ namespace ReviewCrawler.Products.ProductComponents
         {
             get { return miniItx; }
         }
-
+        //inserts component into db
         public override void InsertComponentToDB(int PID)
         {
             MySqlCommand command = new MySqlCommand("INSERT INTO Chassis" +

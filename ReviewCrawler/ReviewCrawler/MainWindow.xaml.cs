@@ -70,7 +70,7 @@ namespace ReviewCrawler
             crawlerThread.Start("");
             Debug.WriteLine("Thread started and crawler is now running.");
         }
-
+        
         private void UpdateGUI()
         {
             amazon_tb.Text = "Amazon: " + amazon;
@@ -100,7 +100,7 @@ namespace ReviewCrawler
             totPD_tb.Text = "Total pd: " + (pdCHASSIS + pdCPU + pdGPU + pdHDD + pdMB + pdPSU + pdRAM);
             totRW_tb.Text = "Total rw: " + (rwCHASSIS + rwCPU + rwGPU + rwHDD + rwMB + rwPSU + rwRAM);
         }
-
+        
         private void stopCrawl_bt_Click(object sender, RoutedEventArgs e)
         {
 

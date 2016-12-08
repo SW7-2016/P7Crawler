@@ -8,7 +8,7 @@ using MySql.Data.MySqlClient;
 
 namespace ReviewCrawler.Products.ProductComponents
 {
-    class PSU : ComputerComponents
+    class PSU : Product
     {
         string power = "";
         string formFactor = "";
@@ -21,6 +21,7 @@ namespace ReviewCrawler.Products.ProductComponents
         string width = "";
         string weight = "";
 
+        //adds specifications
         protected override void AddInformation(List<string[]> productInformation)
         {
             foreach (string[] info in productInformation)
@@ -149,7 +150,7 @@ namespace ReviewCrawler.Products.ProductComponents
                 return weight;
             }
         }
-
+        //inserts component into db
         public override void InsertComponentToDB(int PID)
         {
 

@@ -7,7 +7,7 @@ using MySql.Data.MySqlClient;
 
 namespace ReviewCrawler.Products.ProductComponents
 {
-    class RAM : ComputerComponents
+    class RAM : Product
     {
         private string type = "";
         private string model = "";
@@ -20,7 +20,7 @@ namespace ReviewCrawler.Products.ProductComponents
         private string casLatens = "";
         private string brand = "";
 
-
+        //adds specifications
         protected override void AddInformation(List<string[]> productInformation)
         {
             foreach (string[] info in productInformation)
@@ -138,6 +138,7 @@ namespace ReviewCrawler.Products.ProductComponents
             }
         }
 
+        //inserts component into db
         public override void InsertComponentToDB(int PID)
         {
             MySqlCommand command = new MySqlCommand("INSERT INTO RAM" +

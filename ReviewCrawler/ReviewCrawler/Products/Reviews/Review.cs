@@ -25,13 +25,11 @@ namespace ReviewCrawler.Products.Reviews
         public double reviewRating;
         public bool verifiedPurchase;
         public double maxRating;
-        public MySqlConnection connection;
 
         public Review(string Url, string PType, bool IsCriticReview)
         {
             ProductType = PType;
             url = Url;
-
             title = "unknown";
             isCriticReview = IsCriticReview;
             reviewDate = DateTime.Now;
@@ -70,10 +68,10 @@ namespace ReviewCrawler.Products.Reviews
         }
 
         #region Database
-
-        public void AddReviewToDB()
+        //adds review to database
+        public void AddReviewToDB(MySqlConnection connection)
         {
-            if (!DoesReviewExist())
+            if (!DoesReviewExist(connection)) //checks if review exists, and adds if not
             {
                 MySqlCommand command = new MySqlCommand("INSERT INTO Review" +
                                                         "(reviewDate, crawlDate, content,productRating,reviewRating,author " +
@@ -100,21 +98,21 @@ namespace ReviewCrawler.Products.Reviews
 
                 command.ExecuteNonQuery();
 
-                int ID = GetReviewID(url);
+                int ID = GetReviewID(url, connection); //gets the id assigned to this review in db
 
                 foreach (ReviewComment comment in comments)
                 {
-                    InsertReviewComment(comment, ID);
+                    InsertReviewComment(comment, ID, connection); //inserts comments for review into db
                 }
 
-                ReviewCountAdd();
+                //ReviewCountAdd();
             }
             else
             {
                 Debug.WriteLine("Review " + url + " does already exist");
             }
         }
-
+        /*
         //For testing purposes only
         private void ReviewCountAdd()
         {
@@ -147,9 +145,9 @@ namespace ReviewCrawler.Products.Reviews
                 MainWindow.rwRAM++;
             }
 
-        }
-
-        public bool DoesReviewExist()
+        }*/
+        //checks if review ecists
+        public bool DoesReviewExist(MySqlConnection connection)
         {
             MySqlCommand command = new MySqlCommand("SELECT * FROM Review WHERE url=@url", connection);
             command.Parameters.AddWithValue("@url", url);
@@ -163,13 +161,14 @@ namespace ReviewCrawler.Products.Reviews
                 return true;
             }
         }
-
+        //formats date
         private string DateToString(DateTime date)
         {
             return date.Year + "-" + date.Month + "-" + date.Day;
         }
 
-        private void InsertReviewComment(ReviewComment comment, int ID)
+        //inserts review comments into db 
+        private void InsertReviewComment(ReviewComment comment, int ID, MySqlConnection connection)
         {
             MySqlCommand command = new MySqlCommand("INSERT INTO ReviewComment" +
                                                     "(ReviewID, content, rating)" +
@@ -180,17 +179,15 @@ namespace ReviewCrawler.Products.Reviews
             command.ExecuteNonQuery();
         }
 
-        private int GetReviewID(string url)
+        //gets the id of current review
+        private int GetReviewID(string url, MySqlConnection connection)
         {
             MySqlCommand command = new MySqlCommand("SELECT ReviewID FROM Review WHERE url=@url", connection);
             command.Parameters.AddWithValue("@url", url);
 
             MySqlDataReader reader = command.ExecuteReader();
-
             reader.Read();
-
             int result = (int) reader.GetValue(0);
-
             reader.Close();
 
             return result;

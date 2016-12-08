@@ -8,7 +8,7 @@ using MySql.Data.MySqlClient;
 
 namespace ReviewCrawler.Products.ProductComponents
 {
-    class HardDrive : ComputerComponents
+    class HardDrive : Product
     {
         bool isInternal;
         string model = "";
@@ -24,7 +24,7 @@ namespace ReviewCrawler.Products.ProductComponents
         string depth = "";
         string width = "";
 
-
+        //adds specifications
         protected override void AddInformation(List<string[]> productInformation)
         {
             foreach (string[] info in productInformation)
@@ -171,7 +171,7 @@ namespace ReviewCrawler.Products.ProductComponents
         {
             get { return width; }
         }
-
+        //inserts component into db
         public override void InsertComponentToDB(int PID)
         {
             MySqlCommand command = new MySqlCommand("INSERT INTO HardDrive" +

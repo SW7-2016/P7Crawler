@@ -125,7 +125,7 @@ namespace ReviewCrawler.Sites.Sub
             GetReviewSentimentCount(siteData);
             review.verifiedPurchase = IsVerified(siteData);
             review.content += siteContentParsed;
-
+            
             //for testing purposes only
             if (this.GetType() == typeof(SiteAmazon))
             {

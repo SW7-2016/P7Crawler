@@ -61,7 +61,6 @@
     <Compile Include="Helpers\ProductSpecRegexes.cs" />
     <Compile Include="Helpers\QueueElement.cs" />
     <Compile Include="Products\ProductComponents\Chassis.cs" />
-    <Compile Include="Products\ComputerComponents.cs" />
     <Compile Include="Products\ProductComponents\CPU.cs" />
     <Compile Include="Products\ProductComponents\GPU.cs" />
     <Compile Include="Products\ProductComponents\HardDrive.cs" />

@@ -109,8 +109,7 @@ namespace ReviewCrawler.Sites
 
         public override void AddItemToDatabase(MySqlConnection connection)
         {
-            review.connection = connection;
-            review.AddReviewToDB();
+            review.AddReviewToDB(connection);
         }
     }
 }

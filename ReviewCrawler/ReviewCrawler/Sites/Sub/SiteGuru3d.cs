@@ -166,7 +166,7 @@ namespace ReviewCrawler.Sites.Sub
             else // if comment page of review
             {
                 review.comments = GetReviewComments(siteData);
-
+                
                 //for testing purposes only
                 if (this.GetType() == typeof(SiteGuru3d))
                 {

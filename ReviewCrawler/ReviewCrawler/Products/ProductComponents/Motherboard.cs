@@ -8,7 +8,7 @@ using MySql.Data.MySqlClient;
 
 namespace ReviewCrawler.Products.ProductComponents
 {
-    class Motherboard : ComputerComponents
+    class Motherboard : Product
     {
         string formFactor = "";
         string chipset = "";
@@ -27,6 +27,7 @@ namespace ReviewCrawler.Products.ProductComponents
         int memSlots;
         string memType = "";
 
+        //adds specifications
         protected override void AddInformation(List<string[]> productInformation)
         {
             foreach (string[] info in productInformation)
@@ -207,6 +208,7 @@ namespace ReviewCrawler.Products.ProductComponents
             get { return memType; }
         }
 
+        //inserts component into db
         public override void InsertComponentToDB(int PID)
         {
             MySqlCommand command = new MySqlCommand("INSERT INTO Motherboard" +

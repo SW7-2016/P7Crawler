@@ -120,7 +120,7 @@ namespace ReviewCrawler.Sites.Sub
                 //this means that te side contains product information
                 product.ParseProductSpecifications(siteData, pricerunnerParseSpecs);
                 isDone = true;
-
+                
                 //for testing purposes only
                 if (this.GetType() == typeof(SitePriceRunner))
                 {

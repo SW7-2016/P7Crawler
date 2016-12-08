@@ -13,7 +13,6 @@ namespace ReviewCrawler.Products
     {
         public string name;
         public string description = "";
-        protected byte[][] image;
         public Dictionary<string, decimal> retailers = new Dictionary<string, decimal>();
         public MySqlConnection connection;
 

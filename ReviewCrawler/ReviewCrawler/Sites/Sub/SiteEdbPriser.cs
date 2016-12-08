@@ -111,7 +111,7 @@ namespace ReviewCrawler.Sites.Sub
 
             product.ParsePrice(siteData, edbPriserParsePrice);
             product.ParseProductSpecifications(siteData, edbPriserParseSpecs);
-
+            
             //for testing purposes only
             if (this.GetType() == typeof(SiteEdbPriser))
             {

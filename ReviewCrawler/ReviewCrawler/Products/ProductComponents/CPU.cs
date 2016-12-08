@@ -8,7 +8,7 @@ using MySql.Data.MySqlClient;
 
 namespace ReviewCrawler.Products.ProductComponents
 {
-    class CPU : ComputerComponents
+    class CPU : Product
     {
         string model = "";
         string clock = "";
@@ -20,7 +20,7 @@ namespace ReviewCrawler.Products.ProductComponents
         string maxTurbo = "";
         string integratedGpu = "";
         string manufacturer = "";
-
+        //adds specifications
         protected override void AddInformation(List<string[]> productInformation)
         {
             foreach (string[] info in productInformation)
@@ -145,7 +145,7 @@ namespace ReviewCrawler.Products.ProductComponents
         {
             get { return manufacturer; }
         }
-
+        //inserts component into db
         public override void InsertComponentToDB(int PID)
         {
             MySqlCommand command = new MySqlCommand("INSERT INTO CPU" +
