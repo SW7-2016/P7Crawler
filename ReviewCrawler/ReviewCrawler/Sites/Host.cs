@@ -61,10 +61,7 @@ namespace ReviewCrawler.Sites
             if (AmIAllowed(currentSite)) //checks the list extracted from robot.txt if the current link is dissallowed by the host
             {
                 string siteData = GetSiteData(currentSite, isContentSite, currentSiteData); //Gets data from site
-                if (siteData.Length < 50)  ///REEEEEEEEEMOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOVEEEEE
-                {
-                    return false;
-                }                          ///REEEEEEEEEMOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOVEEEEE
+
                 if (isContentSite) //Does sitedata need to be parsed?
                 {
                     isItemDone = Parse(siteData, currentSiteData); //Parse information of review/product page. Returns true if the current product/review has been completed
@@ -260,7 +257,7 @@ namespace ReviewCrawler.Sites
         public string GetSiteData(string siteUrl, bool isContentSite, string queueData)
         {
             System.Net.WebClient wc = new System.Net.WebClient();
-            wc.Proxy = GetRandomProxy(); // <-------- set to null to disable proxy
+            wc.Proxy = null;
             byte[] raw;
             string webData = siteUrl + '\n';
             try
@@ -268,18 +265,17 @@ namespace ReviewCrawler.Sites
                 raw = wc.DownloadData(siteUrl);
 
                 webData += Encoding.UTF8.GetString(raw);
-                if (webData.Contains("<title dir=\"ltr\">Robot Check</title>")) ///REEEEEEEEEMOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOVEEEEE
+
+                webData = "";
+                if (isContentSite)
                 {
-                    webData = "";
-                    if (isContentSite)
-                    {
-                        itemQueue.Enqueue(new QueueElement(siteUrl, queueData));
-                    }
-                    else
-                    {
-                        searchQueue.Enqueue(new QueueElement(siteUrl, queueData));
-                    }
-                }                                                               ///REEEEEEEEEMOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOVEEEEE
+                    itemQueue.Enqueue(new QueueElement(siteUrl, queueData));
+                }
+                else
+                {
+                    searchQueue.Enqueue(new QueueElement(siteUrl, queueData));
+                }
+
             }
             catch (Exception E)
             {
@@ -296,38 +292,12 @@ namespace ReviewCrawler.Sites
             return webData;
         }
 
-        private WebProxy GetRandomProxy()
-        {
-            try
-            {
-                string filePath = @"Proxy\ProxyList.txt";
-                string[] allLines = File.ReadAllLines(filePath);
-
-                //Get random proxy from file
-                Random rnd1 = new Random();
-                string proxyAddress = allLines[rnd1.Next(allLines.Length)];
-
-                //split into ip and port
-                string[] address = proxyAddress.Split(':');
-                string ip = address[0];
-                int port = int.Parse(address[1]);
-
-                NetworkCredential cred = new NetworkCredential("US221994", "kyMfbgBPpF");
-                WebProxy proxy = new WebProxy(proxyAddress, false, null, cred);
-                Debug.WriteLine("Using proxy " + proxyAddress);
-                return proxy;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
         //updates dissallow list from robot.txt
         private void GetRobotsTxt(string domain)
         {
             robotsTimeStamp = DateTime.Now;
             System.Net.WebClient webClient = new System.Net.WebClient();
-            webClient.Proxy = GetRandomProxy(); // <-------- set to null to disable proxy
+            webClient.Proxy = null;
             try
             {
                 byte[] rawWebData = webClient.DownloadData(domain + "/robots.txt");

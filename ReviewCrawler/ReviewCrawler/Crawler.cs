@@ -78,11 +78,11 @@ namespace ReviewCrawler
         public void AddHosts()
         {
             hostQueue.Enqueue(new SiteAmazon());
-            //hostQueue.Enqueue(new SiteComputerShopper());
-            //hostQueue.Enqueue(new SiteGuru3d());
-            //hostQueue.Enqueue(new SitePriceRunner());
-            //hostQueue.Enqueue(new SiteEdbPriser());
-            //hostQueue.Enqueue(new SiteTechPowerUp());
+            hostQueue.Enqueue(new SiteComputerShopper());
+            hostQueue.Enqueue(new SiteGuru3d());
+            hostQueue.Enqueue(new SitePriceRunner());
+            hostQueue.Enqueue(new SiteEdbPriser());
+            hostQueue.Enqueue(new SiteTechPowerUp());
         }
 
         //Checks if more than two seconds have passed since 'lastAccessTime' and returns a bool
